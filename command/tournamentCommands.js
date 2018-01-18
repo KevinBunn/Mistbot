@@ -168,12 +168,10 @@ function getTimeDifference(date1, date2) {
  *
  * IMPORTANT NOTE:
  * Tournament occurs every Wednesday and Sunday at 12:00 AM UTC.
- * However, Cronjob uses system time, so for me, the equivalent of
- * 12 AM Wednesday and Sunday UTC is Tuesday and Saturday 6 PM.
- *
- * Please convert to your own system time, so it updates correctly.
+ * However, Cronjob uses system time.
+ * Please convert to your own system time (if not using UTC), so it updates correctly.
  */
-const counterUpdate = schedule.scheduleJob('0 18 * * 2,6', function(){
+const counterUpdate = schedule.scheduleJob('0 0 * * 0,3', function(){
 	tournamentRef.once('value')
 	.then((snapshot) => {
 		const data = snapshot.val();
