@@ -10,16 +10,11 @@
   "author": "Yicheng Gong",
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
     "discord.js": "^11.3.0",
     "es6-promise": "^4.2.2",
     "firebase": "^4.8.2",
     "isomorphic-fetch": "^2.2.1",
-    "jsdom": "^11.5.1",
-    "moment": "^2.20.1",
-    "node-pre-gyp": "^0.6.39",
     "node-schedule": "^1.3.0",
-    "phantom": "^4.0.12",
     "request": "^2.83.0",
     "whatwg-fetch": "^2.0.3"
   },
