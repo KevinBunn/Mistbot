@@ -97,7 +97,10 @@ function getClanQuestMembersInfo() {
  */
 function getClanQuestMemberInfo(memberData) {
 	// Convert consecutive hits into an array.
-	let hits = memberData.slice(1,29).map((hit) => {
+	let hits = memberData.slice(1,29);
+	let maxNumberOfHits = hits.filter((hit) => (hit !== "")).length;
+
+	hits = hits.map((hit) => {
 		if (!hit) {
 			hit = 0;
 		}
@@ -114,8 +117,9 @@ function getClanQuestMemberInfo(memberData) {
 		lastWeekAverage=memberData[33],
 		lastWeekMS=memberData[34],
 		highestConsecutiveHits=getHighestConsecutiveHits(hits),
-		frequentHits=getFrequentHits(hits),
-		mostDamageOnOneTitan=Math.max(...hits)
+		frequentHits=getFrequentHits(hits, maxNumberOfHits),
+		mostDamageOnOneTitan=Math.max(...hits),
+		maxNumberOfHits=maxNumberOfHits
 	);
 	return member;
 }
@@ -144,7 +148,7 @@ function getWeeklyStatsCommand(channel) {
 				`${inspired.names.join(", ")}\n` +
 				`**Sleepless** - ${sleepless.stat} Titanlords hit in a row.\n` +
 				`${sleepless.names.join(", ")}\n` +
-				`**Hitman** - ${hitman.stat}/28 Titanlords hit\n` +
+				`**Hitman** - ${hitman.stat}% of Titanlords hit\n` +
 				`${hitman.names.join(", ")}\n` +
 				`**Coin Shot** - ${coinShot.stat.toLocaleString()} stages advanced since last week.\n` +
 				`${coinShot.names.join(", ")}\n` +

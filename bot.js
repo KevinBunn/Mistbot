@@ -17,6 +17,8 @@ const ClanQuestMembers = require("./model/ClanQuestMembers");
  */
 const weeklyStatsCommand = require("./command/weeklyStatsCommands");
 const tournamentCommands = require("./command/tournamentCommands");
+// Fun commands.
+const miscCommands = require("./command/miscCommands");
 
 /**
  * Listen for when bot is ready.
@@ -30,12 +32,14 @@ client.on("message", message => {
 	try {
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
 			return;
-		} else if (message.content === "!weekly_stats") {
+		} else if (message.content === `${config.prefix}weekly_stats`) {
 			weeklyStatsCommand.getWeeklyStatsCommand(message.channel);
-		} else if (message.content === "!curr_tour") {
+		} else if (message.content === `${config.prefix}curr_tour`) {
 			tournamentCommands.getCurrentTournament(message.channel);
-		} else if (message.content === "!next_tour") {
+		} else if (message.content === `${config.prefix}next_tour`) {
 			tournamentCommands.getNextTournament(message.channel);
+		} else if (message.content === `${config.prefix}justdoit`) {
+			miscCommands.getJustDoItGif(message.channel);
 		}
 	} catch (error) {
 		message.channel.send('Sorry! An error occurred!');

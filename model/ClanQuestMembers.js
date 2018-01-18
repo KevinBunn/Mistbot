@@ -20,7 +20,6 @@ class ClanQuestMembers {
 
 	getHitman() {
 		return getStatResult(this.members, "frequentHits");
-
 	}
 
 	getThug() {
