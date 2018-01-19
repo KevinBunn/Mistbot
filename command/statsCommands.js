@@ -187,32 +187,65 @@ function getWeeklyStats(channel) {
 
 
 /**
- * Sends top ten total damage dealer to the given discord channel.
+ * Sends top total damage dealers to the given discord channel, according
+ * to the content that was passed in.
  *
  * @param {Channel} channel - The discord channel to send message to
+ * @param {I dunno... int?} - number passed in from message.content
  */
-function getTopTenTotalDamage(channel) {
+function getTopDamage(channel, number) {
 	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
 	.then((data) => {
 		var memberName;
 		var memberTotal;
 		var newNumeral;
+		if (number < 20 && number > 0) {
+			const embed = new Discord.RichEmbed()
+			.setAuthor(`Top ${number} members - Total Damage`)
+			.setColor(0x00AE86);
+			for (let i = 0; i < number; i++) {
+				memberName = data[0].members[i].name;
+				memberTotal = numeral(data[0].members[i].total).format('0,0');
+				embed.addField(`${i + 1}. ${memberName}`, `\t${memberTotal}`, true);
+			}
 
-		const embed = new Discord.RichEmbed()
-		.setAuthor("Top 10 members - Total Damage")
-		.setColor(0x00AE86);
-		for (let i = 0; i < 10; i++) {
-			memberName = data[0].members[i].name;
-			memberTotal = numeral(data[0].members[i].total).format('0,0');
-			embed.addField(`${i + 1}. ${memberName}`, `\t${memberTotal}`)
+			channel.send({embed});
 		}
-
-		channel.send({embed});
+		else {
+			channel.send("Please specify a number between 1 and 20");
+		}
 	})
 	.catch((error) => {throw error});
 }
 
+/**
+ * Sends the user their personal stats to a given discord channel.
+ *
+ * @param {Channel} channel - The discord channel to send message to
+ * @param {string} nickname - The name of the user that sent the message.
+ */
+function getMyStats(channel, nickname) {
+	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
+	.then((data) => {
+		if(!data[0].findByName(nickname)) {
+			channel.send("Sorry, not a clan member");
+		}
+		else {
+			const embed = new Discord.RichEmbed()
+			.setAuthor(`${data[0].findByName(nickname).name}'s Clan Stats`)
+			.setColor(0x00AE86)
+			.addField("Total Damage", `${data[0].findByName(nickname).total}`)
+			.addField("Average Damage", `${data[0].findByName(nickname).averageDamage}`)
+			.addField("Last Week Average", `${data[0].findByName(nickname).lastWeekAverage}`)
+			.addField("Damage Margin (increase/decrease from last week)", `${data[0].findByName(nickname).averageMargin}%`)
+			.addField("Max Stage", `${data[0].findByName(nickname).MS}`)
+			channel.send({embed});
+		}
+	})
+}
+
 module.exports = {
 	getWeeklyStats: getWeeklyStats,
-	getTopTenTotalDamage: getTopTenTotalDamage
+	getTopDamage: getTopDamage,
+	getMyStats: getMyStats
 }

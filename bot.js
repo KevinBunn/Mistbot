@@ -5,6 +5,11 @@ const client = new Discord.Client();
 const config = require("./config/config.json");
 
 /**
+ * Importing Helpers.
+ */
+
+const splitString = require("./helper/splitString")
+/**
  * Importing models.
  */
 const Members = require("./model/Members");
@@ -31,12 +36,13 @@ client.on("ready", () => {
 // Create an event listener for messages
 client.on("message", message => {
 	try {
+		let splitContent = splitString(message.content, ' ');
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
 			return;
 		} else if (message.content === `${config.prefix}weekly_stats`) {
 			statsCommand.getWeeklyStats(message.channel);
-		} else if (message.content === `${config.prefix}top_ten_damage`) {
-			statsCommand.getTopTenTotalDamage(message.channel);
+		} else if (splitContent[0] === `${config.prefix}top_damage`) {
+			statsCommand.getTopDamage(message.channel, splitContent[1]);
 		}else if (message.content === `${config.prefix}curr_tour`) {
 			tournamentCommands.getCurrentTournament(message.channel);
 		} else if (message.content === `${config.prefix}next_tour`) {
@@ -45,6 +51,14 @@ client.on("message", message => {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content === `${config.prefix}help`) {
 			helpCommands.getHelp(message.channel, config.prefix);
+		} else if (message.content === `${config.prefix}my_stats`) {
+			// first get the GuildMember who typed the message
+			message.guild.fetchMember(message.author)
+  			.then(member => {
+    			statsCommand.getMyStats(message.channel, member.displayName);
+  			});
+		} else if (message.content.startsWith(config.prefix)) {
+			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}
 	} catch (error) {
 		message.channel.send('Sorry! An error occurred!');
@@ -52,3 +66,4 @@ client.on("message", message => {
 });
 
 client.login(config.token);
+
