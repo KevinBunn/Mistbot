@@ -1,11 +1,24 @@
 /**
- * Splits strings by a given character
+ * Splits strings by spaces unless inside quotes, using regex pattern
  *
  * @param {string} content - the string to be split
- * @param {char} separator - the character we want to separate the string by
  */
-function splitString(content, separator) {
-	var strArray = content.split(separator);
+function splitString(content) {
+	var myRegexp = /[^\s"]+|"([^"]*)"/gi;
+	var strArray = [];
+
+	do {
+    	//Each call to exec returns the next regex match as an array
+    	var match = myRegexp.exec(content);
+    	if (match != null)
+    	{
+        	//Index 1 in the array is the captured group if it exists
+        	//Index 0 is the matched text, which we use if no captured group exists
+        	strArray.push(match[1] ? match[1] : match[0]);
+    	}
+	} while (match != null);
+
+	console.log(strArray[0]);
 	return strArray;
 }
 

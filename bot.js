@@ -57,6 +57,8 @@ client.on("message", message => {
   			.then(member => {
     			statsCommand.getMyStats(message.channel, member.displayName);
   			});
+		} else if (splitContent[0] === `${config.prefix}stats`) {
+			statsCommand.getMyStats(message.channel, splitContent[1]);
 		} else if (message.content.startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}

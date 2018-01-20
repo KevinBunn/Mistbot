@@ -25,6 +25,14 @@ class ClanQuestMembers {
 	getThug() {
 		return getStatResult(this.members, "mostDamageOnOneTitan");
 	}
+	
+	findByName(nickname) {
+		for (let i = 0; i < this.members.length; i++) {
+			if (this.members[i].name === nickname)
+				return this.members[i];
+		}
+		return null;
+	}
 }
 
 module.exports = ClanQuestMembers;

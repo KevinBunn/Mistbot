@@ -234,10 +234,11 @@ function getMyStats(channel, nickname) {
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`${data[0].findByName(nickname).name}'s Clan Stats`)
 			.setColor(0x00AE86)
-			.addField("Total Damage", `${data[0].findByName(nickname).total}`)
-			.addField("Average Damage", `${data[0].findByName(nickname).averageDamage}`)
-			.addField("Last Week Average", `${data[0].findByName(nickname).lastWeekAverage}`)
+			.addField("Total Damage", `${numeral(data[0].findByName(nickname).total).format('0,0')}`)
+			.addField("Average Damage", `${numeral(data[0].findByName(nickname).averageDamage).format('0,0.00')}`)
+			.addField("Last Week Average", `${numeral(data[0].findByName(nickname).lastWeekAverage).format('0,0.00')}`)
 			.addField("Damage Margin (increase/decrease from last week)", `${data[0].findByName(nickname).averageMargin}%`)
+			.addField("Clan Quest Attendence %", `${numeral(data[1].findByName(nickname).frequentHits).format('0.00')}%`)
 			.addField("Max Stage", `${data[0].findByName(nickname).MS}`)
 			channel.send({embed});
 		}
@@ -247,5 +248,5 @@ function getMyStats(channel, nickname) {
 module.exports = {
 	getWeeklyStats: getWeeklyStats,
 	getTopDamage: getTopDamage,
-	getMyStats: getMyStats
+	getMyStats: getMyStats,
 }
