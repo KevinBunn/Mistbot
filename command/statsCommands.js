@@ -199,7 +199,7 @@ function getTopDamage(channel, number) {
 		var memberName;
 		var memberTotal;
 		var newNumeral;
-		if (number < 20 && number > 0) {
+		if (number <= 20 && number > 0) {
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`Top ${number} members - Total Damage`)
 			.setColor(0x00AE86);
