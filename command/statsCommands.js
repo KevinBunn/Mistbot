@@ -213,7 +213,7 @@ function getTopDamage(channel, number) {
  * @param {Channel} channel - The discord channel to send message to
  * @param {string} nickname - The name of the user that sent the message.
  */
-function getStats(channel, nickname) {
+function getStats(channel, nickname, discordMember) {
 	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
 	.then((data) => {
 		const member = data[0].findByName(nickname)
@@ -222,10 +222,10 @@ function getStats(channel, nickname) {
 		}
 		else {
 			const embed = new Discord.RichEmbed()
-			.setAuthor(`${member.name}'s Clan Stats`)
+			.setAuthor(`${member.name}'s Clan Stats`, `${discordMember.user.displayAvatarURL}`)
 			.setColor(0x00AE86)
 			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}`)
-			.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0.00')}`)
+			.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0')}`)
 			.addField("Damage Margin (increase/decrease from last week)", `${member.damageMargin}%`)
 			.addField("Clan Quest Attendence %", `${numeral(member.CQParticipation).format('0.00')}%`)
 			.addField("Max Stage", `${member.MS}`)

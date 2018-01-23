@@ -7,8 +7,8 @@ const config = require("./config/config.json");
 /**
  * Importing Helpers.
  */
+const splitString = require("./helper/splitString");
 
-const splitString = require("./helper/splitString")
 /**
  * Importing models.
  */
@@ -43,22 +43,26 @@ client.on("message", message => {
 			statsCommand.getWeeklyStats(message.channel);
 		} else if (splitContent[0] === `${config.prefix}top_damage`) {
 			statsCommand.getTopDamage(message.channel, splitContent[1]);
-		}else if (message.content === `${config.prefix}curr_tour`) {
+		} else if (message.content === `${config.prefix}curr_tour`) {
 			tournamentCommands.getCurrentTournament(message.channel);
 		} else if (message.content === `${config.prefix}next_tour`) {
 			tournamentCommands.getNextTournament(message.channel);
 		} else if (message.content === `${config.prefix}just_do_it`) {
 			miscCommands.getJustDoItGif(message.channel);
-		} else if (message.content === `${config.prefix}help`) {
-			helpCommands.getHelp(message.channel, config.prefix);
+		} else if (splitContent[0] === (`${config.prefix}help`)) {
+			helpCommands.getHelp(message.channel, splitContent[1]);
 		} else if (message.content === `${config.prefix}my_stats`) {
 			// first get the GuildMember who typed the message
 			message.guild.fetchMember(message.author)
   			.then(member => {
-    			statsCommand.getStats(message.channel, member.displayName);
+    			statsCommand.getStats(message.channel, member.displayName, member);
   			});
 		} else if (splitContent[0] === `${config.prefix}stats`) {
-			statsCommand.getStats(message.channel, splitContent[1]);
+			message.guild.members.find((member) => {
+				if(member.displayName.toLowerCase() === splitContent[1].toLowerCase()) {
+					statsCommand.getStats(message.channel, splitContent[1], member);
+				}
+			});
 		} else if (message.content.startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}

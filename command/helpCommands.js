@@ -1,21 +1,69 @@
 const Discord = require("discord.js");
 const config = require("../config/config.json");
+const Help = require("../model/Help");
 
-function getHelp(channel) {
-	const embed = new Discord.RichEmbed()
-	.setTitle("FishBot Commands")
-	.setDescription(`prefix: ${config.prefix}`)
-	.addField("weekly_stats", "\tDisplays current clan accolades for the week.")
-	.addField("my_stats", "\tDisplays your clan stats.")
-	.addField("stats [name]", "\tDisplays clan stats of another member")
-	.addField("curr_tour", "\tDisplays current tournament that is going on.")
-	.addField("next_tour", "\tDisplays when and what the next tournament is.")
-	.addField("top_damage [number]", "\tDisplays the members with the top total damage.")
-	.addField("just_do_it", "\tDisplays the just do it gif.")
-	.setColor(0x00AE86)
-	.setFooter("FishBot | Help");
-
-	channel.send({embed});
+function getHelp(channel, inquiry) {
+	const help = new Help();
+	if (inquiry == null) {
+		// default help response
+		const embed = new Discord.RichEmbed()
+		.setTitle("ℹ️ FishBot Help")
+		.setDescription(`prefix: ${config.prefix}\ntype "${config.prefix}[command]" to use a command\ntype "${config.prefix}help [category]" for usage\n\tex: ${config.prefix}help Statistics`)
+		.addField("Statistics", `${help.getStatisticsCommandList()}`)
+		.addField("Tournament", `${help.getTournamentCommandList()}`)
+		.addField("Miscellaneous", `${help.getMiscellaneousCommandList()}`)
+		.setColor(0x00AE86)
+		.setFooter("FishBot | Help");
+		channel.send({embed});
+	}
+	else if (inquiry.toLowerCase() == "Statistics".toLowerCase()
+		  || inquiry.toLowerCase() == "Stats".toLowerCase()) {
+		statsObj = help.getObjStatistics();
+		const embed = new Discord.RichEmbed()
+		.setTitle("ℹ️ FishBot Help Statistics")
+		.setDescription("Queries for Clan Statistics")
+		.setColor(0x00AE86)
+		.setFooter("FishBot | Help - Statistics");
+		for (let i = 0; i < statsObj.length; i++) {
+			if (statsObj[i].postfix == null)
+				embed.addField(`${statsObj[i].title}`, `${statsObj[i].description}`)
+			else
+				embed.addField(`${statsObj[i].title} ${statsObj[i].postfix}`, `${statsObj[i].description}`)
+		}
+		channel.send({embed});
+	}
+	else if (inquiry.toLowerCase() == "Tournament".toLowerCase()
+		  || inquiry.toLowerCase() == "Tour".toLowerCase()) {
+		tourObj = help.getObjTournament();
+		const embed = new Discord.RichEmbed()
+		.setTitle("ℹ️ FishBot Help Tournament")
+		.setDescription("Queries for Tournament Information")
+		.setColor(0x00AE86)
+		.setFooter("FishBot | Help - Tournament");
+		for (let i = 0; i < tourObj.length; i++) {
+			if (tourObj[i].postfix == null)
+				embed.addField(`${tourObj[i].title}`, `${tourObj[i].description}`)
+			else
+				embed.addField(`${tourObj[i].title} ${tourObj[i].postfix}`, `${tourObj[i].description}`)
+		}
+		channel.send({embed});
+	}
+	else if (inquiry.toLowerCase() == "Miscellaneous".toLowerCase()
+		  || inquiry.toLowerCase() == "Misc".toLowerCase()) {
+		miscObj = help.getObjMiscellaneous();
+		const embed = new Discord.RichEmbed()
+		.setTitle("ℹ️ FishBot Help Miscellaneous")
+		.setDescription("Random Gifs, Pics, ect.")
+		.setColor(0x00AE86)
+		.setFooter("FishBot | Help - Miscellaneous");
+		for (let i = 0; i < miscObj.length; i++) {
+			if (miscObj[i].postfix == null)
+				embed.addField(`${miscObj[i].title}`, `${miscObj[i].description}`)
+			else
+				embed.addField(`${miscObj[i].title} ${miscObj[i].postfix}`, `${miscObj[i].description}`)
+		}
+		channel.send({embed});
+	}
 }
 
 module.exports = {
