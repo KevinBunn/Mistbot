@@ -18,14 +18,10 @@ class ClanQuestMembers {
 		return getStatResult(this.members, "highestConsecutiveHits");
 	}
 
-	getHitman() {
-		return getStatResult(this.members, "frequentHits");
-	}
-
 	getThug() {
 		return getStatResult(this.members, "mostDamageOnOneTitan");
 	}
-	
+
 	findByName(nickname) {
 		for (let i = 0; i < this.members.length; i++) {
 			if (this.members[i].name === nickname)

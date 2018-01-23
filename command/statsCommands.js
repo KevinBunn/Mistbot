@@ -16,7 +16,6 @@ const ClanQuestMembers = require("../model/ClanQuestMembers");
  * Importing helper functions.
  */
 const flatten = require("../helper/flatten");
-const getFrequentHits = require("../helper/getFrequentHits");
 const getHighestConsecutiveHits = require("../helper/getHighestConsecutiveHits");
 
 /**
@@ -29,26 +28,19 @@ const baseGoogleSpreadsheetUrl = "https://sheets.googleapis.com/v4/spreadsheets/
  */
 function getMembersInfo() {
 	const minRow = 4;
+	const minCol = "B";
+	const maxCol = "M";
 	const maxRow = 53;
 
-	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!B${minRow}:K${maxRow}?key=${config.googleSpreadsheetApiKey}`)
+	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!${minCol}${minRow}:${maxCol}${maxRow}?key=${config.googleSpreadsheetApiKey}`)
 	.then((response) => response.json())
 	.then((data) => {
 		const newMembers = new Members();
 		const membersInfo = data.values;
 		membersInfo.map((memberInfo) => {
-			// Checking if the name field is non-empty.
-			if (memberInfo[1]) {
-				let member = getMemberInfo(memberInfo);
-				member.total = parseInt(member.total);
-				member.averageDamage = parseFloat(member.averageDamage);
-				member.lastWeekAverage = parseFloat(member.lastWeekAverage);
-				// Remove % for easier calculations
-				member.averageMargin = parseInt(member.averageMargin.replace("%", ""));
-				member.MS = parseInt(member.MS);
-				member.MSLastWeek = parseInt(member.MSLastWeek);
-				member.increase = parseInt(member.increase);
-				member.joinedDiscord = member.joinedDiscord === "TRUE" ? true : false;
+			// Checking if the id field is non-empty.
+			if (memberInfo[0]) {
+				const member = getMemberInfo(memberInfo);
 				newMembers.addMember(member);
 			}
 		});
@@ -70,17 +62,24 @@ function getMemberInfo(memberData) {
  * Creates a new <ClanQuestMembers> from the google spreadsheet.
  */
 function getClanQuestMembersInfo() {
-	const minRow = 4;
-	const maxRow = 38;
+	const minCurrentCQRow = 4;
+	const minCurrentCQCol = "O"
+	const maxCurrentCQRow = 53;
+	const maxCurrentCQCol = "AQ"
 
-	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!Q${minRow}:BO${maxRow}?key=${config.googleSpreadsheetApiKey}&majorDimension=COLUMNS`)
+	const minNextCQRow = 4;
+	const minNextCQCol = "AS"
+	const maxNextRow = 53;
+	const maxNextCol = "BU";
+
+	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
 	.then((response) => response.json())
 	.then((data) => {
 		let newCQMembers = new ClanQuestMembers();
 		let CQData = data.values;
 
-		for (let i = 1; i < CQData.length; i++) {
-			let CQ = CQData[i];
+		for (let i = 0; i < CQData.length; i++) {
+			const CQ = CQData[i];
 			if (CQ[0]) {
 				const member = getClanQuestMemberInfo(CQ);
 				newCQMembers.addMember(member);
@@ -98,8 +97,7 @@ function getClanQuestMembersInfo() {
  */
 function getClanQuestMemberInfo(memberData) {
 	// Convert consecutive hits into an array.
-	let hits = memberData.slice(1,29);
-	let maxNumberOfHits = hits.filter((hit) => (hit !== "")).length;
+	let hits = memberData.slice(1, memberData.length);
 
 	hits = hits.map((hit) => {
 		if (!hit) {
@@ -111,16 +109,8 @@ function getClanQuestMemberInfo(memberData) {
 	const member = new ClanQuestMember(
 		name=memberData[0],
 		hits=hits,
-		totalDamage=memberData[29],
-		averageDamage=memberData[30],
-		maxStage=memberData[31],
-		joinedDiscord=memberData[32],
-		lastWeekAverage=memberData[33],
-		lastWeekMS=memberData[34],
 		highestConsecutiveHits=getHighestConsecutiveHits(hits),
-		frequentHits=getFrequentHits(hits, maxNumberOfHits),
 		mostDamageOnOneTitan=Math.max(...hits),
-		maxNumberOfHits=maxNumberOfHits
 	);
 	return member;
 }
@@ -158,16 +148,17 @@ function getWeeklyStats(channel) {
 		const dateRange = getWeekRangeForSunday();
 		const inspired = data[0].getInspired();
 		const sleepless = data[1].getSleepless();
-		const hitman = data[1].getHitman();
+		const hitman = data[0].getHitman();
 		const coinShot = data[0].getCoinShot();
 		const thug = data[1].getThug();
+		const delibird = data[0].getDelibird();
 
 		const embed = new Discord.RichEmbed()
 			.setTitle("**༺Mistborn Accolades༻**")
 			.setAuthor(`📊 Weekly Statistics Report (${dateRange})`)
 			.setColor(0x00AE86)
 			.setDescription(
-				`**Inspired** - ${inspired.stat.toLocaleString()}% average damage increase from last week.\n` +
+				`**Inspired** - ${inspired.stat.toLocaleString()}% damage increase from last week.\n` +
 				`${inspired.names.join(", ")}\n` +
 				`**Sleepless** - ${sleepless.stat} Titanlords hit in a row.\n` +
 				`${sleepless.names.join(", ")}\n` +
@@ -176,7 +167,9 @@ function getWeeklyStats(channel) {
 				`**Coin Shot** - ${coinShot.stat.toLocaleString()} stages advanced since last week.\n` +
 				`${coinShot.names.join(", ")}\n` +
 				`**Thug** - ${thug.stat.toLocaleString()} damage done to one Titanlord.\n` +
-				`${thug.names.join(", ")}\n`
+				`${thug.names.join(", ")}\n` +
+				`**Delibird** - ${delibird.stat} clan crates delivered.\n` +
+				`${delibird.names.join(", ")}\n`
 			)
 			.setTimestamp();
 
@@ -185,27 +178,23 @@ function getWeeklyStats(channel) {
 	.catch((error) => {throw error});
 }
 
-
 /**
  * Sends top total damage dealers to the given discord channel, according
  * to the content that was passed in.
  *
  * @param {Channel} channel - The discord channel to send message to
- * @param {I dunno... int?} - number passed in from message.content
+ * @param {Integer} - number passed in from message.content
  */
 function getTopDamage(channel, number) {
-	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
-	.then((data) => {
-		var memberName;
-		var memberTotal;
-		var newNumeral;
+	getMembersInfo().then((data) => {
 		if (number <= 20 && number > 0) {
+			const topDamageMembers = data.getTopDamage(number);
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`Top ${number} members - Total Damage`)
 			.setColor(0x00AE86);
-			for (let i = 0; i < number; i++) {
-				memberName = data[0].members[i].name;
-				memberTotal = numeral(data[0].members[i].total).format('0,0');
+			for (let i = 0; i < topDamageMembers.length; i++) {
+				const memberName = topDamageMembers[i].name;
+				const memberTotal = numeral(topDamageMembers[i].totalDamage).format('0,0');
 				embed.addField(`${i + 1}. ${memberName}`, `\t${memberTotal}`, true);
 			}
 
@@ -224,22 +213,22 @@ function getTopDamage(channel, number) {
  * @param {Channel} channel - The discord channel to send message to
  * @param {string} nickname - The name of the user that sent the message.
  */
-function getMyStats(channel, nickname) {
+function getStats(channel, nickname) {
 	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
 	.then((data) => {
-		if(!data[0].findByName(nickname)) {
+		const member = data[0].findByName(nickname)
+		if(!member) {
 			channel.send("Sorry, not a clan member");
 		}
 		else {
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`${data[0].findByName(nickname).name}'s Clan Stats`)
 			.setColor(0x00AE86)
-			.addField("Total Damage", `${numeral(data[0].findByName(nickname).total).format('0,0')}`)
-			.addField("Average Damage", `${numeral(data[0].findByName(nickname).averageDamage).format('0,0.00')}`)
-			.addField("Last Week Average", `${numeral(data[0].findByName(nickname).lastWeekAverage).format('0,0.00')}`)
-			.addField("Damage Margin (increase/decrease from last week)", `${data[0].findByName(nickname).averageMargin}%`)
-			.addField("Clan Quest Attendence %", `${numeral(data[1].findByName(nickname).frequentHits).format('0.00')}%`)
-			.addField("Max Stage", `${data[0].findByName(nickname).MS}`)
+			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}`)
+			.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0.00')}`)
+			.addField("Damage Margin (increase/decrease from last week)", `${member.damageMargin}%`)
+			.addField("Clan Quest Attendence %", `${numeral(member.CQParticipation).format('0.00')}%`)
+			.addField("Max Stage", `${member.MS}`)
 			channel.send({embed});
 		}
 	})
@@ -248,5 +237,5 @@ function getMyStats(channel, nickname) {
 module.exports = {
 	getWeeklyStats: getWeeklyStats,
 	getTopDamage: getTopDamage,
-	getMyStats: getMyStats,
+	getStats: getStats,
 }

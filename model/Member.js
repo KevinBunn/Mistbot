@@ -2,17 +2,18 @@
  * A class that contains a member's information.
  */
 class Member {
-	constructor(rank, name, total, averageDamage, lastWeekAverage, averageMargin, MS, MSLastWeek, increase, joinedDiscord) {
-		this.rank = rank;
+	constructor(id, name, lastWeekMS, MS, lastWeekCQHits, CQHits, clanCratesShared, MSIncrease, CQParticipation, totalDamage, lastWeekTotalDamage, damageMargin) {
+		this.id = id;
 		this.name = name;
-		this.total = total;
-		this.averageDamage = averageDamage;
-		this.lastWeekAverage = lastWeekAverage;
-		this.averageMargin = averageMargin;
-		this.MS = MS;
-		this.MSLastWeek = MSLastWeek;
-		this.increase = increase;
-		this.joinedDiscord = joinedDiscord;
+		this.lastWeekMS = parseInt(lastWeekMS);
+		this.MS = parseInt(MS);
+		this.CQHits = parseInt(CQHits);
+		this.clanCratesShared = parseInt(clanCratesShared);
+		this.MSIncrease = parseInt(MSIncrease);
+		this.CQParticipation = parseInt(CQParticipation.replace("%", "")),
+		this.totalDamage = parseInt(totalDamage),
+		this.lastWeekTotalDamage = parseInt(lastWeekTotalDamage),
+		this.damageMargin = parseInt(damageMargin.replace("%", ""))
 	}
 }
 

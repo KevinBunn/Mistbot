@@ -15,11 +15,19 @@ class Members {
 	}
 
 	getInspired() {
-		return getStatResult(this.members, 'averageMargin');
+		return getStatResult(this.members, "damageMargin");
 	}
 
 	getCoinShot() {
-		return getStatResult(this.members, 'increase');
+		return getStatResult(this.members, "MSIncrease");
+	}
+
+	getDelibird() {
+		return getStatResult(this.members, "clanCratesShared")
+	}
+
+	getHitman() {
+		return getStatResult(this.members, "CQParticipation")
 	}
 
 	findByName(nickname) {
@@ -28,6 +36,13 @@ class Members {
 				return this.members[i];
 		}
 		return null;
+	}
+
+	getTopDamage(size) {
+		let sortedMembers = this.members.slice().sort((member1, member2) => {
+			return member2.totalDamage - member1.totalDamage;
+		});
+		return sortedMembers.slice(0, size)
 	}
 }
 

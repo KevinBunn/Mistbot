@@ -18,7 +18,6 @@ function splitString(content) {
     	}
 	} while (match != null);
 
-	console.log(strArray[0]);
 	return strArray;
 }
 
