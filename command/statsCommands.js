@@ -222,7 +222,7 @@ function getStats(channel, nickname) {
 		}
 		else {
 			const embed = new Discord.RichEmbed()
-			.setAuthor(`${data[0].findByName(nickname).name}'s Clan Stats`)
+			.setAuthor(`${member.name}'s Clan Stats`)
 			.setColor(0x00AE86)
 			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}`)
 			.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0.00')}`)
