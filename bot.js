@@ -44,6 +44,8 @@ client.on("message", message => {
 			statsCommand.getWeeklyStats(message.channel);
 		} else if (splitContent[0] === `${config.prefix}top_damage`) {
 			statsCommand.getTopDamage(message.channel, splitContent[1]);
+		} else if (splitContent[0] === `${config.prefix}top_participation`) {
+			statsCommand.getTopParticipation(message.channel, splitContent[1]);
 		} else if (message.content === `${config.prefix}curr_tour`) {
 			tournamentCommands.getCurrentTournament(message.channel);
 		} else if (message.content === `${config.prefix}next_tour`) {

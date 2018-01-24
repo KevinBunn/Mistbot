@@ -1,11 +1,20 @@
 const Discord = require("discord.js");
 const config = require("../config/config.json");
+
+/**
+ * Importing models.
+ */
 const Help = require("../model/Help");
 
-function getHelp(channel, inquiry) {
+/**
+ * Displays information about all the commands for the bot
+ *
+ * @param {Channel} channel - The discord channel to send message to
+ * @param {String} category - identifies which section of commands user wants displayed
+ */
+function getHelp(channel, category) {
 	const help = new Help();
-	if (inquiry == null) {
-		// default help response
+	if (category == null) { // default help response
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ FishBot Help")
 		.setDescription(`prefix: ${config.prefix}\ntype "${config.prefix}[command]" to use a command\ntype "${config.prefix}help [category]" for usage\n\tex: ${config.prefix}help Statistics`)
@@ -17,8 +26,8 @@ function getHelp(channel, inquiry) {
 		.setFooter("FishBot | Help");
 		channel.send({embed});
 	}
-	else if (inquiry.toLowerCase() == "Statistics".toLowerCase()
-		  || inquiry.toLowerCase() == "Stats".toLowerCase()) {
+	else if (category.toLowerCase() == "Statistics".toLowerCase()
+		  || category.toLowerCase() == "Stats".toLowerCase()) {
 		statsObj = help.getObjStatistics();
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ FishBot Help Statistics")
@@ -33,8 +42,8 @@ function getHelp(channel, inquiry) {
 		}
 		channel.send({embed});
 	}
-	else if (inquiry.toLowerCase() == "Tournament".toLowerCase()
-		  || inquiry.toLowerCase() == "Tour".toLowerCase()) {
+	else if (category.toLowerCase() == "Tournament".toLowerCase()
+		  || category.toLowerCase() == "Tour".toLowerCase()) {
 		tourObj = help.getObjTournament();
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ FishBot Help Tournament")
@@ -49,7 +58,7 @@ function getHelp(channel, inquiry) {
 		}
 		channel.send({embed});
 	}
-	else if (inquiry.toLowerCase() == "Timer".toLowerCase()) {
+	else if (category.toLowerCase() == "Timer".toLowerCase()) {
 		timerObj = help.getObjStatistics();
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ FishBot Help Timer")
@@ -64,8 +73,8 @@ function getHelp(channel, inquiry) {
 		}
 		channel.send({embed});
 	}
-	else if (inquiry.toLowerCase() == "Miscellaneous".toLowerCase()
-		  || inquiry.toLowerCase() == "Misc".toLowerCase()) {
+	else if (category.toLowerCase() == "Miscellaneous".toLowerCase()
+		  || category.toLowerCase() == "Misc".toLowerCase()) {
 		miscObj = help.getObjMiscellaneous();
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ FishBot Help Miscellaneous")

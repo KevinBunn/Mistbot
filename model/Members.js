@@ -44,6 +44,13 @@ class Members {
 		});
 		return sortedMembers.slice(0, size)
 	}
+
+	getTopParticipation(size) {
+		let sortedMembers = this.members.slice().sort((member1, member2) => {
+			return member2.CQParticipation - member1.CQParticipation;
+		});
+		return sortedMembers.slice(0, size)
+	}
 }
 
 module.exports = Members;

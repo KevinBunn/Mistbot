@@ -208,6 +208,36 @@ function getTopDamage(channel, number) {
 }
 
 /**
+ * Sends top participating members in the clan to the given discord channel,
+ * according to the number passed in.
+ *
+ * @param {Channel} channel - The discord channel to send message to
+ * @param {Integer} - number passed in from message.content
+ */
+function getTopParticipation(channel, number) {
+	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
+	.then((data) => {
+		if (number <= 20 && number > 0) {
+			const topParticipating = data[0].getTopParticipation(number);
+			const embed = new Discord.RichEmbed()
+			.setAuthor(`Top ${number} members - Participation`)
+			.setColor(0x00AE86);
+			for (let i = 0; i < topParticipating.length; i++) {
+				const memberName = topParticipating[i].name;
+				const memberParticipation = topParticipating[i].CQParticipation;
+				embed.addField(`${i + 1}. ${memberName}`, `\t${memberParticipation}%`, true);
+			}
+
+			channel.send({embed});
+		}
+		else {
+			channel.send("Please specify a number between 1 and 20");
+		}
+	})
+	.catch((error) => {throw error});
+}
+
+/**
  * Sends the user their personal stats to a given discord channel.
  *
  * @param {Channel} channel - The discord channel to send message to
@@ -238,4 +268,5 @@ module.exports = {
 	getWeeklyStats: getWeeklyStats,
 	getTopDamage: getTopDamage,
 	getStats: getStats,
+	getTopParticipation: getTopParticipation
 }
