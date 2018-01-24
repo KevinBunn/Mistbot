@@ -11,6 +11,7 @@ function getHelp(channel, inquiry) {
 		.setDescription(`prefix: ${config.prefix}\ntype "${config.prefix}[command]" to use a command\ntype "${config.prefix}help [category]" for usage\n\tex: ${config.prefix}help Statistics`)
 		.addField("Statistics", `${help.getStatisticsCommandList()}`)
 		.addField("Tournament", `${help.getTournamentCommandList()}`)
+		.addField("Timer", `${help.getTimerCommandList()}`)
 		.addField("Miscellaneous", `${help.getMiscellaneousCommandList()}`)
 		.setColor(0x00AE86)
 		.setFooter("FishBot | Help");
@@ -45,6 +46,21 @@ function getHelp(channel, inquiry) {
 				embed.addField(`${tourObj[i].title}`, `${tourObj[i].description}`)
 			else
 				embed.addField(`${tourObj[i].title} ${tourObj[i].postfix}`, `${tourObj[i].description}`)
+		}
+		channel.send({embed});
+	}
+	else if (inquiry.toLowerCase() == "Timer".toLowerCase()) {
+		timerObj = help.getObjStatistics();
+		const embed = new Discord.RichEmbed()
+		.setTitle("ℹ️ FishBot Help Timer")
+		.setDescription("Queries for Timer Information")
+		.setColor(0x00AE86)
+		.setFooter("FishBot | Help - Timer");
+		for (let i = 0; i < timerObj.length; i++) {
+			if (timerObj[i].postfix == null)
+				embed.addField(`${timerObj[i].title}`, `${timerObj[i].description}`)
+			else
+				embed.addField(`${timerObj[i].title} ${timerObj[i].postfix}`, `${timerObj[i].description}`)
 		}
 		channel.send({embed});
 	}
