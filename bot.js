@@ -22,7 +22,7 @@ const ClanQuestMembers = require("./model/ClanQuestMembers");
  */
 const statsCommand = require("./command/statsCommands");
 const helpCommands = require("./command/helpCommands");
-const tournamentCommands = require("./command/tournamentCommands");
+//const tournamentCommands = require("./command/tournamentCommands");
 const timerCommands = require("./command/timerCommands");
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
@@ -52,6 +52,8 @@ client.on("message", message => {
 			tournamentCommands.getNextTournament(message.channel);
 		} else if (message.content === `${config.prefix}just_do_it`) {
 			miscCommands.getJustDoItGif(message.channel);
+		} else if (message.content === `${config.prefix}thinking`) {
+			miscCommands.getThinkingGif(message.channel);
 		} else if (splitContent[0] === (`${config.prefix}help`)) {
 			helpCommands.getHelp(message.channel, splitContent[1]);
 		} else if (message.content === `${config.prefix}set_tl_timer`) {

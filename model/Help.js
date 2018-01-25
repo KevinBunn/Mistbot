@@ -53,6 +53,10 @@ class Help {
 				{
 					title: "just_do_it",
 					description: "\tDisplays the just do it gif."
+				},
+				{
+					title: "thinking",
+					description: "\tDisplays the thinking gif."
 				}
 			]
 		};
