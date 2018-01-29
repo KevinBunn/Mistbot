@@ -22,7 +22,7 @@ const ClanQuestMembers = require("./model/ClanQuestMembers");
  */
 const statsCommand = require("./command/statsCommands");
 const helpCommands = require("./command/helpCommands");
-//const tournamentCommands = require("./command/tournamentCommands");
+const tournamentCommands = require("./command/tournamentCommands");
 const timerCommands = require("./command/timerCommands");
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
