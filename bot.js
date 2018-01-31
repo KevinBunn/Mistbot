@@ -67,11 +67,18 @@ client.on("message", message => {
     			statsCommand.getStats(message.channel, member.displayName, member);
   			});
 		} else if (splitContent[0] === `${config.prefix}stats`) {
+			const memberName = splitContent[1];
+			found = false;
 			message.guild.members.find((member) => {
-				if(member.displayName.toLowerCase() === splitContent[1].toLowerCase()) {
-					statsCommand.getStats(message.channel, splitContent[1], member);
+				if(member.displayName.toLowerCase() === memberName.toLowerCase()) {
+					statsCommand.getStats(message.channel, memberName, member);
+					found = true;
+					return;
 				}
 			});
+			if (!found) {
+				message.channel.send(`No one in the server is named '${memberName}'`)
+			}
 		} else if (message.content.startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}
