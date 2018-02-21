@@ -24,6 +24,7 @@ const statsCommand = require("./command/statsCommands");
 const helpCommands = require("./command/helpCommands");
 const tournamentCommands = require("./command/tournamentCommands");
 const timerCommands = require("./command/timerCommands");
+const pointCommands = require("./command/pointCommands");
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
 
@@ -79,7 +80,13 @@ client.on("message", message => {
 			if (!found) {
 				message.channel.send(`No one in the server is named '${memberName}'`)
 			}
-		} else if (message.content.startsWith(config.prefix)) {
+		} else if (message.content === `${config.prefix}my_points`) {
+			message.guild.fetchMember(message.author)
+  			.then(member => {
+  				pointCommands.getPoints(message.channel, member.displayName);
+  			});
+		} 
+		else if (message.content.startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}
 	} catch (error) {

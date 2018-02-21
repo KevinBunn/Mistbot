@@ -1,119 +1,13 @@
 require('es6-promise').polyfill();
-require('isomorphic-fetch');
 const numeral = require('numeral');
 const Discord = require("discord.js");
 const config = require("../config/config.json");
 
 /**
- * Importing models.
- */
-const Members = require("../model/Members");
-const Member = require("../model/Member");
-const ClanQuestMember = require("../model/ClanQuestMember");
-const ClanQuestMembers = require("../model/ClanQuestMembers");
-
-/**
  * Importing helper functions.
  */
 const flatten = require("../helper/flatten");
-const getHighestConsecutiveHits = require("../helper/getHighestConsecutiveHits");
-
-/**
- * Global variables.
- */
-const baseGoogleSpreadsheetUrl = "https://sheets.googleapis.com/v4/spreadsheets/";
-
-/**
- * Creates a new <Members> from the google spreadsheet.
- */
-function getMembersInfo() {
-	const minRow = 4;
-	const minCol = "B";
-	const maxCol = "M";
-	const maxRow = 53;
-
-	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!${minCol}${minRow}:${maxCol}${maxRow}?key=${config.googleSpreadsheetApiKey}`)
-	.then((response) => response.json())
-	.then((data) => {
-		const newMembers = new Members();
-		const membersInfo = data.values;
-		membersInfo.map((memberInfo) => {
-			// Checking if the id field is non-empty.
-			if (memberInfo[0]) {
-				const member = getMemberInfo(memberInfo);
-				newMembers.addMember(member);
-			}
-		});
-		return newMembers;
-	});
-}
-
-/**
- * Creates a <Member> from an array containing member information.
- *
- * @param {Array} memberData - An array containing information about a member.
- * @return {Member} - A <Member> with all of the information.
- */
-function getMemberInfo(memberData) {
-	return new Member(...memberData);
-}
-
-/**
- * Creates a new <ClanQuestMembers> from the google spreadsheet.
- */
-function getClanQuestMembersInfo() {
-	const minCurrentCQRow = 4;
-	const minCurrentCQCol = "O"
-	const maxCurrentCQRow = 53;
-	const maxCurrentCQCol = "AQ"
-
-	const minNextCQRow = 4;
-	const minNextCQCol = "AS"
-	const maxNextRow = 53;
-	const maxNextCol = "BU";
-
-	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
-	.then((response) => response.json())
-	.then((data) => {
-		let newCQMembers = new ClanQuestMembers();
-		let CQData = data.values;
-
-		for (let i = 0; i < CQData.length; i++) {
-			const CQ = CQData[i];
-			if (CQ[0]) {
-				const member = getClanQuestMemberInfo(CQ);
-				newCQMembers.addMember(member);
-			}
-		}
-		return newCQMembers;
-	});
-}
-
-/**
- * Creates a <ClanQuestMember> from an array containing member information.
- *
- * @param {Array} memberData - An array containing information about a clan quest member.
- * @return {ClanQuestMember} - A <ClanQuestMember> with all of the information.
- */
-function getClanQuestMemberInfo(memberData) {
-	// Convert consecutive hits into an array.
-	let hits = memberData.slice(1, memberData.length);
-
-	hits = hits.map((hit) => {
-		if (!hit) {
-			hit = 0;
-		}
-		return parseInt(hit);
-	});
-
-	const member = new ClanQuestMember(
-		name=memberData[0],
-		hits=hits,
-		highestConsecutiveHits=getHighestConsecutiveHits(hits),
-		mostDamageOnOneTitan=Math.max(...hits),
-	);
-	return member;
-}
+const clanInfo = require("../helper/getClanInfo");
 
 /**
  * Calculates the current week range from sunday to sunday.
@@ -143,7 +37,7 @@ function getWeekRangeForSunday() {
  * @param {Channel} channel - The discord channel to send message to
  */
 function getWeeklyStats(channel) {
-	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
+	Promise.all([clanInfo.getMembersInfo(), clanInfo.getClanQuestMembersInfo()])
 	.then((data) => {
 		const dateRange = getWeekRangeForSunday();
 		const inspired = data[0].getInspired();
@@ -186,7 +80,7 @@ function getWeeklyStats(channel) {
  * @param {Integer} - number passed in from message.content
  */
 function getTopDamage(channel, number) {
-	getMembersInfo().then((data) => {
+	clanInfo.getMembersInfo().then((data) => {
 		if (number <= 20 && number > 0) {
 			const topDamageMembers = data.getTopDamage(number);
 			const embed = new Discord.RichEmbed()
@@ -215,7 +109,7 @@ function getTopDamage(channel, number) {
  * @param {Integer} - number passed in from message.content
  */
 function getTopParticipation(channel, number) {
-	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
+	Promise.all([clanInfo.getMembersInfo(), clanInfo.getClanQuestMembersInfo()])
 	.then((data) => {
 		if (number <= 20 && number > 0) {
 			const topParticipating = data[0].getTopParticipation(number);
@@ -244,7 +138,7 @@ function getTopParticipation(channel, number) {
  * @param {string} nickname - The name of the user that sent the message.
  */
 function getStats(channel, nickname, discordMember) {
-	Promise.all([getMembersInfo(), getClanQuestMembersInfo()])
+	Promise.all([clanInfo.getMembersInfo(), clanInfo.getClanQuestMembersInfo()])
 	.then((data) => {
 		const member = data[0].findByName(nickname)
 		if(!member) {
@@ -257,11 +151,27 @@ function getStats(channel, nickname, discordMember) {
 			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}`)
 			.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0')}`)
 			.addField("Damage Margin (increase/decrease from last week)", `${member.damageMargin}%`)
+			.addField("Rank", `${getRank(data, member.name)}`)
 			.addField("Clan Quest Attendence %", `${numeral(member.CQParticipation).format('0.00')}%`)
 			.addField("Max Stage", `${member.MS}`)
 			channel.send({embed});
 		}
 	})
+}
+
+/**
+ * Returns the rank of a given member.
+ *
+ * @param {clanInfo} data - contains all the members
+ * @param {string} name - The name of the user that we are getting the rank from
+ */
+function getRank(data, name) {
+	const topDamageMembers = data[0].getTopDamage(50)
+	for (let i = 0; i < topDamageMembers.length; i++) {
+		if (name == topDamageMembers[i].name)
+			return i;
+	}
+	return NULL;
 }
 
 module.exports = {
