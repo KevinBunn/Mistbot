@@ -169,7 +169,7 @@ function getRank(data, name) {
 	const topDamageMembers = data[0].getTopDamage(50)
 	for (let i = 0; i < topDamageMembers.length; i++) {
 		if (name == topDamageMembers[i].name)
-			return i;
+			return i + 1;
 	}
 	return NULL;
 }
