@@ -53,6 +53,8 @@ client.on("message", message => {
 			tournamentCommands.getNextTournament(message.channel);
 		} else if (message.content === `${config.prefix}just_do_it`) {
 			miscCommands.getJustDoItGif(message.channel);
+		} else if (message.content === `${config.prefix}what_does_that_mean`) {
+			miscCommands.getMistwraithCode(message.channel);
 		} else if (message.content === `${config.prefix}sister_clan`) {
 			miscCommands.getMistwraithCode(message.channel);
 		} else if (message.content === `${config.prefix}thinking`) {
