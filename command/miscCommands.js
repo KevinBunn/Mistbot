@@ -9,7 +9,12 @@ function getThinkingGif(channel) {
 	channel.send(thinking);
 }
 
+function getMistwraithCode() {
+	channel.send("Mistwraith Clan Code: 3krx2");
+}
+
 module.exports = {
 	getJustDoItGif: getJustDoItGif,
-	getThinkingGif: getThinkingGif
+	getThinkingGif: getThinkingGif,
+	getMistwraithCode: getMistwraithCode
 }
