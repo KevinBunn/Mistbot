@@ -20,5 +20,6 @@ function getAbbreviations(channel) {
 module.exports = {
 	getJustDoItGif: getJustDoItGif,
 	getThinkingGif: getThinkingGif,
-	getMistwraithCode: getMistwraithCode
+	getMistwraithCode: getMistwraithCode,
+	getAbbreviations: getAbbreviations
 }
