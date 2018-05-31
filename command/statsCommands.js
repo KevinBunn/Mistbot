@@ -40,30 +40,24 @@ function getWeeklyStats(channel) {
 	Promise.all([clanInfo.getMembersInfo(), clanInfo.getClanQuestMembersInfo()])
 	.then((data) => {
 		const dateRange = getWeekRangeForSunday();
-		const inspired = data[0].getInspired();
+		//const inspired = data[0].getInspired();
 		const sleepless = data[1].getSleepless();
 		const hitman = data[0].getHitman();
-		const coinShot = data[0].getCoinShot();
+		//const coinShot = data[0].getCoinShot();
 		const thug = data[1].getThug();
-		const delibird = data[0].getDelibird();
+		//const delibird = data[0].getDelibird();
 
 		const embed = new Discord.RichEmbed()
 			.setTitle("**༺Mistborn Accolades༻**")
 			.setAuthor(`📊 Weekly Statistics Report (${dateRange})`)
 			.setColor(0x00AE86)
 			.setDescription(
-				`**Inspired** - ${inspired.stat.toLocaleString()}% damage increase from last week.\n` +
-				`${inspired.names.join(", ")}\n` +
 				`**Sleepless** - ${sleepless.stat} Titanlords hit in a row.\n` +
 				`${sleepless.names.join(", ")}\n` +
 				`**Hitman** - ${hitman.stat}% of Titanlords hit\n` +
 				`${hitman.names.join(", ")}\n` +
-				`**Coin Shot** - ${coinShot.stat.toLocaleString()} stages advanced since last week.\n` +
-				`${coinShot.names.join(", ")}\n` +
 				`**Thug** - ${thug.stat.toLocaleString()} damage done to one Titanlord.\n` +
-				`${thug.names.join(", ")}\n` +
-				`**Delibird** - ${delibird.stat} clan crates delivered.\n` +
-				`${delibird.names.join(", ")}\n`
+				`${thug.names.join(", ")}\n`
 			)
 			.setTimestamp();
 
@@ -142,25 +136,29 @@ function getStats(channel, nickname, discordMember) {
 	.then((data) => {
 		const member = data[0].findByName(nickname)
 		if(!member) {
-			channel.send("Sorry, not a clan member");
+			if (nickname = "xanza")
+				channel.send("<@" + discordMember.id + "> the one and only. I remember him well, as if he was only in the clan yesterday. Please come back. I miss you. We all do.");
+			else {
+				channel.send("Sorry, not a clan member");
+			}
 		}
 		else {
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`${member.name}'s Clan Stats`, `${discordMember.user.displayAvatarURL}`)
 			.setColor(0x00AE86)
 			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}`)
-			.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0')}`)
-			.addField("Damage Margin (increase/decrease from last week)", `${member.damageMargin}%`)
-			.addField("Rank", `${getRank(data, member.name)}`)
+			//.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0')}`)
+			.addField("Rank", `${member.damageRank}`)
+			.addField("Percent of clan total damage", `${member.damagePercent}%`)
 			.addField("Clan Quest Attendence %", `${numeral(member.CQParticipation).format('0.00')}%`)
-			.addField("Max Stage", `${member.MS}`)
+			//.addField("Max Stage", `${member.MS}`)
 			channel.send({embed});
 		}
 	})
 }
 
 /**
- * Returns the rank of a given member.
+ * Returns the rank of a given member. TODO: just read from the sheet
  *
  * @param {clanInfo} data - contains all the members
  * @param {string} name - The name of the user that we are getting the rank from

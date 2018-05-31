@@ -14,17 +14,17 @@ class Members {
 		this.members.push(member);
 	}
 
-	getInspired() {
-		return getStatResult(this.members, "damageMargin");
-	}
+	// getInspired() {
+	// 	return getStatResult(this.members, "damageMargin");
+	// }
 
-	getCoinShot() {
-		return getStatResult(this.members, "MSIncrease");
-	}
+	// getCoinShot() {
+	// 	return getStatResult(this.members, "MSIncrease");
+	// }
 
-	getDelibird() {
-		return getStatResult(this.members, "clanCratesShared")
-	}
+	// getDelibird() {
+	// 	return getStatResult(this.members, "clanCratesShared")
+	// }
 
 	getHitman() {
 		return getStatResult(this.members, "CQParticipation")

@@ -23,12 +23,12 @@ const baseGoogleSpreadsheetUrl = "https://sheets.googleapis.com/v4/spreadsheets/
  * Creates a new <Members> from the google spreadsheet.
  */
 function getMembersInfo() {
-	const minRow = 4;
-	const minCol = "B";
-	const maxCol = "M";
-	const maxRow = 53;
+	const minRow = 6;
+	const minCol = "A";
+	const maxCol = "G";
+	const maxRow = 55;
 
-	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!${minCol}${minRow}:${maxCol}${maxRow}?key=${config.googleSpreadsheetApiKey}`)
+	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Rolling50!${minCol}${minRow}:${maxCol}${maxRow}?key=${config.googleSpreadsheetApiKey}`)
 	.then((response) => response.json())
 	.then((data) => {
 		const newMembers = new Members();
@@ -58,17 +58,17 @@ function getMemberInfo(memberData) {
  * Creates a new <ClanQuestMembers> from the google spreadsheet.
  */
 function getClanQuestMembersInfo() {
-	const minCurrentCQRow = 4;
-	const minCurrentCQCol = "O"
-	const maxCurrentCQRow = 53;
-	const maxCurrentCQCol = "AQ"
+	const minCurrentCQRow = 6;
+	const minCurrentCQCol = "H"
+	const maxCurrentCQRow = 55;
+	const maxCurrentCQCol = "AO"
 
-	const minNextCQRow = 4;
-	const minNextCQCol = "AS"
-	const maxNextRow = 53;
-	const maxNextCol = "BU";
+	// const minNextCQRow = 4;
+	// const minNextCQCol = "AS"
+	// const maxNextRow = 53;
+	// const maxNextCol = "BU";
 
-	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Summary!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
+	return fetch(`${baseGoogleSpreadsheetUrl}${config.spreadSheetId}/values/Rolling50!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
 	.then((response) => response.json())
 	.then((data) => {
 		let newCQMembers = new ClanQuestMembers();
