@@ -2,14 +2,16 @@
  * A class that contains a member's information.
  */
 class Member {
-	constructor(id, name, clanRank, damageRank, damagePercent, CQParticipation, totalDamage) {
-		this.id = id;
+	constructor(rank, name, id, maxStage, totalDamage, damagePercent, bossHitCount, CQParticipation) {
+		this.damageRank = parseInt(rank);
 		this.name = name;
-		this.clanRank = parseInt(clanRank);
-		this.damageRank = parseInt(damageRank);
+		this.id = id;
+		this.maxStage = parseInt(maxStage);
+		this.totalDamage = parseFloat(totalDamage);
 		this.damagePercent = parseFloat(damagePercent);
+		this.bossHitCount = parseInt(bossHitCount);
 		this.CQParticipation = parseFloat(CQParticipation);
-		this.totalDamage = parseInt(totalDamage.replace(/,/g,""));
+		//this.totalDamage = parseInt(totalDamage.replace(/,/g,""));
 		// this.lastWeekTotalDamage = parseInt(lastWeekTotalDamage),
 		// this.damageMargin = parseInt(damageMargin.replace("%", ""))
 	}
