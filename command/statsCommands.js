@@ -146,12 +146,12 @@ function getStats(channel, nickname, discordMember) {
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`${member.name}'s Clan Stats`, `${discordMember.user.displayAvatarURL}`)
 			.setColor(0x00AE86)
-			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}`)
+			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}M`)
 			//.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0')}`)
 			.addField("Rank", `${member.damageRank}`)
 			.addField("Percent of clan total damage", `${member.damagePercent}%`)
 			.addField("Clan Quest Attendence %", `${numeral(member.CQParticipation).format('0.00')}%`)
-			//.addField("Max Stage", `${member.MS}`)
+			.addField("Max Stage", `${member.maxStage}`)
 			channel.send({embed});
 		}
 	})
