@@ -59,9 +59,9 @@ function getMemberInfo(memberData) {
  */
 function getClanQuestMembersInfo() {
 	const minCurrentCQRow = 5;
-	const minCurrentCQCol = "K"
+	const minCurrentCQCol = "L"
 	const maxCurrentCQRow = 59;
-	const maxCurrentCQCol = "BC"
+	const maxCurrentCQCol = "BD"
 
 	// const minNextCQRow = 4;
 	// const minNextCQCol = "AS"
