@@ -32,6 +32,7 @@ class Members {
 
 	findByName(nickname) {
 		for (let i = 0; i < this.members.length; i++) {
+			console.log(this.members[i].name)
 			if (this.members[i].name !== "") {
 				if (this.members[i].name.toLowerCase() === nickname.toLowerCase())
 					return this.members[i];
