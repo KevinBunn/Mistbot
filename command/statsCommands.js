@@ -136,11 +136,7 @@ function getStats(channel, nickname, discordMember) {
 	.then((data) => {
 		const member = data[0].findByName(nickname)
 		if(!member) {
-			if (nickname === "xanza")
-				channel.send("<@" + discordMember.id + "> the one and only. I remember him well, as if he was only in the clan yesterday. Please come back. I miss you. We all do.");
-			else {
-				channel.send("Sorry, not a clan member");
-			}
+			channel.send("Sorry, not a clan member");
 		}
 		else {
 			const embed = new Discord.RichEmbed()
