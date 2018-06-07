@@ -69,6 +69,7 @@ client.on("message", message => {
 			// first get the GuildMember who typed the message
 			message.guild.fetchMember(message.author)
   			.then(member => {
+  				console.log(member.displayName);
     			statsCommand.getStats(message.channel, member.displayName, member);
   			});
 		} else if (splitContent[0] === `${config.prefix}stats`) {
