@@ -83,7 +83,7 @@ function getTopDamage(channel, number) {
 			for (let i = 0; i < topDamageMembers.length; i++) {
 				const memberName = topDamageMembers[i].name;
 				const memberTotal = numeral(topDamageMembers[i].totalDamage).format('0,0');
-				embed.addField(`${i + 1}. ${memberName}`, `\t${memberTotal}`, true);
+				embed.addField(`${i + 1}. ${memberName}`, `\t${memberTotal}M`, true);
 			}
 
 			channel.send({embed});
