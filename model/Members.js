@@ -1,4 +1,4 @@
-const getMaxAttr = require("../helper/getMaxAttr");
+ const getMaxAttr = require("../helper/getMaxAttr");
 const getStatResult = require("../helper/getStatResult");
 
 /**
@@ -50,6 +50,7 @@ class Members {
 
 	getTopParticipation(size) {
 		let sortedMembers = this.members.slice().sort((member1, member2) => {
+			console.log(member1.name);
 			return member2.CQParticipation - member1.CQParticipation;
 		});
 		return sortedMembers.slice(0, size)
