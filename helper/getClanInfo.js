@@ -35,7 +35,7 @@ function getMembersInfo() {
 		const membersInfo = data.values;
 		membersInfo.map((memberInfo) => {
 			// Checking if the id field is non-empty.
-			if (memberInfo[0]) {
+			if (memberInfo[0] !== undefined) {
 				const member = getMemberInfo(memberInfo);
 				newMembers.addMember(member);
 			}
