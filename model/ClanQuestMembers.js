@@ -1,4 +1,4 @@
-nconst getMaxAttr = require("../helper/getMaxAttr");
+const getMaxAttr = require("../helper/getMaxAttr");
 const getStatResult = require("../helper/getStatResult");
 
 /**
