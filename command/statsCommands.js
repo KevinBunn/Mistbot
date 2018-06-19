@@ -71,7 +71,7 @@ function getWeeklyStats(channel, guild_id) {
 		channel.send({embed});
 	})
 	.catch((error) => {
-    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+    channel.send(`${error}`);
   });
 }
 
@@ -102,7 +102,7 @@ function getTopDamage(channel, guild_id, number) {
 		}
 	})
 	.catch((error) => {
-    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+    channel.send(`${error}`);
   });
 }
 
@@ -134,7 +134,7 @@ function getTopParticipation(channel, guild_id, number) {
 		}
 	})
 	.catch((error) => {
-    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+    channel.send(`${error}`);
   });
 }
 
@@ -178,21 +178,6 @@ function setSpreadsheetId(channel, guild_id, spreadsheetId) {
       channel.send(`Successfully set spreadsheet id as ${spreadsheetId}`);
     }
   });
-}
-
-/**
- * Returns the rank of a given member. TODO: just read from the sheet
- *
- * @param {clanInfo} data - contains all the members
- * @param {string} name - The name of the user that we are getting the rank from
- */
-function getRank(data, name) {
-	const topDamageMembers = data[0].getTopDamage(50)
-	for (let i = 0; i < topDamageMembers.length; i++) {
-		if (name == topDamageMembers[i].name)
-			return i + 1;
-	}
-	return NULL;
 }
 
 module.exports = {
