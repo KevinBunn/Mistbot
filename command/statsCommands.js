@@ -165,7 +165,7 @@ function getStats(channel, guild_id, nickname, discordMember) {
 		}
   })
 	.catch((error) => {
-    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+    channel.send(error);
   });
 }
 
