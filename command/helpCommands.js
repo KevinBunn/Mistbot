@@ -18,7 +18,7 @@ function getHelp(channel, category) {
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ FishBot Help")
 		.setDescription(`prefix: ${config.prefix}\ntype "${config.prefix}[command]" to use a command\ntype "${config.prefix}help [category]" for description and usage\n\tex: ${config.prefix}help Statistics`)
-			.addField("Setup", `${help.getSetUpCommandList()}`)
+			.addField("Setup", `${help.getSetupCommandList()}`)
 		.addField("Statistics", `${help.getStatisticsCommandList()}`)
 		.addField("Tournament", `${help.getTournamentCommandList()}`)
 		.addField("Timer", `${help.getTimerCommandList()}`)

@@ -88,7 +88,7 @@ class Help {
 		return this.commandHelp.Miscellaneous;
 	}
 
-    getStatisticsCommandList() {
+    getSetupCommandList() {
         var commands = "";
         for (let i = 0; i < this.commandHelp.Setup.length; i++) {
             commands += (this.commandHelp.Setup[i].title + ", ");
