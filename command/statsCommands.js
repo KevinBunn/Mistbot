@@ -165,7 +165,7 @@ function getStats(channel, guild_id, nickname, discordMember) {
 		}
   })
 	.catch((error) => {
-    channel.send(error);
+    channel.send(`${error}`);
   });
 }
 
