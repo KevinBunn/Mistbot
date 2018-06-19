@@ -40,13 +40,15 @@ client.on("message", message => {
 	try {
 		let splitContent = splitString(message.content, ' ');
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
-			return;
+      return;
+    } else if (splitContent[0] === `${config.prefix}set_spreadsheet_id`) {
+      statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
 		} else if (message.content === `${config.prefix}weekly_stats`) {
-			statsCommand.getWeeklyStats(message.channel);
+			statsCommand.getWeeklyStats(message.channel, message.guild.id);
 		} else if (splitContent[0] === `${config.prefix}top_damage`) {
-			statsCommand.getTopDamage(message.channel, splitContent[1]);
+			statsCommand.getTopDamage(message.channel, message.guild.id, splitContent[1]);
 		} else if (splitContent[0] === `${config.prefix}top_participation`) {
-			statsCommand.getTopParticipation(message.channel, splitContent[1]);
+			statsCommand.getTopParticipation(message.channel, message.guild.id, splitContent[1]);
 		} else if (message.content === `${config.prefix}curr_tour`) {
 			tournamentCommands.getCurrentTournament(message.channel);
 		} else if (message.content === `${config.prefix}next_tour`) {
@@ -69,14 +71,14 @@ client.on("message", message => {
 			// first get the GuildMember who typed the message
 			message.guild.fetchMember(message.author)
   			.then(member => {
-    			statsCommand.getStats(message.channel, member.displayName, member);
+    			statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
   			});
 		} else if (splitContent[0] === `${config.prefix}stats`) {
 			const memberName = splitContent[1];
 			found = false;
 			message.guild.members.find((member) => {
 				if(member.displayName.toLowerCase() === memberName.toLowerCase()) {
-					statsCommand.getStats(message.channel, memberName, member);
+					statsCommand.getStats(message.channel, message.guild.id, memberName, member);
 					found = true;
 					return;
 				}
@@ -87,13 +89,14 @@ client.on("message", message => {
 		} else if (message.content === `${config.prefix}my_points`) {
 			message.guild.fetchMember(message.author)
   			.then(member => {
-  				pointCommands.getPoints(message.channel, member.displayName);
+  				pointCommands.getPoints(message.channel,message.guild.id, member.displayName);
   			});
 		} 
 		else if (message.content.startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}
 	} catch (error) {
+    console.log(error);
 		message.channel.send('Sorry! An error occurred!');
 	}
 });

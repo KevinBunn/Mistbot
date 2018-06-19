@@ -4,6 +4,13 @@ const Discord = require("discord.js");
 const config = require("../config/config.json");
 
 /**
+ * Importing Firebase.
+ */
+const firebase = require("../config/firebaseConfig");
+const database = firebase.database;
+const guildSpreadsheetRef = database.ref("discord_server_to_sheet_id_map");
+
+/**
  * Importing helper functions.
  */
 const flatten = require("../helper/flatten");
@@ -36,8 +43,8 @@ function getWeekRangeForSunday() {
  *
  * @param {Channel} channel - The discord channel to send message to
  */
-function getWeeklyStats(channel) {
-	Promise.all([clanInfo.getMembersInfo(), clanInfo.getClanQuestMembersInfo()])
+function getWeeklyStats(channel, guild_id) {
+	Promise.all([clanInfo.getMembersInfo(channel, guild_id), clanInfo.getClanQuestMembersInfo(channel, guild_id)])
 	.then((data) => {
 		const dateRange = getWeekRangeForSunday();
 		//const inspired = data[0].getInspired();
@@ -63,7 +70,9 @@ function getWeeklyStats(channel) {
 
 		channel.send({embed});
 	})
-	.catch((error) => {throw error});
+	.catch((error) => {
+    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+  });
 }
 
 /**
@@ -73,8 +82,8 @@ function getWeeklyStats(channel) {
  * @param {Channel} channel - The discord channel to send message to
  * @param {Integer} - number passed in from message.content
  */
-function getTopDamage(channel, number) {
-	clanInfo.getMembersInfo().then((data) => {
+function getTopDamage(channel, guild_id, number) {
+	clanInfo.getMembersInfo(channel, guild_id).then((data) => {
 		if (number <= 20 && number > 0) {
 			const topDamageMembers = data.getTopDamage(number);
 			const embed = new Discord.RichEmbed()
@@ -92,7 +101,9 @@ function getTopDamage(channel, number) {
 			channel.send("Please specify a number between 1 and 20");
 		}
 	})
-	.catch((error) => {throw error});
+	.catch((error) => {
+    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+  });
 }
 
 /**
@@ -102,8 +113,8 @@ function getTopDamage(channel, number) {
  * @param {Channel} channel - The discord channel to send message to
  * @param {Integer} - number passed in from message.content
  */
-function getTopParticipation(channel, number) {
-	Promise.all([clanInfo.getMembersInfo(), clanInfo.getClanQuestMembersInfo()])
+function getTopParticipation(channel, guild_id, number) {
+	Promise.all([clanInfo.getMembersInfo(channel, guild_id), clanInfo.getClanQuestMembersInfo(channel, guild_id)])
 	.then((data) => {
 		if (number <= 20 && number > 0) {
 			const topParticipating = data[0].getTopParticipation(number);
@@ -122,7 +133,9 @@ function getTopParticipation(channel, number) {
 			channel.send("Please specify a number between 1 and 20");
 		}
 	})
-	.catch((error) => {throw error});
+	.catch((error) => {
+    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+  });
 }
 
 /**
@@ -131,8 +144,8 @@ function getTopParticipation(channel, number) {
  * @param {Channel} channel - The discord channel to send message to
  * @param {string} nickname - The name of the user that sent the message.
  */
-function getStats(channel, nickname, discordMember) {
-	Promise.all([clanInfo.getMembersInfo(), clanInfo.getClanQuestMembersInfo()])
+function getStats(channel, guild_id, nickname, discordMember) {
+	Promise.all([clanInfo.getMembersInfo(channel, guild_id), clanInfo.getClanQuestMembersInfo(channel, guild_id)])
 	.then((data) => {
 		const member = data[0].findByName(nickname)
 		if(!member) {
@@ -150,7 +163,21 @@ function getStats(channel, nickname, discordMember) {
 			.addField("Max Stage", `${member.maxStage}`)
 			channel.send({embed});
 		}
-	})
+  })
+	.catch((error) => {
+    channel.send('Sorry! An error occurred! Make sure you have set a correct spreadsheetId via set_id');
+  });
+}
+
+function setSpreadsheetId(channel, guild_id, spreadsheetId) {
+  let guildKey = guildSpreadsheetRef.child(guild_id);
+  guildKey.set(spreadsheetId, (error) => {
+    if (error) {
+      throw error;
+    } else {
+      channel.send(`Successfully set spreadsheet id as ${spreadsheetId}`);
+    }
+  });
 }
 
 /**
@@ -172,5 +199,6 @@ module.exports = {
 	getWeeklyStats: getWeeklyStats,
 	getTopDamage: getTopDamage,
 	getStats: getStats,
-	getTopParticipation: getTopParticipation
+  getTopParticipation: getTopParticipation,
+  setSpreadsheetId: setSpreadsheetId,
 }
