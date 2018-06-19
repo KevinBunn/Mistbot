@@ -18,7 +18,7 @@ function getHelp(channel, category) {
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ FishBot Help")
 		.setDescription(`prefix: ${config.prefix}\ntype "${config.prefix}[command]" to use a command\ntype "${config.prefix}help [category]" for description and usage\n\tex: ${config.prefix}help Statistics`)
-			.addField("Set Up", `${help.getSetUpCommandList()}`)
+			.addField("Setup", `${help.getSetUpCommandList()}`)
 		.addField("Statistics", `${help.getStatisticsCommandList()}`)
 		.addField("Tournament", `${help.getTournamentCommandList()}`)
 		.addField("Timer", `${help.getTimerCommandList()}`)
@@ -28,7 +28,8 @@ function getHelp(channel, category) {
 		channel.send({embed});
 	}
 	else if (category.toLowerCase() == "Set".toLowerCase()
-			|| category.toLowerCase() == "SetUp".toLowerCase()) {
+			|| category.toLowerCase() == "Setup".toLowerCase()
+        	|| category.toLowerCase() == "spreadsheet".toLowerCase()) {
         setupObj = help.getObjSetUp();
         const embed = new Discord.RichEmbed()
             .setTitle("ℹ️ FishBot Help Set Up")

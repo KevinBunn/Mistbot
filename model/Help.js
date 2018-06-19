@@ -5,7 +5,7 @@ class Help {
 
 	constructor() {
 		this.commandHelp = {
-			"SetUp": [
+			"Setup": [
 				{
 					title: "set_spreadsheet_id",
 					description: "\tSets the spreadsheet id where the bot will read statistics from."
@@ -68,8 +68,8 @@ class Help {
 		};
 	}
 
-	getObjSetUp() {
-		return this.commandHelp.SetUp;
+	getObjSetup() {
+		return this.commandHelp.Setup;
 	}
 	getObjStatistics() {
 		return this.commandHelp.Statistics;
@@ -89,8 +89,8 @@ class Help {
 
 	getSetUpCommandList() {
 		var commands = "";
-        for (let i = 0; i < this.commandHelp.SetUp.length; i++) {
-            commands += (this.commandHelp.SetUp[i].title + ", ");
+        for (let i = 0; i < this.commandHelp.Setup.length; i++) {
+            commands += (this.commandHelp.Setup[i].title + ", ");
         }
         commands = commands.replace(/,\s*$/, "");
         return commands;
