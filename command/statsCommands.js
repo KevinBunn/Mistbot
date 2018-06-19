@@ -171,7 +171,8 @@ function getStats(channel, guild_id, nickname, discordMember) {
 
 function handleStatsError(channel, error) {
     channel.send(`${error}`);
-    if (error.toString() === "TypeError: Cannot read property 'map' of undefined")
+    if (error.toString() === "TypeError: Cannot read property 'map' of undefined"
+		|| error.toString() === "TypeError: Cannot read property 'length' of undefined")
     	channel.send("Suggestion: does your spreadsheet have link sharing turned on?");
 }
 
