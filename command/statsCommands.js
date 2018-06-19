@@ -171,8 +171,7 @@ function getStats(channel, guild_id, nickname, discordMember) {
 
 function handleStatsError(channel, error) {
     //channel.send(`${error}`);
-	channel.send(`${error.description}`);
-
+	channel.send(error.toString());
     channel.send("Suggestion: does your spreadsheet have link sharing turned on?");
 }
 
