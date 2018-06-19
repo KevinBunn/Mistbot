@@ -12,10 +12,10 @@ class Help {
 				}
 			],
 			"Statistics": [
-				{
-					title: "weekly_stats",
-					description: "\tDisplays current clan accolades for the week."
-				},
+				// {
+				// 	title: "weekly_stats",
+				// 	description: "\tDisplays current clan accolades for the week."
+				// },
 				{
 					title: "my_stats",
 					description: "\tDisplays your clan stats."

@@ -37,8 +37,8 @@ client.on("message", message => {
       			statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
 			else
 				message.channel.send("Please specify a spreadsheet id.");
-		} else if (message.content === `${config.prefix}weekly_stats`) {
-			statsCommand.getWeeklyStats(message.channel, message.guild.id);
+		// } else if (message.content === `${config.prefix}weekly_stats`) {
+		// 	statsCommand.getWeeklyStats(message.channel, message.guild.id);
 		} else if (splitContent[0] === `${config.prefix}top_damage`) {
 			statsCommand.getTopDamage(message.channel, message.guild.id, splitContent[1]);
 		} else if (splitContent[0] === `${config.prefix}top_participation`) {
