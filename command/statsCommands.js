@@ -171,9 +171,7 @@ function getStats(channel, guild_id, nickname, discordMember) {
 
 function handleStatsError(channel, error) {
     channel.send(`${error}`);
-	if (error === "TypeError: Cannot read property 'map' of undefined") {
-		channel.send("Suggestion: does your spreadsheet have link sharing turned on?")
-	}
+    channel.send("Suggestion: does your spreadsheet have link sharing turned on?");
 }
 
 function setSpreadsheetId(channel, guild_id, spreadsheetId) {
