@@ -10,20 +10,12 @@ const config = require("./config/config.json");
 const splitString = require("./helper/splitString");
 
 /**
- * Importing models.
- */
-const Members = require("./model/Members");
-const Member = require("./model/Member");
-const ClanQuestMember = require("./model/ClanQuestMember");
-const ClanQuestMembers = require("./model/ClanQuestMembers");
-
-/**
  * Importing commands.
  */
 const statsCommand = require("./command/statsCommands");
 const helpCommands = require("./command/helpCommands");
 const tournamentCommands = require("./command/tournamentCommands");
-const timerCommands = require("./command/timerCommands");
+//const timerCommands = require("./command/timerCommands");
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
 
@@ -37,7 +29,7 @@ client.on("ready", () => {
 // Create an event listener for messages
 client.on("message", message => {
 	try {
-		let splitContent = splitString(message.content, ' ');
+		let splitContent = splitString(message.content);
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
       		return;
     	} else if (splitContent[0] === `${config.prefix}set_spreadsheet_id`) {
@@ -64,11 +56,11 @@ client.on("message", message => {
 		} else if (message.content === `${config.prefix}thinking`) {
 			miscCommands.getThinkingGif(message.channel);
 		} else if (splitContent[0] === (`${config.prefix}help`)) {
-			helpCommands.getHelp(message.channel, splitContent[1]);
-		} else if (message.content === `${config.prefix}set_tl_timer`) {
-			timerCommands.setNextTitanTimer(message.channel, message.author);
-		} else if (message.content === `${config.prefix}tl_timer`) {
-			timerCommands.getNextTitanTimer(message.channel);
+            helpCommands.getHelp(message.channel, splitContent[1]);
+		// } else if (message.content === `${config.prefix}set_tl_timer`) {
+		// 	timerCommands.setNextTitanTimer(message.channel, message.author);
+		// } else if (message.content === `${config.prefix}tl_timer`) {
+		// 	timerCommands.getNextTitanTimer(message.channel);
 		} else if (message.content === `${config.prefix}my_stats`) {
 			// first get the GuildMember who typed the message
 			message.guild.fetchMember(message.author)

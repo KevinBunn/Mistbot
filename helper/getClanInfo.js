@@ -72,9 +72,9 @@ function getMemberInfo(memberData) {
  */
 function getClanQuestMembersInfo(channel, guild_id) {
 	const minCurrentCQRow = 5;
-	const minCurrentCQCol = "L"
+	const minCurrentCQCol = "L";
 	const maxCurrentCQRow = 59;
-	const maxCurrentCQCol = "BD"
+	const maxCurrentCQCol = "BD";
 
   return guildSpreadsheetRef.once('value')
   .then((snapshot) => {

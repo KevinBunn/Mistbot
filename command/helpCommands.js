@@ -21,7 +21,7 @@ function getHelp(channel, category) {
 			.addField("Setup", `${help.getSetupCommandList()}`)
 		.addField("Statistics", `${help.getStatisticsCommandList()}`)
 		.addField("Tournament", `${help.getTournamentCommandList()}`)
-		.addField("Timer", `${help.getTimerCommandList()}`)
+		//.addField("Timer", `${help.getTimerCommandList()}`)
 		.addField("Miscellaneous", `${help.getMiscellaneousCommandList()}`)
 		.setColor(0x00AE86)
 		.setFooter("FishBot | Help");
