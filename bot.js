@@ -40,9 +40,10 @@ client.on("message", message => {
 	try {
 		let splitContent = splitString(message.content, ' ');
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
-      return;
-    } else if (splitContent[0] === `${config.prefix}set_spreadsheet_id`) {
-      statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
+      		return;
+    	} else if (splitContent[0] === `${config.prefix}set_spreadsheet_id`) {
+			console.log(`spreadsheet error test: ${splitContent[1]}`);
+      		statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
 		} else if (message.content === `${config.prefix}weekly_stats`) {
 			statsCommand.getWeeklyStats(message.channel, message.guild.id);
 		} else if (splitContent[0] === `${config.prefix}top_damage`) {
