@@ -46,7 +46,7 @@ function getMembersInfo(channel, guild_id) {
       const membersInfo = data.values;
       membersInfo.map((memberInfo) => {
         // Checking if the id field is non-empty.
-        console.log(memberInfo[1]);
+        // console.log(memberInfo[1]);
         if (memberInfo[1] !== undefined) {
           const member = getMemberInfo(memberInfo);
           newMembers.addMember(member);
@@ -75,7 +75,7 @@ function getClanQuestMembersInfo(channel, guild_id) {
 	const minCurrentCQCol = "L"
 	const maxCurrentCQRow = 59;
 	const maxCurrentCQCol = "BD"
-    
+
   return guildSpreadsheetRef.once('value')
   .then((snapshot) => {
     const spreadSheetId = snapshot.val()[guild_id];
