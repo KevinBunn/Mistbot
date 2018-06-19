@@ -5,6 +5,12 @@ class Help {
 
 	constructor() {
 		this.commandHelp = {
+			"Setup": [
+				{
+					title: "set_spreadsheet_id",
+					description: "Sets the spreadsheet id where the bot will read statistics from."
+				}
+			],
 			"Statistics": [
 				{
 					title: "weekly_stats",
@@ -62,6 +68,10 @@ class Help {
 		};
 	}
 
+	getObjSetup() {
+		return this.commandHelp.Setup;
+	}
+
 	getObjStatistics() {
 		return this.commandHelp.Statistics;
 	}
@@ -77,6 +87,15 @@ class Help {
 	getObjMiscellaneous() {
 		return this.commandHelp.Miscellaneous;
 	}
+
+    getStatisticsCommandList() {
+        var commands = "";
+        for (let i = 0; i < this.commandHelp.Setup.length; i++) {
+            commands += (this.commandHelp.Setup[i].title + ", ");
+        }
+        commands = commands.replace(/,\s*$/, "");
+        return commands;
+    }
 
 	getStatisticsCommandList() {
 		var commands = "";
