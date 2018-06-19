@@ -42,8 +42,10 @@ client.on("message", message => {
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
       		return;
     	} else if (splitContent[0] === `${config.prefix}set_spreadsheet_id`) {
-			console.log(`spreadsheet error test: ${splitContent[1]}`);
-      		statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
+			if (splitContent[1] !== undefined)
+      			statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
+			else
+				message.channel.send("Please specify a spreadsheet id.");
 		} else if (message.content === `${config.prefix}weekly_stats`) {
 			statsCommand.getWeeklyStats(message.channel, message.guild.id);
 		} else if (splitContent[0] === `${config.prefix}top_damage`) {
@@ -75,18 +77,22 @@ client.on("message", message => {
     			statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
   			});
 		} else if (splitContent[0] === `${config.prefix}stats`) {
-			const memberName = splitContent[1];
-			found = false;
-			message.guild.members.find((member) => {
-				if(member.displayName.toLowerCase() === memberName.toLowerCase()) {
-					statsCommand.getStats(message.channel, message.guild.id, memberName, member);
-					found = true;
-					return;
-				}
-			});
-			if (!found) {
-				message.channel.send(`No one in the server is named '${memberName}'`)
-			}
+			if (splitContent[1] !== undefined) {
+                const memberName = splitContent[1];
+                found = false;
+                message.guild.members.find((member) => {
+                    if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
+                        statsCommand.getStats(message.channel, message.guild.id, memberName, member);
+                        found = true;
+                        return;
+                    }
+                });
+                if (!found) {
+                    message.channel.send(`No one in the server is named '${memberName}'`)
+                }
+            }
+            else
+            	message.channel.send("Please specify a clan member");
 		} else if (message.content === `${config.prefix}my_points`) {
 			message.guild.fetchMember(message.author)
   			.then(member => {
