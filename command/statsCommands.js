@@ -71,7 +71,7 @@ function getWeeklyStats(channel, guild_id) {
 		channel.send({embed});
 	})
 	.catch((error) => {
-    channel.send(`${error}`);
+        handleStatsError(channel, error);
   });
 }
 
@@ -102,7 +102,7 @@ function getTopDamage(channel, guild_id, number) {
 		}
 	})
 	.catch((error) => {
-    channel.send(`${error}`);
+        handleStatsError(channel, error);
   });
 }
 
@@ -134,7 +134,7 @@ function getTopParticipation(channel, guild_id, number) {
 		}
 	})
 	.catch((error) => {
-    channel.send(`${error}`);
+        handleStatsError(channel, error);
   });
 }
 
@@ -165,8 +165,15 @@ function getStats(channel, guild_id, nickname, discordMember) {
 		}
   })
 	.catch((error) => {
-    channel.send(`${error}`);
+    	handleStatsError(channel, error);
   });
+}
+
+function handleStatsError(channel, error) {
+    channel.send(`${error}`);
+	if (error === "TypeError: Cannot read property 'map' of undefined") {
+		channel.send("Suggestion: is your spreadsheet public?")
+	}
 }
 
 function setSpreadsheetId(channel, guild_id, spreadsheetId) {
