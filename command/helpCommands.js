@@ -30,7 +30,7 @@ function getHelp(channel, category) {
 	else if (category.toLowerCase() == "Set".toLowerCase()
 			|| category.toLowerCase() == "Setup".toLowerCase()
         	|| category.toLowerCase() == "spreadsheet".toLowerCase()) {
-        setupObj = help.getObjSetUp();
+        setupObj = help.getObjSetup();
         const embed = new Discord.RichEmbed()
             .setTitle("ℹ️ FishBot Help Set Up")
             .setDescription("Settings that are specific to each guild")
