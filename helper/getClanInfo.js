@@ -37,8 +37,7 @@ function getMembersInfo(channel, guild_id) {
   .then((snapshot) => {
     const spreadSheetId = snapshot.val()[guild_id];
     if (!spreadSheetId) {
-      channel.send("Spreadsheet id has not been set. Set id via set_spreadsheet_id");
-      throw new Error("Spreadsheet id has not been set");
+      throw new Error("Spreadsheet id has not been set. Set id via set_spreadsheet_id command.");
     }
     return fetch(`${baseGoogleSpreadsheetUrl}${spreadSheetId}/values/Clan Overview!${minCol}${minRow}:${maxCol}${maxRow}?key=${config.googleSpreadsheetApiKey}`)
     .then((response) => response.json())
@@ -85,8 +84,7 @@ function getClanQuestMembersInfo(channel, guild_id) {
   .then((snapshot) => {
     const spreadSheetId = snapshot.val()[guild_id];
     if (!spreadSheetId) {
-      channel.send("Spreadsheet id has not been set. Set id via set_spreadsheet_id");
-      throw new Error("Spreadsheet id has not been set");
+      throw new Error("Spreadsheet id has not been set. Set id via set_spreadsheet_id command.");
     }
     return fetch(`${baseGoogleSpreadsheetUrl}${spreadSheetId}/values/Clan Overview!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
     .then((response) => response.json())
