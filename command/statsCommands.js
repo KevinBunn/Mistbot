@@ -48,30 +48,30 @@ function getWeeklyStats(channel, guild_id) {
 	.then((data) => {
 		const dateRange = getWeekRangeForSunday();
 		//const inspired = data[0].getInspired();
-		const sleepless = data[1].getSleepless();
+		//const sleepless = data[1].getSleepless();
 		const hitman = data[0].getHitman();
 		//const coinShot = data[0].getCoinShot();
-		const thug = data[1].getThug();
+		//const thug = data[1].getThug();
 		//const delibird = data[0].getDelibird();
 
 		const embed = new Discord.RichEmbed()
-			.setTitle("**༺Mistborn Accolades༻**")
-			.setAuthor(`📊 Weekly Statistics Report (${dateRange})`)
+			.setTitle(`${dateRange}`)
+			.setAuthor(`📊 Weekly Statistics Report`)
 			.setColor(0x00AE86)
 			.setDescription(
-				`**Sleepless** - ${sleepless.stat} Titanlords hit in a row.\n` +
-				`${sleepless.names.join(", ")}\n` +
+				//`**Sleepless** - ${sleepless.stat} Titanlords hit in a row.\n` +
+				//`${sleepless.names.join(", ")}\n` +
 				`**Hitman** - ${hitman.stat}% of Titanlords hit\n` +
-				`${hitman.names.join(", ")}\n` +
-				`**Thug** - ${thug.stat.toLocaleString()} damage done to one Titanlord.\n` +
-				`${thug.names.join(", ")}\n`
+				`${hitman.names.join(", ")}\n` //+
+				//`**Thug** - ${thug.stat.toLocaleString()} damage done to one Titanlord.\n` +
+				//`${thug.names.join(", ")}\n`
 			)
 			.setTimestamp();
 
 		channel.send({embed});
 	})
 	.catch((error) => {
-        handleStatsError(channel, error);
+    handleStatsError(channel, error);
   });
 }
 
@@ -114,10 +114,9 @@ function getTopDamage(channel, guild_id, number) {
  * @param {Integer} - number passed in from message.content
  */
 function getTopParticipation(channel, guild_id, number) {
-	Promise.all([clanInfo.getMembersInfo(channel, guild_id), clanInfo.getClanQuestMembersInfo(channel, guild_id)])
-	.then((data) => {
+  clanInfo.getMembersInfo(channel, guild_id).then((data) => {
 		if (number <= 20 && number > 0) {
-			const topParticipating = data[0].getTopParticipation(number);
+			const topParticipating = data.getTopParticipation(number);
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`Top ${number} members - Participation`)
 			.setColor(0x00AE86);

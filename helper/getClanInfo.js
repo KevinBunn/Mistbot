@@ -29,9 +29,9 @@ const baseGoogleSpreadsheetUrl = "https://sheets.googleapis.com/v4/spreadsheets/
  * Creates a new <Members> from the google spreadsheet.
  */
 function getMembersInfo(channel, guild_id) {
-	const minRow = 5;
+	const minRow = 7;
 	const minCol = "A";
-	const maxCol = "H";
+	const maxCol = "I";
   const maxRow = 59;
   return guildSpreadsheetRef.once('value')
   .then((snapshot) => {
@@ -68,6 +68,7 @@ function getMemberInfo(memberData) {
 }
 
 /**
+ * TODO: Update this when the spreadsheet is better fitted.
  * Creates a new <ClanQuestMembers> from the google spreadsheet.
  */
 function getClanQuestMembersInfo(channel, guild_id) {

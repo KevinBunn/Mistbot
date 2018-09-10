@@ -10,7 +10,7 @@ const Help = require("../model/Help");
  * Displays information about all the commands for the bot
  *
  * @param {Channel} channel - The discord channel to send message to
- * @param {String} category - identifies which section of commands user wants displayed
+ * @param {String} category - identifies which section of commands user wants displayed 
  */
 function getHelp(channel, category) {
 	const help = new Help();
