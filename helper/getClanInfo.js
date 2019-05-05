@@ -29,17 +29,18 @@ const baseGoogleSpreadsheetUrl = "https://sheets.googleapis.com/v4/spreadsheets/
  * Creates a new <Members> from the google spreadsheet.
  */
 function getMembersInfo(channel, guild_id) {
-	const minRow = 7;
+  console.log('creating member info')
+	const minRow = 2;
 	const minCol = "A";
-	const maxCol = "I";
-  const maxRow = 59;
+	const maxCol = "K";
+  const maxRow = 51;
   return guildSpreadsheetRef.once('value')
   .then((snapshot) => {
     const spreadSheetId = snapshot.val()[guild_id];
     if (!spreadSheetId) {
       throw new Error("Spreadsheet id has not been set. Set id via set_spreadsheet_id command.");
     }
-    return fetch(`${baseGoogleSpreadsheetUrl}${spreadSheetId}/values/Clan Overview!${minCol}${minRow}:${maxCol}${maxRow}?key=${config.googleSpreadsheetApiKey}`)
+    return fetch(`${baseGoogleSpreadsheetUrl}${spreadSheetId}/values/EZ Summary!${minCol}${minRow}:${maxCol}${maxRow}?key=${config.googleSpreadsheetApiKey}`)
     .then((response) => response.json())
     .then((data) => {
       const newMembers = new Members();
@@ -67,39 +68,39 @@ function getMemberInfo(memberData) {
 	return new Member(...memberData);
 }
 
-/**
- * TODO: Update this when the spreadsheet is better fitted.
- * Creates a new <ClanQuestMembers> from the google spreadsheet.
- */
-function getClanQuestMembersInfo(channel, guild_id) {
-	const minCurrentCQRow = 5;
-	const minCurrentCQCol = "L";
-	const maxCurrentCQRow = 59;
-	const maxCurrentCQCol = "BD";
-
-  return guildSpreadsheetRef.once('value')
-  .then((snapshot) => {
-    const spreadSheetId = snapshot.val()[guild_id];
-    if (!spreadSheetId) {
-      throw new Error("Spreadsheet id has not been set. Set id via set_spreadsheet_id command.");
-    }
-    return fetch(`${baseGoogleSpreadsheetUrl}${spreadSheetId}/values/Clan Overview!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
-    .then((response) => response.json())
-    .then((data) => {
-      let newCQMembers = new ClanQuestMembers();
-      let CQData = data.values;
-
-      for (let i = 0; i < CQData.length; i++) {
-        const CQ = CQData[i];
-        if (CQ[0]) {
-          const member = getClanQuestMemberInfo(CQ);
-          newCQMembers.addMember(member);
-        }
-      }
-      return newCQMembers;
-    });
-  })
-}
+// /**
+//  * TODO: Update this when the spreadsheet is better fitted.
+//  * Creates a new <ClanQuestMembers> from the google spreadsheet.
+//  */
+// function getClanQuestMembersInfo(channel, guild_id) {
+// 	const minCurrentCQRow = 5;
+// 	const minCurrentCQCol = "L";
+// 	const maxCurrentCQRow = 59;
+// 	const maxCurrentCQCol = "BD";
+//
+//   return guildSpreadsheetRef.once('value')
+//   .then((snapshot) => {
+//     const spreadSheetId = snapshot.val()[guild_id];
+//     if (!spreadSheetId) {
+//       throw new Error("Spreadsheet id has not been set. Set id via set_spreadsheet_id command.");
+//     }
+//     return fetch(`${baseGoogleSpreadsheetUrl}${spreadSheetId}/values/Clan Overview!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
+//     .then((response) => response.json())
+//     .then((data) => {
+//       let newCQMembers = new ClanQuestMembers();
+//       let CQData = data.values;
+//
+//       for (let i = 0; i < CQData.length; i++) {
+//         const CQ = CQData[i];
+//         if (CQ[0]) {
+//           const member = getClanQuestMemberInfo(CQ);
+//           newCQMembers.addMember(member);
+//         }
+//       }
+//       return newCQMembers;
+//     });
+//   })
+// }
 
 /**
  * Creates a <ClanQuestMember> from an array containing member information.
@@ -128,8 +129,5 @@ function getClanQuestMemberInfo(memberData) {
 }
 
 module.exports = {
-	getMemberInfo: getMemberInfo,
 	getMembersInfo: getMembersInfo,
-	getClanQuestMemberInfo: getClanQuestMemberInfo,
-	getClanQuestMembersInfo: getClanQuestMembersInfo
 }

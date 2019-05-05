@@ -14,8 +14,7 @@ const splitString = require("./helper/splitString");
  */
 const statsCommand = require("./command/statsCommands");
 const helpCommands = require("./command/helpCommands");
-const tournamentCommands = require("./command/tournamentCommands");
-//const timerCommands = require("./command/timerCommands");
+
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
 
@@ -32,36 +31,28 @@ client.on("message", message => {
 		let splitContent = splitString(message.content);
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
       		return;
-    	} else if (splitContent[0] === `${config.prefix}set_spreadsheet_id`) {
+    	} else if (splitContent[0] === `${config.prefix}setSpreadsheetId`) {
 			if (splitContent[1] !== undefined)
       			statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
 			else
 				message.channel.send("Please specify a spreadsheet id.");
 		// } else if (message.content === `${config.prefix}weekly_stats`) {
 		// 	statsCommand.getWeeklyStats(message.channel, message.guild.id);
-		} else if (splitContent[0] === `${config.prefix}top_damage`) {
+		} else if (splitContent[0] === `${config.prefix}topDamage`) {
 			statsCommand.getTopDamage(message.channel, message.guild.id, splitContent[1]);
-		} else if (splitContent[0] === `${config.prefix}top_participation`) {
+		} else if (splitContent[0] === `${config.prefix}topParticipation`) {
 			statsCommand.getTopParticipation(message.channel, message.guild.id, splitContent[1]);
-		} else if (message.content === `${config.prefix}curr_tour`) {
-			tournamentCommands.getCurrentTournament(message.channel);
-		} else if (message.content === `${config.prefix}next_tour`) {
-			tournamentCommands.getNextTournament(message.channel);
 		} else if (message.content === `${config.prefix}just_do_it`) {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content === `${config.prefix}whatdoesthatmean`) {
 			miscCommands.getAbbreviations(message.channel);
-		} else if (message.content === `${config.prefix}sister_clan`) {
-			miscCommands.getMistwraithCode(message.channel);
+		//} else if (message.content === `${config.prefix}sister_clan`) {
+		//	miscCommands.getMistwraithCode(message.channel);
 		} else if (message.content === `${config.prefix}thinking`) {
 			miscCommands.getThinkingGif(message.channel);
 		} else if (splitContent[0] === (`${config.prefix}help`)) {
             helpCommands.getHelp(message.channel, splitContent[1]);
-		// } else if (message.content === `${config.prefix}set_tl_timer`) {
-		// 	timerCommands.setNextTitanTimer(message.channel, message.author);
-		// } else if (message.content === `${config.prefix}tl_timer`) {
-		// 	timerCommands.getNextTitanTimer(message.channel);
-		} else if (message.content === `${config.prefix}my_stats`) {
+		} else if (message.content === `${config.prefix}myStats`) {
 			// first get the GuildMember who typed the message
 			message.guild.fetchMember(message.author)
   			.then(member => {

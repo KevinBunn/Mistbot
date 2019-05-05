@@ -1,18 +1,18 @@
 {
-  "name": "FishBot",
-  "version": "1.0.1",
-  "description": "A Discord Bot made for Tap Titans 2. Automatically parses google spreadsheet for statistics and has tournament timer.",
+  "name": "Mistbot",
+  "version": "1.0.0",
+  "description": "A Discord Bot made for Tap Titans 2. Automatically parses google spreadsheet for statistics",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Yicheng Gong",
+  "author": "Yicheng Gong & Kevin Bunn",
   "license": "MIT",
   "dependencies": {
     "discord.js": "^11.3.0",
     "es6-promise": "^4.2.2",
-    "firebase": "^4.9.0",
+    "firebase": "^5.11.1",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.20.1",
     "node-schedule": "^1.3.0",

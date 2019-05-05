@@ -44,7 +44,7 @@ function getWeekRangeForSunday() {
  * @param {Channel} channel - The discord channel to send message to
  */
 function getWeeklyStats(channel, guild_id) {
-	Promise.all([clanInfo.getMembersInfo(channel, guild_id), clanInfo.getClanQuestMembersInfo(channel, guild_id)])
+	Promise.all([clanInfo.getMembersInfo(channel, guild_id)])
 	.then((data) => {
 		const dateRange = getWeekRangeForSunday();
 		//const inspired = data[0].getInspired();
@@ -144,7 +144,7 @@ function getTopParticipation(channel, guild_id, number) {
  * @param {string} nickname - The name of the user that sent the message.
  */
 function getStats(channel, guild_id, nickname, discordMember) {
-	Promise.all([clanInfo.getMembersInfo(channel, guild_id), clanInfo.getClanQuestMembersInfo(channel, guild_id)])
+	Promise.all([clanInfo.getMembersInfo(channel, guild_id)])
 	.then((data) => {
 		const member = data[0].findByName(nickname)
 		if(!member) {
@@ -154,12 +154,20 @@ function getStats(channel, guild_id, nickname, discordMember) {
 			const embed = new Discord.RichEmbed()
 			.setAuthor(`${member.name}'s Clan Stats`, `${discordMember.user.displayAvatarURL}`)
 			.setColor(0x00AE86)
-			.addField("Total Damage", `${numeral(member.totalDamage).format('0,0')}M`)
-			//.addField("Last Week Total Damage", `${numeral(member.lastWeekTotalDamage).format('0,0')}`)
-			.addField("Rank", `${member.damageRank}`)
-			.addField("Percent of clan total damage", `${member.damagePercent}%`)
-			.addField("Clan Quest Attendence %", `${numeral(member.CQParticipation).format('0.00')}%`)
-			.addField("Max Stage", `${member.maxStage}`)
+				.setDescription('Weekly and Lifetime Raid Statistics.')
+        .addBlankField()
+				.addField('Weekly Stats', 'For Last Two Raids')
+				.addField('Rank', `${member.weeklyRank}`)
+				.addField('Total Damage', `${numeral(member.weeklyDmg).format('0.00')}M`)
+				.addField('Average Hit Damage', `${numeral(member.weeklyAvgHitDmg).format('0.00')}K`)
+				.addField('Percent of Clan Damage', `${numeral(member.weeklyDmgPercent).format('0.00')}%`)
+        .addBlankField()
+				.addField('Lifetime Stats', 'All raids with the clan')
+        .addField("Rank", `${member.lfRank}`)
+				.addField('Tickets Earned', `${member.lfTickets}`)
+				.addField('Raid Attacks', `${member.lfAttacks}`)
+				.addField('Total Damage', `${numeral(member.lfDmg).format('0.00')}M`)
+
 			channel.send({embed});
 		}
   })

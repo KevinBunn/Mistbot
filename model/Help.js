@@ -7,17 +7,13 @@ class Help {
 		this.commandHelp = {
 			"Setup": [
 				{
-					title: "set_spreadsheet_id",
+					title: "setSpreadsheetId",
 					description: "Sets the spreadsheet id where the bot will read statistics from."
 				}
 			],
 			"Statistics": [
-				// {
-				// 	title: "weekly_stats",
-				// 	description: "\tDisplays current clan accolades for the week."
-				// },
 				{
-					title: "my_stats",
+					title: "myStats",
 					description: "\tDisplays your clan stats."
 				},
 				{
@@ -25,34 +21,14 @@ class Help {
 					description: "\tDisplays clan stats of another member."
 				},
 				{
-					title: "top_damage",
+					title: "topDamage",
 					description: "\tDisplays the top [number] members with the most total damage.",
 					postfix: "[number]"
 				},
 				{
-					title: "top_participation",
+					title: "topParticipation",
 					description: "\tDisplays the top [number] members with the most CQ participation.",
 					postfix: "[number]"
-				}
-			],
-			"Tournament": [
-				{
-					title: "curr_tour",
-					description: "\tDisplays current tournament that is going on."
-				},
-				{
-					title: "next_tour",
-					description: "\tDisplays when and what the next tournament is."
-				}
-			],
-			"Timer": [
-				{
-					title: "set_tl_timer",
-					description: "\tSets an timer for the next Titan Lord. Requires an up-to-date spreadsheet."
-				},
-				{
-					title: "tl_timer",
-					description: "\tGet time until next Titan Lord if a timer has been set."
 				}
 			],
 			"Miscellaneous": [

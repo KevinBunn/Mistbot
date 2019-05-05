@@ -31,10 +31,17 @@ class Members {
 	}
 
 	findByName(nickname) {
+
 		for (let i = 0; i < this.members.length; i++) {
 			if (this.members[i].name !== undefined) {
-				if (this.members[i].name.toLowerCase() === nickname.toLowerCase())
-					return this.members[i];
+        if (this.members[i].name.includes('<MST>')) {
+          let split1 = this.members[i].name.split('>')
+          let nameWithoutClantag = split1[1].trim()
+          this.members[i].name = nameWithoutClantag
+        }
+				if (this.members[i].name.toLowerCase() === nickname.toLowerCase()) {
+          return this.members[i];
+        }
 			}
 		}
 		return null;
