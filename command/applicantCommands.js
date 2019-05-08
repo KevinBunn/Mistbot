@@ -18,22 +18,39 @@ async function addApplicant(channel, guildId, author, args) {
   await promise.then((number) => {
     waitListNumber = number
   })
-  let newApplicantRef = guildRef.child(`${author.id}`);
-  newApplicantRef.set({
-    name: `${author.username}`,
-    max_stage: args[1],
-    raid_level: args[2],
-    time_applied: Date.now()
-  }, function (error) {
-    if (error) {
-      console.log("Data could not be saved." + error);
-      channel.send('Error: Failed to Submit' + error);
+  guildRef.once("value", function(snapshot) {
+    if(snapshot.hasChild(`${author.id}`)) {
+      let applicantRef = guildRef.child(`${author.id}`);
+      applicantRef.set({
+        max_stage: args[1],
+        raid_level: args[2],
+      }, function (error) {
+        if (error) {
+          console.log("Data could not be saved." + error);
+          channel.send('Error: Failed to Submit' + error);
+        } else {
+          console.log("Data saved successfully.");
+          channel.send(`Looks like you already applied <@${author.id}>, I've updated your application`)
+        }
+      })
     } else {
-      console.log("Data saved successfully.");
-      channel.send(`Thank you for applying! you are in spot ${waitListNumber} of the waiting list`)
+      let newApplicantRef = guildRef.child(`${author.id}`);
+      newApplicantRef.set({
+        name: `${author.username}`,
+        max_stage: args[1],
+        raid_level: args[2],
+        time_applied: Date.now()
+      }, function (error) {
+        if (error) {
+          console.log("Data could not be saved." + error);
+          channel.send('Error: Failed to Submit' + error);
+        } else {
+          console.log("Data saved successfully.");
+          channel.send(`Thank you for applying! you are in spot ${waitListNumber} of the waiting list`)
+        }
+      })
     }
   })
-
 }
 
 function getApplicants(channel, guildId) {
