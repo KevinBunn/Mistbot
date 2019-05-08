@@ -14,6 +14,7 @@ const splitString = require("./helper/splitString");
  */
 const statsCommand = require("./command/statsCommands");
 const helpCommands = require("./command/helpCommands");
+const applicantCommands = require('./command/applicantCommands');
 
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
@@ -30,18 +31,27 @@ client.on("message", message => {
 	try {
 		let splitContent = splitString(message.content);
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
-      		return;
+
     	} else if (splitContent[0] === `${config.prefix}setSpreadsheetId`) {
-			if (splitContent[1] !== undefined)
-      			statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
-			else
-				message.channel.send("Please specify a spreadsheet id.");
-		// } else if (message.content === `${config.prefix}weekly_stats`) {
-		// 	statsCommand.getWeeklyStats(message.channel, message.guild.id);
-		} else if (splitContent[0] === `${config.prefix}topDamage`) {
-			statsCommand.getTopDamage(message.channel, message.guild.id, splitContent[1]);
-		} else if (splitContent[0] === `${config.prefix}topParticipation`) {
-			statsCommand.getTopParticipation(message.channel, message.guild.id, splitContent[1]);
+      if (splitContent[1] !== undefined)
+        statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
+      else
+        message.channel.send("Please specify a spreadsheet id.");
+    } else if (splitContent[0] === `${config.prefix}apply`) {
+			applicantCommands.addApplicant(message.channel, message.guild.id, message.author, splitContent)
+    } else if (message.content === `${config.prefix}applicants`) {
+			applicantCommands.getApplicants(message.channel, message.guild.id)
+    } else if (splitContent[0] === `${config.prefix}removeApplicant`) {
+      if (splitContent[1] !== undefined) {
+        const memberName = splitContent[1];
+        message.guild.members.find((member) => {
+          if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
+            applicantCommands.removeApplicant(message.channel, message.guild.id, member);
+          }
+      	});
+			} else {
+        message.channel.send("Please specify a user");
+			}
 		} else if (message.content === `${config.prefix}just_do_it`) {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content === `${config.prefix}whatdoesthatmean`) {
@@ -66,7 +76,7 @@ client.on("message", message => {
                     if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
                         statsCommand.getStats(message.channel, message.guild.id, memberName, member);
                         found = true;
-                        return;
+
                     }
                 });
                 if (!found) {
