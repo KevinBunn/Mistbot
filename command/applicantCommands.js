@@ -23,6 +23,7 @@ async function addApplicant(channel, guildId, author, args) {
     name: `${author.username}`,
     max_stage: args[1],
     raid_level: args[2],
+    time_applied: Date.now()
   }, function (error) {
     if (error) {
       console.log("Data could not be saved." + error);
@@ -47,6 +48,7 @@ function getApplicants(channel, guildId) {
       } else {
         let applicant = new Applicant();
         applicant.name = child.val()["name"]
+        applicant.timeApplied = child.val()["time_applied"]
         applicant.maxStage = child.val()["max_stage"]
         applicant.raidLevel = child.val()["raid_level"]
         applicantList.push(applicant)
@@ -57,7 +59,7 @@ function getApplicants(channel, guildId) {
     if (applicantList.length < 1) {
       channel.send('There is currently no one in the wait list')
     } else {
-      applicantList = _.reverse(applicantList)
+      applicantList = _.orderBy(applicantList, ["time_applied"], ["asc"])
       const embed = new Discord.RichEmbed()
         .setAuthor(`Current Wait list`)
         .setColor(0x00AE86);

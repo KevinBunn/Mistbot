@@ -5,7 +5,7 @@
 class Applicant {
 
   constructor(name, maxStage, raidLevel) {
-    this.priority =
+    this.timeApplied;
     this.name = name;
     this.maxStage = maxStage;
     this.raidLevel = raidLevel
