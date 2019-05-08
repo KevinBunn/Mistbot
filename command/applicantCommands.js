@@ -59,7 +59,7 @@ function getApplicants(channel, guildId) {
     if (applicantList.length < 1) {
       channel.send('There is currently no one in the wait list')
     } else {
-      applicantList = _.orderBy(applicantList, ["time_applied"], ["asc"])
+      applicantList = _.orderBy(applicantList, ["time_applied"], ["desc"])
       const embed = new Discord.RichEmbed()
         .setAuthor(`Current Wait list`)
         .setColor(0x00AE86);
