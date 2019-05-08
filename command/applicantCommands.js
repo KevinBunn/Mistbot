@@ -20,10 +20,13 @@ async function addApplicant(channel, guildId, author, args) {
   })
   guildRef.once("value", function(snapshot) {
     if(snapshot.hasChild(`${author.id}`)) {
+      let existingApplicant = snapshot.child(`${author.id}`)
       let applicantRef = guildRef.child(`${author.id}`);
       applicantRef.set({
+        name: existingApplicant.val()["name"],
         max_stage: args[1],
         raid_level: args[2],
+        time_applied: existingApplicant.val()["time_applied"]
       }, function (error) {
         if (error) {
           console.log("Data could not be saved." + error);
@@ -76,9 +79,7 @@ function getApplicants(channel, guildId) {
     if (applicantList.length < 1) {
       channel.send('There is currently no one in the wait list')
     } else {
-      console.log(applicantList)
       applicantList = _.orderBy(applicantList, ["timeApplied"], ["acs"])
-      console.log(applicantList)
       const embed = new Discord.RichEmbed()
         .setAuthor(`Current Wait list`)
         .setColor(0x00AE86);
