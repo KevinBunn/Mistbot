@@ -7,33 +7,33 @@ class Help {
 		this.commandHelp = {
 			"Setup": [
 				{
-					title: "setSpreadsheetId",
+					title: "setspreadsheet",
 					description: "Sets the spreadsheet id where the bot will read statistics from."
 				}
 			],
 			"Statistics": [
 				{
-					title: "myStats",
+					title: "mystats",
 					description: "\tDisplays your clan stats."
 				},
 				{
 					title: "stats",
 					description: "\tDisplays clan stats of another member."
 				},
-				{
-					title: "topDamage",
-					description: "\tDisplays the top [number] members with the most total damage.",
-					postfix: "[number]"
-				},
-				{
-					title: "topParticipation",
-					description: "\tDisplays the top [number] members with the most CQ participation.",
-					postfix: "[number]"
-				}
+				// {
+				// 	title: "topDamage",
+				// 	description: "\tDisplays the top [number] members with the most total damage.",
+				// 	postfix: "[number]"
+				// },
+				// {
+				// 	title: "topParticipation",
+				// 	description: "\tDisplays the top [number] members with the most CQ participation.",
+				// 	postfix: "[number]"
+				// }
 			],
 			"Miscellaneous": [
 				{
-					title: "just_do_it",
+					title: "justdoit",
 					description: "\tDisplays the just do it gif."
 				},
 				{

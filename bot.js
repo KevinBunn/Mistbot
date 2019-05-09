@@ -32,7 +32,7 @@ client.on("message", message => {
 		let splitContent = splitString(message.content);
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
 
-    	} else if (splitContent[0] === `${config.prefix}setSpreadsheetId`) {
+    	} else if (splitContent[0] === `${config.prefix}setspreadsheet`) {
       if (splitContent[1] !== undefined)
         statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
       else
@@ -41,7 +41,7 @@ client.on("message", message => {
 			applicantCommands.addApplicant(message.channel, message.guild.id, message.author, splitContent)
     } else if (message.content === `${config.prefix}applicants`) {
 			applicantCommands.getApplicants(message.channel, message.guild.id)
-    } else if (splitContent[0] === `${config.prefix}removeApplicant`) {
+    } else if (splitContent[0] === `${config.prefix}removeapplicant`) {
       if (splitContent[1] !== undefined) {
         const memberName = splitContent[1];
         message.guild.members.find((member) => {
@@ -52,7 +52,7 @@ client.on("message", message => {
 			} else {
         message.channel.send("Please specify a user");
 			}
-		} else if (message.content === `${config.prefix}just_do_it`) {
+		} else if (message.content === `${config.prefix}justdoit`) {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content === `${config.prefix}whatdoesthatmean`) {
 			miscCommands.getAbbreviations(message.channel);
@@ -62,7 +62,7 @@ client.on("message", message => {
 			miscCommands.getThinkingGif(message.channel);
 		} else if (splitContent[0] === (`${config.prefix}help`)) {
             helpCommands.getHelp(message.channel, splitContent[1]);
-		} else if (message.content === `${config.prefix}myStats`) {
+		} else if (message.content === `${config.prefix}mystats`) {
 			// first get the GuildMember who typed the message
 			message.guild.fetchMember(message.author)
   			.then(member => {
