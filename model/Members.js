@@ -1,4 +1,3 @@
- const getMaxAttr = require("../helper/getMaxAttr");
 const getStatResult = require("../helper/getStatResult");
 
 /**
@@ -13,18 +12,6 @@ class Members {
 	addMember(member) {
 		this.members.push(member);
 	}
-
-	// getInspired() {
-	// 	return getStatResult(this.members, "damageMargin");
-	// }
-
-	// getCoinShot() {
-	// 	return getStatResult(this.members, "MSIncrease");
-	// }
-
-	// getDelibird() {
-	// 	return getStatResult(this.members, "clanCratesShared")
-	// }
 
 	getHitman() {
 		return getStatResult(this.members, "CQParticipation")

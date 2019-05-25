@@ -1,7 +1,6 @@
 require('es6-promise').polyfill();
 const numeral = require('numeral');
 const Discord = require("discord.js");
-const config = require("../config/config.json");
 
 /**
  * Importing Firebase.
@@ -13,7 +12,6 @@ const guildSpreadsheetRef = database.ref("discord_server_to_sheet_id_map");
 /**
  * Importing helper functions.
  */
-const flatten = require("../helper/flatten");
 const clanInfo = require("../helper/getClanInfo");
 
 /**
@@ -47,24 +45,15 @@ function getWeeklyStats(channel, guild_id) {
 	Promise.all([clanInfo.getMembersInfo(channel, guild_id)])
 	.then((data) => {
 		const dateRange = getWeekRangeForSunday();
-		//const inspired = data[0].getInspired();
-		//const sleepless = data[1].getSleepless();
 		const hitman = data[0].getHitman();
-		//const coinShot = data[0].getCoinShot();
-		//const thug = data[1].getThug();
-		//const delibird = data[0].getDelibird();
 
 		const embed = new Discord.RichEmbed()
 			.setTitle(`${dateRange}`)
 			.setAuthor(`📊 Weekly Statistics Report`)
 			.setColor(0x00AE86)
 			.setDescription(
-				//`**Sleepless** - ${sleepless.stat} Titanlords hit in a row.\n` +
-				//`${sleepless.names.join(", ")}\n` +
 				`**Hitman** - ${hitman.stat}% of Titanlords hit\n` +
-				`${hitman.names.join(", ")}\n` //+
-				//`**Thug** - ${thug.stat.toLocaleString()} damage done to one Titanlord.\n` +
-				//`${thug.names.join(", ")}\n`
+				`${hitman.names.join(", ")}\n`
 			)
 			.setTimestamp();
 

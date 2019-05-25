@@ -12,13 +12,6 @@ const guildSpreadsheetRef = database.ref("discord_server_to_sheet_id_map");
  */
 const Members = require("../model/Members");
 const Member = require("../model/Member");
-const ClanQuestMember = require("../model/ClanQuestMember");
-const ClanQuestMembers = require("../model/ClanQuestMembers");
-
-/**
- * Helper variables.
- */
-const getHighestConsecutiveHits = require("../helper/getHighestConsecutiveHits");
 
 /**
  * Global variables.
@@ -66,66 +59,6 @@ function getMembersInfo(channel, guild_id) {
  */
 function getMemberInfo(memberData) {
 	return new Member(...memberData);
-}
-
-// /**
-//  * TODO: Update this when the spreadsheet is better fitted.
-//  * Creates a new <ClanQuestMembers> from the google spreadsheet.
-//  */
-// function getClanQuestMembersInfo(channel, guild_id) {
-// 	const minCurrentCQRow = 5;
-// 	const minCurrentCQCol = "L";
-// 	const maxCurrentCQRow = 59;
-// 	const maxCurrentCQCol = "BD";
-//
-//   return guildSpreadsheetRef.once('value')
-//   .then((snapshot) => {
-//     const spreadSheetId = snapshot.val()[guild_id];
-//     if (!spreadSheetId) {
-//       throw new Error("Spreadsheet id has not been set. Set id via set_spreadsheet_id command.");
-//     }
-//     return fetch(`${baseGoogleSpreadsheetUrl}${spreadSheetId}/values/Clan Overview!${minCurrentCQCol}${minCurrentCQRow}:${maxCurrentCQCol}${maxCurrentCQRow}?key=${config.googleSpreadsheetApiKey}`)
-//     .then((response) => response.json())
-//     .then((data) => {
-//       let newCQMembers = new ClanQuestMembers();
-//       let CQData = data.values;
-//
-//       for (let i = 0; i < CQData.length; i++) {
-//         const CQ = CQData[i];
-//         if (CQ[0]) {
-//           const member = getClanQuestMemberInfo(CQ);
-//           newCQMembers.addMember(member);
-//         }
-//       }
-//       return newCQMembers;
-//     });
-//   })
-// }
-
-/**
- * Creates a <ClanQuestMember> from an array containing member information.
- *
- * @param {Array} memberData - An array containing information about a clan quest member.
- * @return {ClanQuestMember} - A <ClanQuestMember> with all of the information.
- */
-function getClanQuestMemberInfo(memberData) {
-	// Convert consecutive hits into an array.
-	let hits = memberData.slice(1, memberData.length);
-
-	hits = hits.map((hit) => {
-		if (!hit) {
-			hit = 0;
-		}
-		return parseInt(hit);
-	});
-
-	const member = new ClanQuestMember(
-		name=memberData[0],
-		hits=hits,
-		highestConsecutiveHits=getHighestConsecutiveHits(hits),
-		mostDamageOnOneTitan=Math.max(...hits),
-	);
-	return member;
 }
 
 module.exports = {

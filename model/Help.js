@@ -52,14 +52,6 @@ class Help {
 		return this.commandHelp.Statistics;
 	}
 
-	getObjTournament() {
-		return this.commandHelp.Tournament;
-	}
-
-	getObjTimer() {
-		return this.commandHelp.Timer;
-	}
-
 	getObjMiscellaneous() {
 		return this.commandHelp.Miscellaneous;
 	}
