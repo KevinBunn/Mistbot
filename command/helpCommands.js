@@ -6,6 +6,16 @@ const config = require("../config/config.json");
  */
 const Help = require("../model/Help");
 
+
+function generateEmbedFields (embed, helpObj) {
+  for (let i = 0; i < helpObj.length; i++) {
+    if (helpObj[i].postfix == null)
+      embed.addField(`${helpObj[i].title}`, `${helpObj[i].description}`);
+    else
+      embed.addField(`${helpObj[i].title} ${helpObj[i].postfix}`, `${helpObj[i].description}`);
+  }
+}
+
 /**
  * Displays information about all the commands for the bot
  *
@@ -20,61 +30,81 @@ function getHelp(channel, category) {
 		.setDescription(`prefix: ${config.prefix}\ntype "${config.prefix}[command]" to use a command\ntype "${config.prefix}help [category]" for description and usage\n\tex: ${config.prefix}help Statistics`)
 		.addField("Setup", `${help.getSetupCommandList()}`)
 		.addField("Statistics", `${help.getStatisticsCommandList()}`)
+		.addField("Raid", `${help.getRaidCommandList()}`)
+		.addField("Applicants", `${help.getApplicantsCommandList()}`)
+		.addField("Tournament", `${help.getTournamentCommandList()}`)
 		.addField("Miscellaneous", `${help.getMiscellaneousCommandList()}`)
 		.setColor(0x00AE86)
 		.setFooter("Mistbot | Help");
 		channel.send({embed});
 	}
-	else if (category.toLowerCase() == "Set".toLowerCase()
-			|| category.toLowerCase() == "Setup".toLowerCase()
-        	|| category.toLowerCase() == "spreadsheet".toLowerCase()) {
-        setupObj = help.getObjSetup();
+	else if (category.toLowerCase() === "set"
+			|| category.toLowerCase() === "setup"
+        	|| category.toLowerCase() === "spreadsheet") {
+        const setupObj = help.getObjSetup();
         const embed = new Discord.RichEmbed()
             .setTitle("ℹ️ Mistbot Help Setup")
             .setDescription("Settings that are specific to each guild")
             .setColor(0x00AE86)
             .setFooter("Mistbot | Help - Set Up");
-        for (let i = 0; i < setupObj.length; i++) {
-            if (setupObj[i].postfix == null)
-                embed.addField(`${setupObj[i].title}`, `${setupObj[i].description}`)
-            else
-                embed.addField(`${setupObj[i].title} ${setupObj[i].postfix}`, `${setupObj[i].description}`)
-        }
+        generateEmbedFields(embed, setupObj);
         channel.send({embed});
 	}
-
-	else if (category.toLowerCase() == "Statistics".toLowerCase()
-		  || category.toLowerCase() == "Stats".toLowerCase()) {
-		statsObj = help.getObjStatistics();
+	else if (category.toLowerCase() === "statistics"
+		  || category.toLowerCase() === "stats") {
+		const statsObj = help.getObjStatistics();
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ Mistbot Help Statistics")
 		.setDescription("Queries for Clan Statistics")
 		.setColor(0x00AE86)
 		.setFooter("Mistbot | Help - Statistics");
-		for (let i = 0; i < statsObj.length; i++) {
-			if (statsObj[i].postfix == null)
-				embed.addField(`${statsObj[i].title}`, `${statsObj[i].description}`)
-			else
-				embed.addField(`${statsObj[i].title} ${statsObj[i].postfix}`, `${statsObj[i].description}`)
-		}
+    generateEmbedFields(embed, statsObj);
 		channel.send({embed});
 	}
-	else if (category.toLowerCase() == "Miscellaneous".toLowerCase()
-		  || category.toLowerCase() == "Misc".toLowerCase()) {
-		miscObj = help.getObjMiscellaneous();
+	else if (category.toLowerCase() === "miscellaneous"
+		  || category.toLowerCase() === "misc") {
+		const miscObj = help.getObjMiscellaneous();
 		const embed = new Discord.RichEmbed()
 		.setTitle("ℹ️ Mistbot Help Miscellaneous")
 		.setDescription("Random Gifs, Pics, ect.")
 		.setColor(0x00AE86)
 		.setFooter("Mistbot | Help - Miscellaneous");
-		for (let i = 0; i < miscObj.length; i++) {
-			if (miscObj[i].postfix == null)
-				embed.addField(`${miscObj[i].title}`, `${miscObj[i].description}`)
-			else
-				embed.addField(`${miscObj[i].title} ${miscObj[i].postfix}`, `${miscObj[i].description}`)
-		}
+    generateEmbedFields(embed, miscObj);
 		channel.send({embed});
 	}
+	else if (category.toLowerCase() === "raid"
+    || category.toLowerCase() === "timer" ) {
+		const raidObj = help.getObjRaid();
+    const embed = new Discord.RichEmbed()
+      .setTitle("ℹ️ Mistbot Help Raid")
+      .setDescription("Timer for raids")
+      .setColor(0x00AE86)
+      .setFooter("Mistbot | Help - Raid");
+    generateEmbedFields(embed, raidObj);
+    channel.send({embed});
+	}
+  else if (category.toLowerCase() === "applicants"
+		|| category.toLowerCase() === "apply") {
+    const applicantsObj = help.getObjApplicants();
+    const embed = new Discord.RichEmbed()
+      .setTitle("ℹ️ Mistbot Help Applicants")
+      .setDescription("View and edit the clan wait list")
+      .setColor(0x00AE86)
+      .setFooter("Mistbot | Help - Applicants");
+    generateEmbedFields(embed, applicantsObj);
+    channel.send({embed});
+  }
+  else if (category.toLowerCase() === "Tournament".toLowerCase()
+    || category.toLowerCase() === "Tour".toLowerCase()) {
+    const tourObj = help.getObjTournament();
+    const embed = new Discord.RichEmbed()
+      .setTitle("ℹ️ FishBot Help Tournament")
+      .setDescription("Queries for Tournament Information")
+      .setColor(0x00AE86)
+      .setFooter("FishBot | Help - Tournament");
+    generateEmbedFields(embed, tourObj);
+    channel.send({embed});
+  }
 }
 
 module.exports = {

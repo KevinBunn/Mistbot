@@ -15,6 +15,8 @@ const splitString = require("./helper/splitString");
 const statsCommand = require("./command/statsCommands");
 const helpCommands = require("./command/helpCommands");
 const applicantCommands = require('./command/applicantCommands');
+const timerCommands = require('./command/timerCommands');
+const tournamentCommands = require('./command/tournamentCommands');
 
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
@@ -26,12 +28,20 @@ client.on("ready", () => {
 	console.log("I am ready!");
 });
 
+function sendMissingTimerError (channel) {
+	channel.send('Please specify a time.')
+}
+
+function sendMissingCycleError (channel) {
+  channel.send('Please specify a cycle.')
+}
+
 // Create an event listener for messages
 client.on("message", message => {
 	try {
+		message.content = message.content.toLowerCase()
 		let splitContent = splitString(message.content);
 		if (!message.content.startsWith(config.prefix) || message.author.bot) {
-
     	} else if (splitContent[0] === `${config.prefix}setspreadsheet`) {
       if (splitContent[1] !== undefined)
         statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
@@ -46,7 +56,7 @@ client.on("message", message => {
         const memberName = splitContent[1];
         message.guild.members.find((member) => {
           if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
-            applicantCommands.removeApplicant(message.channel, message.guild.id, member);
+            applicantCommands.removeApplicant(message.channel, message.member, message.guild.id, member);
           }
       	});
 			} else {
@@ -85,6 +95,34 @@ client.on("message", message => {
             }
             else
             	message.channel.send("Please specify a clan member");
+		}
+    else if (splitContent[0] === `${config.prefix}raid`) {
+    	if (splitContent[1] === `start`) {
+    		if (splitContent[2] === null) {
+    			sendMissingTimerError(message.channel.error)
+				} else {
+          timerCommands.startRaidTimer(message.channel, splitContent[2])
+				}
+			} else if (splitContent[1] === 'update') {
+        if (splitContent[2] === undefined) {
+          sendMissingTimerError(message.channel)
+        } else if (splitContent[3] === undefined) {
+        	sendMissingCycleError(message.channel)
+				} else {
+          timerCommands.startMidRaidTimer(message.channel, splitContent[2], splitContent[3])
+				}
+			} else if (splitContent[1] === 'end') {
+        timerCommands.stopTimer(message.channel)
+			}
+		} else if (splitContent[0] === `${config.prefix}tournament`) {
+			switch (splitContent[1]) {
+				case 'list':
+					tournamentCommands.getTournamentList(message.channel);
+					break;
+				default:
+					tournamentCommands.getTournament(message.channel);
+					break;
+			}
 		}
 		else if (message.content.startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)

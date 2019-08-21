@@ -97,15 +97,19 @@ function getApplicants(channel, guildId) {
   })
 }
 
-function removeApplicant(channel, guildId, user) {
-  let guildRef = guildApplicantRef.child(guildId);
-  guildRef.child(user.id).remove()
-    .then(function() {
-      channel.send(`Removed ${user.displayName} from waiting list`)
-    })
-    .catch(function(error) {
-      console.log("Remove failed: " + error.message)
-    });
+function removeApplicant(channel, author, guildId, user) {
+  if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Grand Master')) {
+    let guildRef = guildApplicantRef.child(guildId);
+    guildRef.child(user.id).remove()
+      .then(function() {
+        channel.send(`Removed ${user.displayName} from waiting list`)
+      })
+      .catch(function(error) {
+        console.log("Remove failed: " + error.message)
+      });
+  } else{
+    channel.send('You do not have permissions to remove applicants')
+  }
 }
 
 function getWaitingListSpot(guildRef) {
