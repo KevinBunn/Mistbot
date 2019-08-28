@@ -81,6 +81,7 @@ function stopTimer (channel) {
     clearInterval(timerInterval);
     console.log(timerInterval);
     timerInterval = null;
+    cycleCount = 1;
   } else {
     channel.send('No current raid timer running')
   }
