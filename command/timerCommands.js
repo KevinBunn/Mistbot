@@ -25,9 +25,8 @@ function updateCurrentTimerMessage(timeUntilRaid) {
 }
 
 async function startTimer (channel, time) {
-  console.log(cycleCount)
   const seconds = moment(time, 'HH:mm:ss').seconds();
-  currentTimerMessage = channel.sendMessage('Setting timer for ' + time);
+  currentTimerMessage = channel.send('Setting timer for ' + time);
   // wait for the seconds to even out to 0
   let timeUntilRaid = moment.duration(time, 'HH:mm:ss');
   let earlyNotifyOffset = 0;
@@ -39,19 +38,18 @@ async function startTimer (channel, time) {
       timerInterval = setInterval(function () {
         timeUntilRaid.subtract(1, "minute");
         updateCurrentTimerMessage(timeUntilRaid)
-        console.log(Math.floor(timeUntilRaid) === 0);
         if (Math.floor(timeUntilRaid) - (earlyNotifyOffset * 60 * 1000) === 0) {
           if (cycleCount === 1) {
-            channel.sendMessage('@everyone Raid starts in **' + timeUntilRaid.asMinutes() + ' minutes!**');
+            channel.send('@everyone Raid starts in **' + timeUntilRaid.asMinutes() + ' minutes!**');
           } else {
-            channel.sendMessage('@everyone Cycle ' + cycleCount + ' up in **' + timeUntilRaid.asMinutes() + ' minutes!**');
+            channel.send('@everyone Cycle ' + cycleCount + ' up in **' + timeUntilRaid.asMinutes() + ' minutes!**');
           }
         }
         else if (Math.floor(timeUntilRaid) === 0) {
           if (cycleCount === 1) {
-            channel.sendMessage('@everyone Raid is up!');
+            channel.send('@everyone Raid is up!');
           } else {
-            channel.sendMessage('@everyone Cycle ' + cycleCount + ' is up!');
+            channel.send('@everyone Cycle ' + cycleCount + ' is up!');
           }
           cycleCount += 1;
           timeUntilRaid.add(INTERVAL_HOURS, 'hours')
@@ -59,6 +57,7 @@ async function startTimer (channel, time) {
       }, 60 * 1000); // Check every minute
     }
     catch(e) {
+      console.log('Error during the interval loop')
       console.error(e)
     }
   }, seconds * 1000)
@@ -74,6 +73,7 @@ function startMidRaidTimer (channel, time, cycle) {
     currentTimerMessage.then((msg) => {
       msg.edit(`\`\`\`Timer Stopped\`\`\``)
     }).catch((err) => {
+      console.log('Error trying to restart timer')
       console.error(err)
     })
     clearInterval(timerInterval)
@@ -92,11 +92,11 @@ function stopTimer (channel) {
     currentTimerMessage.then((msg) => {
       msg.edit(`\`\`\`Timer Stopped\`\`\``)
     }).catch(err => {
+      console.log('Error trying to end timer')
       console.error(err)
     })
     channel.send('Raid Timer Stopped');
     clearInterval(timerInterval);
-    console.log(timerInterval);
     timerInterval = null;
     cycleCount = 1;
   } else {
