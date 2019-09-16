@@ -19,6 +19,8 @@ function updateCurrentTimerMessage(timeUntilRaid) {
     } else {
       msg.edit(`Time Until Raid:\n\`\`\`${moment.utc(timeUntilRaid.as('milliseconds')).format('HH:mm:ss')}\`\`\``);
     }
+  }).catch(err => {
+    console.error(err)
   })
 }
 
@@ -30,34 +32,40 @@ async function startTimer (channel, time) {
   let timeUntilRaid = moment.duration(time, 'HH:mm:ss');
   let earlyNotifyOffset = 0;
   setTimeout(function() {
-    timeUntilRaid.subtract(seconds, 'seconds');
-    updateCurrentTimerMessage(timeUntilRaid);
-    // continue to do that every minute
-    timerInterval = setInterval(function() {
-      timeUntilRaid.subtract(1, "minute");
-      updateCurrentTimerMessage(timeUntilRaid)
-      console.log(Math.floor(timeUntilRaid) === 0);
-      if (Math.floor(timeUntilRaid) - (earlyNotifyOffset * 60 * 1000) === 0) {
-        if (cycleCount === 1) {
-          channel.sendMessage('@everyone Raid starts in **' + timeUntilRaid.asMinutes() + ' minutes!**');
-        } else {
-          channel.sendMessage('@everyone Cycle ' + cycleCount + ' up in **' + timeUntilRaid.asMinutes() + ' minutes!**');
+    try {
+      timeUntilRaid.subtract(seconds, 'seconds');
+      updateCurrentTimerMessage(timeUntilRaid);
+      // continue to do that every minute
+      timerInterval = setInterval(function () {
+        timeUntilRaid.subtract(1, "minute");
+        updateCurrentTimerMessage(timeUntilRaid)
+        console.log(Math.floor(timeUntilRaid) === 0);
+        if (Math.floor(timeUntilRaid) - (earlyNotifyOffset * 60 * 1000) === 0) {
+          if (cycleCount === 1) {
+            channel.sendMessage('@everyone Raid starts in **' + timeUntilRaid.asMinutes() + ' minutes!**');
+          } else {
+            channel.sendMessage('@everyone Cycle ' + cycleCount + ' up in **' + timeUntilRaid.asMinutes() + ' minutes!**');
+          }
         }
-      }
-      else if (Math.floor(timeUntilRaid) === 0) {
-        if (cycleCount === 1) {
-          channel.sendMessage('@everyone Raid is up!');
-        } else {
-          channel.sendMessage('@everyone Cycle ' + cycleCount + ' is up!');
+        else if (Math.floor(timeUntilRaid) === 0) {
+          if (cycleCount === 1) {
+            channel.sendMessage('@everyone Raid is up!');
+          } else {
+            channel.sendMessage('@everyone Cycle ' + cycleCount + ' is up!');
+          }
+          cycleCount += 1;
+          timeUntilRaid.add(INTERVAL_HOURS, 'hours')
         }
-        cycleCount += 1;
-        timeUntilRaid.add(INTERVAL_HOURS, 'hours')
-      }
-    }, 60 * 1000); // Check every minute
+      }, 60 * 1000); // Check every minute
+    }
+    catch(e) {
+      console.error(e)
+    }
   }, seconds * 1000)
-  console.log(timerInterval)
   await raidTimerRef.once("value", (snapshot) => {
     earlyNotifyOffset = snapshot.child("offset").val()
+  }).catch(err => {
+    console.error(err)
   });
 }
 
@@ -65,17 +73,26 @@ function startMidRaidTimer (channel, time, cycle) {
   if (timerInterval) {
     currentTimerMessage.then((msg) => {
       msg.edit(`\`\`\`Timer Stopped\`\`\``)
+    }).catch((err) => {
+      console.error(err)
     })
     clearInterval(timerInterval)
   }
   cycleCount = parseInt(cycle) + 1;
-  startTimer(channel, time);
+  try {
+    startTimer(channel, time);
+  } catch(e) {
+    console.error(e)
+  }
+
 }
 
 function stopTimer (channel) {
   if (currentTimerMessage !== null) {
     currentTimerMessage.then((msg) => {
       msg.edit(`\`\`\`Timer Stopped\`\`\``)
+    }).catch(err => {
+      console.error(err)
     })
     channel.send('Raid Timer Stopped');
     clearInterval(timerInterval);

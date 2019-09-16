@@ -1,5 +1,3 @@
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const config = require("./config/config.json");
@@ -20,7 +18,6 @@ const tournamentCommands = require('./command/tournamentCommands');
 
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
-
 /**
  * Listen for when bot is ready.
  */
