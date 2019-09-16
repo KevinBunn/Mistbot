@@ -76,7 +76,11 @@ function startMidRaidTimer (channel, time, cycle) {
       console.log('Error trying to restart timer')
       console.error(err)
     })
-    clearInterval(timerInterval)
+    try {
+      clearInterval(timerInterval);
+    } catch(e) {
+      console.error(e)
+    }
   }
   cycleCount = parseInt(cycle) + 1;
   try {
@@ -96,7 +100,12 @@ function stopTimer (channel) {
       console.error(err)
     })
     channel.send('Raid Timer Stopped');
-    clearInterval(timerInterval);
+    try {
+      clearInterval(timerInterval);
+    } catch(e) {
+      console.error(e)
+    }
+
     timerInterval = null;
     cycleCount = 1;
   } else {
