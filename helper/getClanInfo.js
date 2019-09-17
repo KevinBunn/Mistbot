@@ -25,7 +25,7 @@ function getMembersInfo(channel, guild_id) {
   console.log('creating member info')
 	const minRow = 2;
 	const minCol = "A";
-	const maxCol = "K";
+	const maxCol = "T";
   const maxRow = 51;
   return guildSpreadsheetRef.once('value')
   .then((snapshot) => {

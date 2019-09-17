@@ -142,26 +142,35 @@ async function getStats(channel, guild_id, nickname, discordMember) {
 		else {
 		  // just separating these into promises so that it separates the embeds correctly.
       // I had issues otherwise trying to send two.
-			promiseWeeklyStats = new Promise(function (resolve, reject) {
+			let promiseWeeklyStats = new Promise(function (resolve, reject) {
         const embed = new Discord.RichEmbed()
           .setAuthor(`${member.name}'s Weekly Stats`, `${discordMember.user.displayAvatarURL}`)
           .setColor(0x00AE86)
-          .setDescription('Last Two Raids')
-          .addField('Rank', `${member.weeklyRank}`)
-          .addField('Total Damage', `${numeral(member.weeklyDmg).format('0.00')}M`)
-          .addField('Average Hit Damage', `${numeral(member.weeklyAvgHitDmg).format('0.00')}K`)
-          .addField('Percent of Clan Damage', `${numeral(member.weeklyDmgPercent).format('0.00')}%`)
+          .setDescription('Conclusion of last two raids, updated weekly')
+					.addField('Role', `${member.role}`, true)
+					.addField('Max Stage', `${member.maxStage}`, true)
+          .addField('Tickets Earned', `${member.tickets}`, true)
+          .addField('Skill Points', `${member.skillPoints}`, true)
+          .addField('Crafting Shards Spent', `${member.craftingShards}`, true)
+          .addField('Hero Masteries', `${member.heroMasteries}`, true)
+          .addField('Raid Level', `${member.raidLevel}`, true)
+          .addField('Raid Card Level', `${member.raidCardLevel}`, true)
+          .addField('Raid Rank', `${member.weeklyRank}`, true)
+          .addField('Total Damage', `${numeral(member.weeklyDmg).format('0.00')}M`, true)
+          .addField('Average Hit Damage', `${numeral(member.weeklyAvgHit).format('0.00')}K`, true)
 				resolve(embed)
 			})
-			promiseLifeTimeStats = new Promise(function (resolve, reject) {
+			let promiseLifeTimeStats = new Promise(function (resolve, reject) {
         const embed = new Discord.RichEmbed()
-      		.setAuthor(`${member.name}'s Lifetime Stats`, `${discordMember.user.displayAvatarURL}`)
+      		.setAuthor(`${member.name}'s Stats Last Week`, `${discordMember.user.displayAvatarURL}`)
           .setColor(0x00AE86)
-          .setDescription('All Raids With Clan.')
-          .addField("Rank", `${member.lfRank}`)
-          .addField('Tickets Earned', `${member.lfTickets}`)
-          .addField('Raid Attacks', `${member.lfAttacks}`)
-          .addField('Total Damage', `${numeral(member.lfDmg).format('0.00')}M`)
+          .setDescription('How much have you improved?')
+          .addField('Max Stage', `${member.lastWeekMaxStage}`, true)
+          .addField('Tickets Earned', `${member.lastWeekTickets}`, true)
+          .addField('Pet Levels', `${member.lastWeekPetLevels}`, true)
+          .addField('Raid Level', `${member.lastWeekRaidLevel}`, true)
+          .addField('Total Damage', `${numeral(member.lastWeekDmg).format('0.00')}M`, true)
+          .addField('Average Hit Damage', `${numeral(member.lastWeekAvgHit).format('0.00')}K`, true)
 				resolve(embed)
 			})
 
