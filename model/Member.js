@@ -14,6 +14,7 @@ class Member {
 		this.tickets = parseInt(tickets)
 		this.maxStage = parseInt(maxStage)
 		this.skillPoints = parseInt(skillPoints)
+    this.petLevels = parseInt(petLevels)
 		this.craftingShards = parseInt(craftingShards)
 		this.heroMasteries = parseInt(heroMasteries)
 		switch (role) {

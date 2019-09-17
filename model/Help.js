@@ -13,13 +13,9 @@ class Help {
 			],
 			"Statistics": [
 				{
-					title: "mystats",
-					description: "\tDisplays your clan stats."
-				},
-				{
 					title: "stats",
-					description: "\tDisplays clan stats of another member.",
-					postfix: "[clan member]"
+					description: "\tDisplays clan stats for you or another member.",
+					postfix: "@[clan member]"
 				},
 			],
 			"Miscellaneous": [
