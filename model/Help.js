@@ -3,7 +3,7 @@
  */
 class Help {
 
-	constructor() {
+	constructor() { 
 		this.commandHelp = {
 			"Setup": [
 				{
