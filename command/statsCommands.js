@@ -151,7 +151,7 @@ async function getStats(channel, guild_id, nickname, discordMember) {
 					.addField('Max Stage', `${member.maxStage}`, true)
           .addField('Tickets Earned', `${member.tickets}`, true)
           .addField('Skill Points', `${member.skillPoints}`, true)
-          .addField('Pet Levels', `${member.petLevels}`)
+          .addField('Pet Levels', `${member.petLevels}`, true)
           .addField('Crafting Shards Spent', `${member.craftingShards}`, true)
           .addField('Hero Masteries', `${member.heroMasteries}`, true)
           .addField('Raid Level', `${member.raidLevel}`, true)
