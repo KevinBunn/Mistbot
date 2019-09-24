@@ -77,7 +77,6 @@ client.on("message", message => {
 					// find by id
           let userId = message.mentions.users.first().id
           message.guild.members.find((member) => {
-            console.log (member.id, userId)
             if (member.id === userId) {
               statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
             }
