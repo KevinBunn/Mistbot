@@ -92,8 +92,9 @@ client.on("message", message => {
 					statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
 				});
 			}
-		}
-    else if (splitContent[0] === `${config.prefix}raid`) {
+		} else if (splitContent[0] === `${config.prefix}top`) {
+			statsCommand.getTopStats(message.channel, message.guild.id)
+		} else if (splitContent[0] === `${config.prefix}raid`) {
     	if (splitContent[1] === `start`) {
     		if (splitContent[2] === null) {
     			sendMissingTimerError(message.channel.error)

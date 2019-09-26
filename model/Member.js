@@ -3,9 +3,9 @@
  */
 class Member {
 	constructor(id, name, weeklyRank, raidLevel, raidCardLevel,
-							tickets, maxStage, skillPoints, petLevels, craftingShards, heroMasteries, role,
-							weeklyDmg, weeklyAvgHit, lastWeekDmg, lastWeekAvgHit,
-							lastWeekMaxStage, lastWeekTickets, lastWeekRaidLevel, lastWeekPetLevels) {
+							tickets, maxStage, skillPoints, petLevels, craftingShards, tournamentPoints, role,
+							weeklyDmg, weeklyAvgHit, avgHitLW,
+							maxStageLW, skillPointsLW, petLevelsLW, ticketsLW, raidLevelLW, tournamentPointsLW) {
     this.id = id
 		this.name = name
     this.weeklyRank = parseInt(weeklyRank)
@@ -16,7 +16,7 @@ class Member {
 		this.skillPoints = parseInt(skillPoints)
     this.petLevels = parseInt(petLevels)
 		this.craftingShards = parseInt(craftingShards)
-		this.heroMasteries = parseInt(heroMasteries)
+    this.tournamentPoints = parseInt(tournamentPoints)
 		switch (role) {
       case 'Leader':
         this.role = 'Grand Master'
@@ -36,14 +36,15 @@ class Member {
       default:
         break
     }
-		this.weeklyDmg = parseFloat(weeklyDmg)
+		this.weeklyDmg = parseInt(weeklyDmg)
 		this.weeklyAvgHit = parseFloat(weeklyAvgHit)
-    this.lastWeekDmg = parseFloat(lastWeekDmg)
-    this.lastWeekAvgHit = parseFloat(lastWeekAvgHit)
-		this.lastWeekMaxStage = parseFloat(lastWeekMaxStage)
-		this.lastWeekTickets = parseFloat(lastWeekTickets)
-		this.lastWeekRaidLevel = parseFloat(lastWeekRaidLevel)
-		this.lastWeekPetLevels = parseFloat(lastWeekPetLevels)
+    this.avgHitLW = parseFloat(avgHitLW)
+		this.maxStageLW = parseInt(maxStageLW)
+		this.ticketsLW = parseInt(ticketsLW)
+		this.raidLevelLW = parseInt(raidLevelLW)
+		this.petLevelsLW = parseInt(petLevelsLW)
+    this.skillPointsLW = parseInt(skillPointsLW)
+    this.tournamentPointsLW = parseInt(tournamentPointsLW)
 	}
 }
 

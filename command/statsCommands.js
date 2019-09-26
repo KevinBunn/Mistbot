@@ -71,28 +71,30 @@ function getWeeklyStats(channel, guild_id) {
  * @param {Channel} channel - The discord channel to send message to
  * @param {Integer} - number passed in from message.content
  */
-function getTopDamage(channel, guild_id, number) {
-	clanInfo.getMembersInfo(channel, guild_id).then((data) => {
-		if (number <= 20 && number > 0) {
-			const topDamageMembers = data.getTopDamage(number);
-			const embed = new Discord.RichEmbed()
-			.setAuthor(`Top ${number} members - Total Damage`)
-			.setColor(0x00AE86);
-			for (let i = 0; i < topDamageMembers.length; i++) {
-				const memberName = topDamageMembers[i].name;
-				const memberTotal = numeral(topDamageMembers[i].totalDamage).format('0,0');
-				embed.addField(`${i + 1}. ${memberName}`, `\t${memberTotal}M`, true);
-			}
+function getTopStats (channel, guild_id) {
+  clanInfo.getMembersInfo(channel, guild_id).then((data) => {
+  	// get all the members who qualify
+  	const topSkillData = data.getTopIncreasedByStat('skillPoints')
+		const topMaxStageData = data.getTopIncreasedByStat('maxStage')
+		const topTicketsData = data.getTopIncreasedByStat('tickets')
+		const topPetLevelsData = data.getTopIncreasedByStat('petLevels')
+		const topTournamentData = data.getTopIncreasedByStat('tournamentPoints')
+		// Start constructing the embed
+		const embed = new Discord.RichEmbed()
+			.setTitle('These are the members with the most gains')
+			.setAuthor(`📊 Weekly Statistics Report`)
+			.setColor(0x00AE86)
+			.setTimestamp()
 
-			channel.send({embed});
-		}
-		else {
-			channel.send("Please specify a number between 1 and 20");
-		}
-	})
-	.catch((error) => {
-        handleStatsError(channel, error);
-  });
+		// Put in the fields, data[0] are members, data[1] is the max value returned
+		embed.addField('Stages Increased', `${topMaxStageData[0]} - ${topMaxStageData[1]}`)
+    embed.addField('Skill Points Earned', `${topSkillData[0]} - ${topSkillData[1]}`)
+    embed.addField('Tickets Collected', `${topTicketsData[0]} - ${topTicketsData[1]}`)
+    embed.addField('Pet Levels Increased', `${topPetLevelsData[0]} - ${topPetLevelsData[1]}`)
+    embed.addField('Tournament Points Gained', `${topTournamentData[0]} - ${topTournamentData[1]}`)
+    channel.send({embed});
+  })
+
 }
 
 /**
@@ -153,7 +155,7 @@ async function getStats(channel, guild_id, nickname, discordMember) {
           .addField('Skill Points', `${member.skillPoints}`, true)
           .addField('Pet Levels', `${member.petLevels}`, true)
           .addField('Crafting Shards Spent', `${member.craftingShards}`, true)
-          .addField('Hero Masteries', `${member.heroMasteries}`, true)
+          .addField('Tournament Points', `${member.tournamentPoints}`, true)
           .addField('Raid Level', `${member.raidLevel}`, true)
           .addField('Raid Card Level', `${member.raidCardLevel}`, true)
           .addField('Raid Rank', `${member.weeklyRank}`, true)
@@ -166,12 +168,13 @@ async function getStats(channel, guild_id, nickname, discordMember) {
       		.setAuthor(`${member.name}'s Stats Last Week`, `${discordMember.user.displayAvatarURL}`)
           .setColor(0x00AE86)
           .setDescription('How much have you improved?')
-          .addField('Max Stage', `+ ${member.maxStage - member.lastWeekMaxStage}`, true)
-          .addField('Tickets Earned', `+ ${member.tickets - member.lastWeekTickets}`, true)
-          .addField('Pet Levels', `+ ${member.petLevels - member.lastWeekPetLevels}`, true)
-          .addField('Raid Level', `+ ${member.raidLevel - member.lastWeekRaidLevel}`, true)
-          .addField('Total Damage', `${numeral(member.lastWeekDmg).format('0.00')}M`, true)
-          .addField('Average Hit Damage', `${numeral(member.lastWeekAvgHit).format('0.00')}K`, true)
+          .addField('Max Stage', `+ ${member.maxStage - member.maxStageLW}`, true)
+          .addField('Tickets Earned', `+ ${member.tickets - member.ticketsLW}`, true)
+					.addField('Skill Points', `+ ${member.skillPoints - member.skillPointsLW}`, true)
+          .addField('Pet Levels', `+ ${member.petLevels - member.petLevelsLW}`, true)
+					.addField('Tournament Points', `+ ${member.tournamentPoints - member.tournamentPointsLW}`, true)
+          .addField('Raid Level', `+ ${member.raidLevel - member.raidLevelLW}`, true)
+          .addField('Average Hit Damage', `${numeral(member.avgHitLW).format('0.00')}K`, true)
 				resolve(embed)
 			})
 
@@ -207,8 +210,7 @@ function setSpreadsheetId(channel, guild_id, spreadsheetId) {
 }
 
 module.exports = {
-	getWeeklyStats: getWeeklyStats,
-	getTopDamage: getTopDamage,
+	getTopStats: getTopStats,
 	getStats: getStats,
   getTopParticipation: getTopParticipation,
   setSpreadsheetId: setSpreadsheetId,
