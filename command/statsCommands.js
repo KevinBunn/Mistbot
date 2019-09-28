@@ -78,7 +78,7 @@ function getTopStats (channel, guild_id) {
 		const topMaxStageData = data.getTopIncreasedByStat('maxStage')
 		const topTicketsData = data.getTopIncreasedByStat('tickets')
 		const topPetLevelsData = data.getTopIncreasedByStat('petLevels')
-		const topTournamentData = data.getTopIncreasedByStat('tournamentPoints')
+		// const topTournamentData = data.getTopIncreasedByStat('tournamentPoints')
 		// Start constructing the embed
 		const embed = new Discord.RichEmbed()
 			.setTitle('These are the members with the most gains')
@@ -91,7 +91,7 @@ function getTopStats (channel, guild_id) {
     embed.addField('Skill Points Earned', `${topSkillData[0]} - ${topSkillData[1]}`)
     embed.addField('Tickets Collected', `${topTicketsData[0]} - ${topTicketsData[1]}`)
     embed.addField('Pet Levels Increased', `${topPetLevelsData[0]} - ${topPetLevelsData[1]}`)
-    embed.addField('Tournament Points Gained', `${topTournamentData[0]} - ${topTournamentData[1]}`)
+    // embed.addField('Tournament Points Gained', `${topTournamentData[0]} - ${topTournamentData[1]}`)
     channel.send({embed});
   })
 
