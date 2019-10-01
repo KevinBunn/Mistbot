@@ -124,10 +124,12 @@ function recruitApplicant(channel, author, guildId, user) {
     let guildRef = guildApplicantRef.child(guildId);
     guildRef.once("value")
       .then((snapshot) => {
-        if (snapshot.hasChild(`${author.id}`)) {
+        if (snapshot.hasChild(`${user.id}`)) {
           guildRef.child(user.id).remove()
         }
       });
+    // message user clan code and passcode
+    user.send('You have been recruited to Mistborns! Here are the Clan Credentials.\n' + 'Code: gg8e6\n' + 'Pass: 8515')
     // add role to user
     user.addRole('368984671100600321').then(() => {
       channel.send(`Welcome to Mistborns <@${user.id}>!\n` +
@@ -136,10 +138,9 @@ function recruitApplicant(channel, author, guildId, user) {
       `**2.** Please read the clan <#392936605905846274>.\n` +
       `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
       `**4.** Let us know if you have any questions!`)
-
     })
   } else{
-    channel.send('You do not have permissions to remove applicants')
+    channel.send('You do not have permissions to recruit applicants')
   }
 }
 
