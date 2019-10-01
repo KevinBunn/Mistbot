@@ -56,10 +56,10 @@ client.on("message", message => {
           if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
             applicantCommands.removeApplicant(message.channel, message.member, message.guild.id, member);
           }
-      	});
-			} else {
+        });
+      } else {
         message.channel.send("Please specify a user");
-			}
+      }
 		} else if (message.content === `${config.prefix}justdoit`) {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content === `${config.prefix}whatdoesthatmean`) {
@@ -121,6 +121,19 @@ client.on("message", message => {
 					tournamentCommands.getTournament(message.channel);
 					break;
 			}
+		} else if (splitContent[0] === `${config.prefix}recruit`) {
+      // let clanChannel = client.channels.find('id','428585515252711434')
+      let clanChannel = client.channels.find('id','391394106292830208')
+      if (splitContent[1] !== undefined) {
+        const memberName = splitContent[1];
+        message.guild.members.find((member) => {
+          if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
+            applicantCommands.recruitApplicant(clanChannel, message.member, message.guild.id, member);
+          }
+        });
+      } else {
+        message.channel.send("Please specify a user");
+      }
 		}
 		else if (message.content.startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)

@@ -119,8 +119,33 @@ function getWaitingListSpot(guildRef) {
     });
 }
 
+function recruitApplicant(channel, author, guildId, user) {
+  if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Grand Master')) {
+    let guildRef = guildApplicantRef.child(guildId);
+    guildRef.once("value")
+      .then((snapshot) => {
+        if (snapshot.hasChild(`${author.id}`)) {
+          guildRef.child(user.id).remove()
+        }
+      });
+    // add role to user
+    user.addRole('368984671100600321').then(() => {
+      channel.send(`Welcome to Mistborns <@${user.id}>!\n` +
+      `When you have the time, please look over the following:\n` +
+      `**1.** Make sure your discord nickname matches your IGN.\n` +
+      `**2.** Please read the clan <#392936605905846274>.\n` +
+      `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
+      `**4.** Let us know if you have any questions!`)
+
+    })
+  } else{
+    channel.send('You do not have permissions to remove applicants')
+  }
+}
+
 module.exports = {
   addApplicant: addApplicant,
   getApplicants: getApplicants,
-  removeApplicant: removeApplicant
+  removeApplicant: removeApplicant,
+  recruitApplicant: recruitApplicant
 }
