@@ -9,8 +9,8 @@ function getThinkingGif(channel) {
 	channel.send(thinking);
 }
 
-function getMistwraithCode(channel) {
-	channel.send("Mistwraith Clan Code: 3krx2");
+function getSisterClan(channel) {
+	channel.send("Join our ally clan for newer players!\nhttps://discord.gg/VEA9xqG");
 }
 
 function getAbbreviations(channel) {
@@ -20,6 +20,6 @@ function getAbbreviations(channel) {
 module.exports = {
 	getJustDoItGif: getJustDoItGif,
 	getThinkingGif: getThinkingGif,
-	getMistwraithCode: getMistwraithCode,
+  getSisterClan: getSisterClan,
 	getAbbreviations: getAbbreviations
 }
