@@ -121,8 +121,8 @@ client.on("message", message => {
 					break;
 			}
 		} else if (splitContent[0] === `${config.prefix}recruit`) {
-      //let clanChannel = client.channels.find('id','428585515252711434')
-      let clanChannel = client.channels.find('id','391394106292830208')
+      let clanChannel = client.channels.find('id','428585515252711434')
+      // let clanChannel = client.channels.find('id','391394106292830208')
       if (!_.isEmpty(message.mentions.users)) {
         // find by id
         let userId = message.mentions.users.first().id
