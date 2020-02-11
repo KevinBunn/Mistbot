@@ -37,19 +37,18 @@ function sendMissingCycleError (channel) {
 // Create an event listener for messages
 client.on("message", message => {
 	try {
-		message.content = message.content.toLowerCase()
 		let splitContent = splitString(message.content);
-		if (!message.content.startsWith(config.prefix) || message.author.bot) {
-    	} else if (splitContent[0] === `${config.prefix}setspreadsheet`) {
+		if (!message.content.toLowerCase().startsWith(config.prefix) || message.author.bot) {
+    	} else if (splitContent[0].toLowerCase() === `${config.prefix}setspreadsheet`) {
       if (splitContent[1] !== undefined)
         statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
       else
         message.channel.send("Please specify a spreadsheet id.");
-    } else if (splitContent[0] === `${config.prefix}apply`) {
+    } else if (splitContent[0].toLowerCase() === `${config.prefix}apply`) {
 			applicantCommands.addApplicant(message.channel, message.guild.id, message.author, splitContent)
     } else if (message.content === `${config.prefix}applicants`) {
 			applicantCommands.getApplicants(message.channel, message.guild.id)
-    } else if (splitContent[0] === `${config.prefix}removeapplicant`) {
+    } else if (splitContent[0].toLowerCase() === `${config.prefix}removeapplicant`) {
       if (splitContent[1] !== undefined) {
         const memberName = splitContent[1];
         message.guild.members.find((member) => {
@@ -60,17 +59,17 @@ client.on("message", message => {
       } else {
         message.channel.send("Please specify a user");
       }
-		} else if (message.content === `${config.prefix}justdoit`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}justdoit`) {
 			miscCommands.getJustDoItGif(message.channel);
-		} else if (message.content === `${config.prefix}whatdoesthatmean`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}whatdoesthatmean`) {
 			miscCommands.getAbbreviations(message.channel);
-		} else if (message.content === `${config.prefix}redirect`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}redirect`) {
 			miscCommands.getSisterClan(message.channel);
-		} else if (message.content === `${config.prefix}thinking`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}thinking`) {
 			miscCommands.getThinkingGif(message.channel);
-		} else if (splitContent[0] === (`${config.prefix}help`)) {
+		} else if (splitContent[0].toLowerCase() === (`${config.prefix}help`)) {
             helpCommands.getHelp(message.channel, splitContent[1]);
-		} else if (splitContent[0] === `${config.prefix}stats`) {
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}stats`) {
 			if (splitContent[1] !== undefined) {
 				if (!_.isEmpty(message.mentions.users)) {
 					// find by id
@@ -91,9 +90,9 @@ client.on("message", message => {
 					statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
 				});
 			}
-		} else if (splitContent[0] === `${config.prefix}top`) {
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {
 			statsCommand.getTopStats(message.channel, message.guild.id)
-		} else if (splitContent[0] === `${config.prefix}raid`) {
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}raid`) {
     	if (splitContent[1] === `start`) {
     		if (splitContent[2] === null) {
     			sendMissingTimerError(message.channel.error)
@@ -111,7 +110,7 @@ client.on("message", message => {
 			} else if (splitContent[1] === 'end') {
         timerCommands.stopTimer(message.channel)
 			}
-		} else if (splitContent[0] === `${config.prefix}tournament`) {
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}tournament`) {
 			switch (splitContent[1]) {
 				case 'list':
 					tournamentCommands.getTournamentList(message.channel);
@@ -120,7 +119,7 @@ client.on("message", message => {
 					tournamentCommands.getTournament(message.channel);
 					break;
 			}
-		} else if (splitContent[0] === `${config.prefix}recruit`) {
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}recruit`) {
       let clanChannel = client.channels.find('id','428585515252711434')
       // let clanChannel = client.channels.find('id','391394106292830208')
       if (!_.isEmpty(message.mentions.users)) {
@@ -136,7 +135,7 @@ client.on("message", message => {
         message.channel.send('Please @ mention another user')
       }
 		}
-		else if (message.content.startsWith(config.prefix)) {
+		else if (message.content.toLowerCase().startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}
 	} catch (error) {
