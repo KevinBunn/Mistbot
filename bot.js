@@ -63,9 +63,11 @@ client.on("message", message => {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}whatdoesthatmean`) {
 			miscCommands.getAbbreviations(message.channel);
-		} else if (message.content.toLowerCase() === `${config.prefix}redirect`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
-		} else if (message.content.toLowerCase() === `${config.prefix}thinking`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {
+      applicantCommands.joinWok(message.channel, message.member);
+    } else if (message.content.toLowerCase() === `${config.prefix}thinking`) {
 			miscCommands.getThinkingGif(message.channel);
 		} else if (splitContent[0].toLowerCase() === (`${config.prefix}help`)) {
             helpCommands.getHelp(message.channel, splitContent[1]);

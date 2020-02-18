@@ -10,7 +10,7 @@ function getThinkingGif(channel) {
 }
 
 function getSisterClan(channel) {
-	channel.send("Join our ally clan for newer players!\nhttps://discord.gg/VEA9xqG");
+	channel.send("Wrath of Khans clan code: nmm94\nAfter you've joined, please type ```m!joinwok``` to give yourself the recruit role.");
 }
 
 function getAbbreviations(channel) {
