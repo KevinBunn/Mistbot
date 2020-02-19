@@ -66,7 +66,8 @@ client.on("message", message => {
 		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {
-      applicantCommands.joinWok(message.channel, message.member);
+      let clanChannel = client.channels.find('id','679116561578983424')
+      applicantCommands.joinWok(message.member, clanChannel);
     } else if (message.content.toLowerCase() === `${config.prefix}thinking`) {
 			miscCommands.getThinkingGif(message.channel);
 		} else if (splitContent[0].toLowerCase() === (`${config.prefix}help`)) {

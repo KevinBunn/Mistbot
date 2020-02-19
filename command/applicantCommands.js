@@ -13,7 +13,7 @@ const guildApplicantRef = database.ref("server_applicants");
 const Applicant = require('../model/Applicant')
 
 async function addApplicant(channel, guildId, author, args) {
-  if (parseInt(args[1]) < 20000) {
+  if (parseInt(args[1]) < 30000) {
     channel.send('Looks like your Max Stage is below Mistborn requirements, you can join our sister clan for newer players')
     miscCommands.getSisterClan(channel)
   }
@@ -138,6 +138,7 @@ function recruitApplicant(channel, author, guildId, user) {
     // message user clan code and passcode
     user.send('You have been recruited to Mistborns! Here are the Clan Credentials.\n' + 'Code: gg8e6\n' + 'Pass: 8515')
     // add role to user
+    user.addRole('679188640999538708')
     user.addRole('368984671100600321').then(() => {
       channel.send(`Welcome to Mistborns <@${user.id}>!\n` +
       `When you have the time, please look over the following:\n` +
@@ -151,9 +152,16 @@ function recruitApplicant(channel, author, guildId, user) {
   }
 }
 
-function joinWok(channel, member) {
-  member.addRole('679115153199071262')
-  channel.send('You\'ve been given the Recruit Role. Welcome to Wrath of Khans!')
+function joinWok(member, clanChannel) {
+  member.addRole('679191376386326528')
+  member.addRole('679115153199071262').then(() => {
+    clanChannel.send(`Welcome to Wrath of Khans <@${member.id}>!\n` +
+      `When you have the time, please look over the following:\n` +
+      `**1.** Make sure your discord nickname matches your IGN.\n` +
+      `**2.** Please read the clan <#679118612010762250>.\n` +
+      `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
+      `**4.** Let us know if you have any questions!`);
+  })
 }
 
 module.exports = {
