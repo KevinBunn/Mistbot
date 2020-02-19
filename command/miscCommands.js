@@ -9,6 +9,11 @@ function getThinkingGif(channel) {
 	channel.send(thinking);
 }
 
+function getDanceGif(channel) {
+  const dancing = new Discord.Attachment(`assets/loseYourself.gif`, `loseYourself.gif`)
+  channel.send(dancing);
+}
+
 function getSisterClan(channel) {
 	channel.send("Wrath of Khans clan code: nmm94\nAfter you've joined, please type ```m!joinwok``` to give yourself the recruit role.");
 }
@@ -20,6 +25,7 @@ function getAbbreviations(channel) {
 module.exports = {
 	getJustDoItGif: getJustDoItGif,
 	getThinkingGif: getThinkingGif,
+	getDanceGif: getDanceGif,
   getSisterClan: getSisterClan,
 	getAbbreviations: getAbbreviations
 }

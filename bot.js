@@ -63,7 +63,9 @@ client.on("message", message => {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}whatdoesthatmean`) {
 			miscCommands.getAbbreviations(message.channel);
-		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}dance`) {
+      miscCommands.getDanceGif(message.channel);
+    } else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {
       let clanChannel = client.channels.find('id','679116561578983424')
