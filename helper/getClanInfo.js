@@ -22,9 +22,9 @@ function getMembersInfo(role) {
 	const minCol = "A";
 	const maxCol = "U";
   const maxRow = 51;
-  const clan = new Clans().getClanByName(role)[0]
+  const clan = new Clans().getClanByName(role)[0];
   console.log(clan)
-  const spreadSheetId = clan.spreadSheetId
+  const spreadSheetId = clan.spreadSheetId;
   if (!spreadSheetId) {
     throw new Error("Spreadsheet id has not been set. Set id via set_spreadsheet_id command.");
   }

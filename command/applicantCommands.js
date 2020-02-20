@@ -6,6 +6,8 @@ const miscCommands = require('./miscCommands')
 /**
  * Importing Firebase.
  */
+
+//TODO: remove firebase.
 const firebase = require("../config/firebaseConfig");
 const database = firebase.database;
 const guildApplicantRef = database.ref("server_applicants");

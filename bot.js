@@ -31,7 +31,7 @@ function sendMissingTimerError (channel) {
 }
 
 function sendMissingCycleError (channel) {
-  channel.send('Please specify a cycle.')
+	channel.send('Please specify a cycle.')
 }
 
 // Create an event listener for messages
@@ -39,51 +39,51 @@ client.on("message", message => {
 	try {
 		let splitContent = splitString(message.content);
 		if (!message.content.toLowerCase().startsWith(config.prefix) || message.author.bot) {
-    	} else if (splitContent[0].toLowerCase() === `${config.prefix}setspreadsheet`) {
-      if (splitContent[1] !== undefined)
-        statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
-      else
-        message.channel.send("Please specify a spreadsheet id.");
-    } else if (splitContent[0].toLowerCase() === `${config.prefix}apply`) {
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}setspreadsheet`) {
+			if (splitContent[1] !== undefined)
+				statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
+			else
+				message.channel.send("Please specify a spreadsheet id.");
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}apply`) {
 			applicantCommands.addApplicant(message.channel, message.guild.id, message.author, splitContent)
-    } else if (message.content === `${config.prefix}applicants`) {
+		} else if (message.content === `${config.prefix}applicants`) {
 			applicantCommands.getApplicants(message.channel, message.guild.id)
-    } else if (splitContent[0].toLowerCase() === `${config.prefix}removeapplicant`) {
-      if (splitContent[1] !== undefined) {
-        const memberName = splitContent[1];
-        message.guild.members.find((member) => {
-          if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
-            applicantCommands.removeApplicant(message.channel, message.member, message.guild.id, member);
-          }
-        });
-      } else {
-        message.channel.send("Please specify a user");
-      }
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}removeapplicant`) {
+			if (splitContent[1] !== undefined) {
+				const memberName = splitContent[1];
+				message.guild.members.find((member) => {
+					if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
+						applicantCommands.removeApplicant(message.channel, message.member, message.guild.id, member);
+					}
+				});
+			} else {
+				message.channel.send("Please specify a user");
+			}
 		} else if (message.content.toLowerCase() === `${config.prefix}justdoit`) {
 			miscCommands.getJustDoItGif(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}whatdoesthatmean`) {
 			miscCommands.getAbbreviations(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}dance`) {
-      miscCommands.getDanceGif(message.channel);
-    } else if (message.content.toLowerCase() === `${config.prefix}wok`) {
+			miscCommands.getDanceGif(message.channel);
+		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {
-      let clanChannel = client.channels.find('id','679116561578983424')
-      applicantCommands.joinWok(message.member, clanChannel);
-    } else if (message.content.toLowerCase() === `${config.prefix}thinking`) {
+			let clanChannel = client.channels.find('id','679116561578983424')
+			applicantCommands.joinWok(message.member, clanChannel);
+		} else if (message.content.toLowerCase() === `${config.prefix}thinking`) {
 			miscCommands.getThinkingGif(message.channel);
 		} else if (splitContent[0].toLowerCase() === (`${config.prefix}help`)) {
-            helpCommands.getHelp(message.channel, splitContent[1]);
+			helpCommands.getHelp(message.channel, splitContent[1]);
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}stats`) {
 			if (splitContent[1] !== undefined) {
 				if (!_.isEmpty(message.mentions.users)) {
 					// find by id
-          let userId = message.mentions.users.first().id
-          message.guild.members.find((member) => {
-            if (member.id === userId) {
-              statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
-            }
-          });
+					let userId = message.mentions.users.first().id
+					message.guild.members.find((member) => {
+						if (member.id === userId) {
+							statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
+						}
+					});
 				}
 				else {
 					message.channel.send('Please @ mention another user')
@@ -91,31 +91,33 @@ client.on("message", message => {
 			}
 			else {
 				message.guild.fetchMember(message.author)
-				.then(member => {
-					// TODO: pass in member role instead
-					statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
-				});
+					.then(member => {
+						// TODO: Implement logic for handling alts. Now only handling first clan tag found, preferring Mistborns.
+						let clanName = member.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
+						statsCommand.getStats(message.channel, clanName, member.displayName, member);
+					});
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {
-      // TODO: pass in member role instead
-			statsCommand.getTopStats(message.channel, "Mistborns")
+			// TODO: check if fix works.
+			let clanName = message.author.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
+			statsCommand.getTopStats(message.channel, clanName)
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}raid`) {
-    	if (splitContent[1] === `start`) {
-    		if (splitContent[2] === null) {
-    			sendMissingTimerError(message.channel.error)
+			if (splitContent[1] === `start`) {
+				if (splitContent[2] === null) {
+					sendMissingTimerError(message.channel.error)
 				} else {
-          timerCommands.startRaidTimer(message.channel, splitContent[2])
+					timerCommands.startRaidTimer(message.channel, splitContent[2])
 				}
 			} else if (splitContent[1] === 'update') {
-        if (splitContent[2] === undefined) {
-          sendMissingTimerError(message.channel)
-        } else if (splitContent[3] === undefined) {
-        	sendMissingCycleError(message.channel)
+				if (splitContent[2] === undefined) {
+					sendMissingTimerError(message.channel)
+				} else if (splitContent[3] === undefined) {
+					sendMissingCycleError(message.channel)
 				} else {
-          timerCommands.startMidRaidTimer(message.channel, splitContent[2], splitContent[3])
+					timerCommands.startMidRaidTimer(message.channel, splitContent[2], splitContent[3])
 				}
 			} else if (splitContent[1] === 'end') {
-        timerCommands.stopTimer(message.channel)
+				timerCommands.stopTimer(message.channel)
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}tournament`) {
 			switch (splitContent[1]) {
@@ -126,27 +128,29 @@ client.on("message", message => {
 					tournamentCommands.getTournament(message.channel);
 					break;
 			}
+
+			//If Wrath ends up being closed reg, will need to change logic to choose which clan to reruit to.
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}recruit`) {
-      let clanChannel = client.channels.find('id','428585515252711434')
-      // let clanChannel = client.channels.find('id','391394106292830208')
-      if (!_.isEmpty(message.mentions.users)) {
-        // find by id
-        let userId = message.mentions.users.first().id
-        message.guild.members.find((member) => {
-          if (member.id === userId) {
-            applicantCommands.recruitApplicant(clanChannel, message.member, message.guild.id, member);
-          }
-        });
-      }
-      else {
-        message.channel.send('Please @ mention another user')
-      }
+			let clanChannel = client.channels.find('id','428585515252711434')
+			// let clanChannel = client.channels.find('id','391394106292830208')
+			if (!_.isEmpty(message.mentions.users)) {
+				// find by id
+				let userId = message.mentions.users.first().id
+				message.guild.members.find((member) => {
+					if (member.id === userId) {
+						applicantCommands.recruitApplicant(clanChannel, message.member, message.guild.id, member);
+					}
+				});
+			}
+			else {
+				message.channel.send('Please @ mention another user')
+			}
 		}
 		else if (message.content.toLowerCase().startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
 		}
 	} catch (error) {
-    console.log(error);
+		console.log(error);
 		message.channel.send('Sorry! An error occurred!');
 	}
 });
