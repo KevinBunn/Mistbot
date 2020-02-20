@@ -18,6 +18,8 @@ class Members {
 		return getStatResult(this.members, "CQParticipation")
 	}
 
+
+	//TODO: CMERGE: add clan tags for multiple clans.
 	findByName(nickname) {
 
 		for (let i = 0; i < this.members.length; i++) {

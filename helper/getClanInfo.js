@@ -18,7 +18,7 @@ const baseGoogleSpreadsheetUrl = "https://sheets.googleapis.com/v4/spreadsheets/
  */
 function getMembersInfo(role) {
   console.log('creating member info')
-	const minRow = 2;
+	const minRow = 2; //ignore first row (attribute names)
 	const minCol = "A";
 	const maxCol = "U";
   const maxRow = 51;
