@@ -136,7 +136,7 @@ function getTopStats (channel, role) {
  * @param {string} nickname - The name of the user that sent the message.
  */
 async function getStats(channel, role, nickname, discordMember) {
-  Promise.all([clanInfo.getMembersInfo(channel, role)])
+  Promise.all([clanInfo.getMembersInfo(role)])
     .then((data) => {
       const member = data[0].findByName(nickname)
       if (!member) {

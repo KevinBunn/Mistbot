@@ -16,13 +16,13 @@ const baseGoogleSpreadsheetUrl = "https://sheets.googleapis.com/v4/spreadsheets/
 /**
  * Creates a new <Members> from the google spreadsheet.
  */
-function getMembersInfo() {
+function getMembersInfo(role) {
   console.log('creating member info')
 	const minRow = 2;
 	const minCol = "A";
 	const maxCol = "U";
   const maxRow = 51;
-  const clan = new Clans().getClanByName("Mistborns")[0]
+  const clan = new Clans().getClanByName(role)[0]
   console.log(clan)
   const spreadSheetId = clan.spreadSheetId
   if (!spreadSheetId) {
