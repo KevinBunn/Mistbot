@@ -92,11 +92,13 @@ client.on("message", message => {
 			else {
 				message.guild.fetchMember(message.author)
 				.then(member => {
-					statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
+					// TODO: pass in member role instead
+					statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
 				});
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {
-			statsCommand.getTopStats(message.channel, message.guild.id)
+      // TODO: pass in member role instead
+			statsCommand.getTopStats(message.channel, "Mistborns")
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}raid`) {
     	if (splitContent[1] === `start`) {
     		if (splitContent[2] === null) {
