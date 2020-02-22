@@ -81,7 +81,7 @@ client.on("message", message => {
 					let userId = message.mentions.users.first().id
 					message.guild.members.find((member) => {
 						if (member.id === userId) {
-							statsCommand.getStats(message.channel, message.guild.id, member.displayName, member);
+							statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
 						}
 					});
 				}
@@ -93,14 +93,14 @@ client.on("message", message => {
 				message.guild.fetchMember(message.author)
 					.then(member => {
 						// TODO: Implement logic for handling alts. Now only handling first clan tag found, preferring Mistborns.
-						let clanName = member.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
-						statsCommand.getStats(message.channel, clanName, member.displayName, member);
+						// let clanName = member.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
+						statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
 					});
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {
 			// TODO: check if fix works.
-			let clanName = message.author.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
-			statsCommand.getTopStats(message.channel, clanName)
+			// let clanName = message.author.roles.find("name", "Mistborns") ? "Mistborns" : "Wrath of Khans";
+			statsCommand.getTopStats(message.channel, "Mistborns")
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}raid`) {
 			if (splitContent[1] === `start`) {
 				if (splitContent[2] === null) {
