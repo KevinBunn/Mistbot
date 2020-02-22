@@ -107,7 +107,7 @@ function getApplicants(channel, guildId) {
 }
 
 function removeApplicant(channel, author, guildId, user) {
-  if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Grand Master')) {
+  if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
     let guildRef = guildApplicantRef.child(guildId);
     guildRef.child(user.id).remove()
       .then(function() {
@@ -129,7 +129,7 @@ function getWaitingListSpot(guildRef) {
 }
 
 function recruitApplicant(channel, author, guildId, user) {
-  if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Grand Master')) {
+  if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
     let guildRef = guildApplicantRef.child(guildId);
     guildRef.once("value")
       .then((snapshot) => {
