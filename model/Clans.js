@@ -15,7 +15,7 @@ class Clans {
       "Wrath of Khans": [
         {
           code: "nmm94",
-          tag: "WoK |",
+          tag: "WoK|",
           spreadSheetId: "1QucMi94udJ54t2ycUpHUzomhqNCTiypCp4i4trSuunA",
           name: "Wrath of Khans"
         }

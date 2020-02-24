@@ -74,11 +74,11 @@ const clanInfo = require("../helper/getClanInfo");
 function getTopStats (channel, role) {
   clanInfo.getMembersInfo(role).then((data) => {
   	// get all the members who qualify
-  	const topSkillData = data.getTopIncreasedByStat('skillPoints')
-		const topMaxStageData = data.getTopIncreasedByStat('maxStage')
-		const topTicketsData = data.getTopIncreasedByStat('tickets')
-		const topPetLevelsData = data.getTopIncreasedByStat('petLevels')
-		const topTournamentData = data.getTopIncreasedByStat('tournamentPoints')
+  	const topSkillData = data.members.getTopIncreasedByStat('skillPoints')
+		const topMaxStageData = data.members.getTopIncreasedByStat('maxStage')
+		const topTicketsData = data.members.getTopIncreasedByStat('tickets')
+		const topPetLevelsData = data.members.getTopIncreasedByStat('petLevels')
+		const topTournamentData = data.members.getTopIncreasedByStat('tournamentPoints')
 		// Start constructing the embed
 		const embed = new Discord.RichEmbed()
 			.setTitle('These are the members with the most gains')
@@ -136,11 +136,11 @@ function getTopStats (channel, role) {
  * @param {string} nickname - The name of the user that sent the message.
  */
 async function getStats(channel, role, nickname, discordMember) {
-  Promise.all([clanInfo.getMembersInfo(role)])
+  clanInfo.getMembersInfo(role)
     .then((data) => {
-      const member = data[0].findByName(nickname)
+      const member = data.members.findByName(nickname, data.clanTag)
       if (!member) {
-        channel.send("Sorry, not a clan member");
+        channel.send("Could not find you in the clan, does your name match?");
       }
       else {
         // just separating these into promises so that it separates the embeds correctly.

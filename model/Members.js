@@ -20,13 +20,12 @@ class Members {
 
 
 	//TODO: CMERGE: add clan tags for multiple clans.
-	findByName(nickname) {
-
+	findByName(nickname, clanTag) {
 		for (let i = 0; i < this.members.length; i++) {
 			if (this.members[i].name !== undefined) {
-        if (this.members[i].name.includes('<MST>')) {
-          let split1 = this.members[i].name.split('>')
-          let nameWithoutClantag = split1[1].trim()
+        if (this.members[i].name.includes(clanTag)) {
+        	// we can just replace it with the built in string function, trim it in case of space after tag.
+          let nameWithoutClantag = this.members[i].name.replace(clanTag, '').trim()
           this.members[i].name = nameWithoutClantag
         }
 				if (this.members[i].name.toLowerCase() === nickname.toLowerCase()) {
