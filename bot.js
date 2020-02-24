@@ -34,11 +34,34 @@ function sendMissingCycleError (channel) {
 	channel.send('Please specify a cycle.')
 }
 
+//Retrieve the id of the primary clan of the user. Biased to select Mist over WoK.
+function getPrimaryClan (member) {
+    inMist = member.roles.find(role => role.id == '679188640999538708');
+    inWoK = member.roles.find(role => role.id == '679191376386326528');
+    if (inMist) {
+        return inMist;
+    } else if (inWoK) {
+        return inWoK;
+    } else {
+        return null;
+    }
+}
+
 // Create an event listener for messages
 client.on("message", message => {
 	try {
 		let splitContent = splitString(message.content);
 		if (!message.content.toLowerCase().startsWith(config.prefix) || message.author.bot) {
+		
+		// Use this if-else to check for connection	
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}helloworld`) {
+			message.channel.send("We are go!");
+
+    } else if (splitContent[0].toLowerCase() === `${config.prefix}gc`) {
+        
+        role = getPrimaryClan(message.member);
+        message.channel.send(role.name);
+
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}setspreadsheet`) {
 			if (splitContent[1] !== undefined)
 				statsCommand.setSpreadsheetId(message.channel, message.guild.id, splitContent[1]);
@@ -80,8 +103,12 @@ client.on("message", message => {
 					// find by id
 					let userId = message.mentions.users.first().id
 					message.guild.members.find((member) => {
-						if (member.id === userId) {
-							statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
+              if (member.id === userId) {
+                  if (getPrimaryClan(member)) {
+                      statsCommand.getStats(message.channel, getPrimaryClan(member).name, member.displayName, member);
+                  } else {
+                      message.channel.send('Please @ mention a member of a clan.');
+                  }
 						}
 					});
 				}
@@ -93,8 +120,12 @@ client.on("message", message => {
 				message.guild.fetchMember(message.author)
 					.then(member => {
 						// TODO: Implement logic for handling alts. Now only handling first clan tag found, preferring Mistborns.
-						// let clanName = member.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
-						statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
+              if (getPrimaryClan(member)) {
+                  statsCommand.getStats(message.channel, getPrimaryClan(member).name, member.displayName, member);
+              } else {
+                  message.channel.send('You are not in a recognized clan. No statistics available.');
+              }
+              
 					});
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {
@@ -156,4 +187,5 @@ client.on("message", message => {
 });
 
 client.login(config.token);
+console.log("printing after log");
 
