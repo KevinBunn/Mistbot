@@ -46,18 +46,18 @@ client.on("message", message => {
 				message.channel.send("Please specify a spreadsheet id.");
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}apply`) {
 			applicantCommands.addApplicant(message.channel, message.guild.id, message.author, splitContent)
-		} else if (message.content === `${config.prefix}applicants`) {
-			applicantCommands.getApplicants(message.channel, message.guild.id)
+		} else if (splitContent[0] === `${config.prefix}applicants`) {
+			applicantCommands.getApplicants(message.channel, message.guild.id, splitContent)
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}removeapplicant`) {
-			if (splitContent[1] !== undefined) {
-				const memberName = splitContent[1];
+			if (splitContent[1] !== undefined || splitContent[2]) {
+				const memberName = splitContent[2];
 				message.guild.members.find((member) => {
 					if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
-						applicantCommands.removeApplicant(message.channel, message.member, message.guild.id, member);
+						applicantCommands.removeApplicantFromClan(message.channel, message.member, message.guild.id, member, splitContent);
 					}
 				});
 			} else {
-				message.channel.send("Please specify a user");
+				message.channel.send("Please specify a clan and a user");
 			}
 		} else if (message.content.toLowerCase() === `${config.prefix}justdoit`) {
 			miscCommands.getJustDoItGif(message.channel);
@@ -92,9 +92,14 @@ client.on("message", message => {
 			else {
 				message.guild.fetchMember(message.author)
 					.then(member => {
-						// TODO: Implement logic for handling alts. Now only handling first clan tag found, preferring Mistborns.
-						// let clanName = member.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
-						statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
+						// THIS IS TEMPORARY UNTIL WE CAN GET BOTH CLANS IN
+            if (member.roles.find('name', 'Wrath of Khans') && !member.roles.find('name', 'Mistborns')) {
+            	message.channel.send("Right now the bot only supports members in Mistborns, we are currently working on Wraths of Khans support.")
+						} else {
+              // TODO: Implement logic for handling alts. Now only handling first clan tag found, preferring Mistborns.
+              // let clanName = member.roles.includes(e => e.name = "Mistborns") ? "Mistborns" : "Wrath of Khans";
+              statsCommand.getStats(message.channel, "Mistborns", member.displayName, member);
+						}
 					});
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {
@@ -131,19 +136,28 @@ client.on("message", message => {
 
 			//If Wrath ends up being closed reg, will need to change logic to choose which clan to reruit to.
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}recruit`) {
-			let clanChannel = client.channels.find('id','428585515252711434')
-			// let clanChannel = client.channels.find('id','391394106292830208')
-			if (!_.isEmpty(message.mentions.users)) {
+      let clanChannel;
+      let validClan = false;
+      if (splitContent[1] === "mistborns") {
+        clanChannel = client.channels.find('id', '428585515252711434')
+        validClan = true
+      }
+			else if (splitContent[1] === "wok") {
+        clanChannel = client.channels.find('id', '679116561578983424')
+        validClan = true
+      }
+
+			if (!_.isEmpty(message.mentions.users) && validClan) {
 				// find by id
 				let userId = message.mentions.users.first().id
 				message.guild.members.find((member) => {
 					if (member.id === userId) {
-						applicantCommands.recruitApplicant(clanChannel, message.member, message.guild.id, member);
+						applicantCommands.recruitApplicant(message.channel, clanChannel, message.member, message.guild.id, member, splitContent);
 					}
 				});
 			}
 			else {
-				message.channel.send('Please @ mention another user')
+				message.channel.send('Please specify a valid clan and @ mention another user')
 			}
 		}
 		else if (message.content.toLowerCase().startsWith(config.prefix)) {
