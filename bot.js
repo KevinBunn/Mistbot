@@ -52,13 +52,13 @@ client.on("message", message => {
 	try {
 		let splitContent = splitString(message.content);
 		if (!message.content.toLowerCase().startsWith(config.prefix) || message.author.bot) {
-		
-		// Use this if-else to check for connection	
+
+		// Use this if-else to check for connection
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}helloworld`) {
 			message.channel.send("We are go!");
 
     } else if (splitContent[0].toLowerCase() === `${config.prefix}gc`) {
-        
+
         role = getPrimaryClan(message.member);
         message.channel.send(role.name);
 
@@ -88,7 +88,9 @@ client.on("message", message => {
 			miscCommands.getAbbreviations(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}dance`) {
 			miscCommands.getDanceGif(message.channel);
-		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
+		} else if (message.content.toLowerCase() === `${config.prefix}tobattle`) {
+      miscCommands.getToBattleGif(message.channel);
+    } else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {
 			let clanChannel = client.channels.find('id','679116561578983424')
@@ -125,7 +127,7 @@ client.on("message", message => {
               } else {
                   message.channel.send('You are not in a recognized clan. No statistics available.');
               }
-              
+
 					});
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {

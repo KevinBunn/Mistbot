@@ -9,6 +9,11 @@ function getThinkingGif(channel) {
 	channel.send(thinking);
 }
 
+function getToBattleGif(channel) {
+  const toBattle = new Discord.Attachment(`assets/tobattle.gif`, `tobattle.gif`)
+  channel.send(toBattle);
+}
+
 function getDanceGif(channel) {
   const dancing = new Discord.Attachment(`assets/loseYourself.gif`, `loseYourself.gif`)
   channel.send(dancing);
@@ -25,6 +30,7 @@ function getAbbreviations(channel) {
 module.exports = {
 	getJustDoItGif: getJustDoItGif,
 	getThinkingGif: getThinkingGif,
+	getToBattleGif: getToBattleGif,
 	getDanceGif: getDanceGif,
   getSisterClan: getSisterClan,
 	getAbbreviations: getAbbreviations
