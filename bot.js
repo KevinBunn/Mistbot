@@ -131,9 +131,15 @@ client.on("message", message => {
 					});
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}top`) {
-			// TODO: check if fix works.
-			// let clanName = message.author.roles.find("name", "Mistborns") ? "Mistborns" : "Wrath of Khans";
-			statsCommand.getTopStats(message.channel, "Mistborns")
+
+			let clanName;
+			if (splitContent[1] === 'mistborns') {
+				clanName = 'Mistborns'
+			}
+			else if (splitContent[1] === 'wok') {
+				clanName = 'Wrath of Khans'
+			}
+			statsCommand.getTopStats(message.channel, clanName)
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}raid`) {
 			if (splitContent[1] === `start`) {
 				if (splitContent[2] === null) {
