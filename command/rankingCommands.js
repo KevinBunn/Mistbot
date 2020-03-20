@@ -6,17 +6,17 @@ const Discord = require("discord.js");
 
 const clanInfo = require("../helper/getClanInfo");
 
-function getMaxStageRankings (channel, role) {
+function getStatRankings (stat, channel, role) {
     clanInfo.getMembersInfo(role).then((data) => {
-        //get max stage of each member.
-        const rankings = data.members.getMaxStages();
+        //get sorted rankings.
+        const rankings = data.members.getSortedRankings(stat);
 
         //Construct first embed:
         //Use promises to seperate embeds if more than 25 members.
         let promiseFirstEmbed = new Promise(function (resolve, reject) {
             let embed = new Discord.RichEmbed()
-                .setTitle('Max Stages of players in descending order.')
-                .setAuthor(`📊 ${role} Max Stage Rankings`)
+                .setTitle(`${stat} of players in descending order.`)
+                .setAuthor(`📊 ${role} ${stat} Rankings`)
                 .setColor(0x00AE86)
                 .setTimestamp()
 
@@ -32,8 +32,8 @@ function getMaxStageRankings (channel, role) {
         if (rankings[0].length > 25) {
             let promiseSecondEmbed = new Promise (function (resolve, reject) {
                 let embed = new Discord.RichEmbed()
-                    .setTitle('Max Stages of players in descending order.')
-                    .setAuthor(`📊 ${role} Max Stage Rankings`)
+                    .setTitle(`${stat} of players in descending order.`)
+                    .setAuthor(`📊 ${role} ${stat} Rankings`)
                     .setColor(0x00AE86)
                     .setTimestamp()
 
@@ -52,5 +52,5 @@ function getMaxStageRankings (channel, role) {
 }
 
 module.exports = {
-    getMaxStageRankings : getMaxStageRankings
+    getStatRankings : getStatRankings
 }

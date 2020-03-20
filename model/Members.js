@@ -19,17 +19,18 @@ class Members {
 	}
 
 	//returns names and max stages of players sorted in descending order.
-	getMaxStages() {
+	getSortedRankings(stat) {
 		let names = [];
-		let maxStages = [];
-		this.members.sort((a,b) => a.maxStage < b.maxStage ? 1 : -1);
+		let sortedStat = [];
+		//use concat to get a shadow copy of the members list.
+		let sorted  = this.members.concat().sort((a,b) => a[stat] < b[stat] ? 1 : -1);
 		for (let i = 0; i < this.members.length; i++) {
-			if (this.members[i].name !== undefined) {
-				names.push(this.members[i].name);
-				maxStages.push(this.members[i].maxStage);
+			if (sorted[i].name !== undefined) {
+				names.push(sorted[i].name);
+				sortedStat.push(sorted[i][stat]);
 			}
 		}
-		return [names, maxStages];
+		return [names, sortedStat];
 	}
 
 

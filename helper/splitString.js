@@ -14,7 +14,7 @@ function splitString(content) {
     	{
         	//Index 1 in the array is the captured group if it exists
         	//Index 0 is the matched text, which we use if no captured group exists
-        	strArray.push(match[1] ? match[1].toLowerCase() : match[0].toLowerCase());
+        	strArray.push(match[1] ? match[1] : match[0]);
     	}
 	} while (match != null);
 

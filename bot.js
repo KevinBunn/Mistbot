@@ -38,16 +38,18 @@ function sendMissingCycleError (channel) {
 
 //Retrieve the id of the primary clan of the user. Biased to select Mist over WoK.
 function getPrimaryClan (member) {
-    inMist = member.roles.find(role => role.id == '679188640999538708');
-    inWoK = member.roles.find(role => role.id == '679191376386326528');
-    if (inMist) {
-        return inMist;
-    } else if (inWoK) {
-        return inWoK;
-    } else {
-        return null;
-    }
+	inMist = member.roles.find(role => role.id == '679188640999538708');
+	inWoK = member.roles.find(role => role.id == '679191376386326528');
+	if (inMist) {
+		return inMist;
+	} else if (inWoK) {
+		return inWoK;
+	} else {
+		return null;
+	}
 }
+
+//TODO: reduce redundancy by creating function for obtaining clan reference.
 
 // Create an event listener for messages
 client.on("message", message => {
@@ -55,14 +57,14 @@ client.on("message", message => {
 		let splitContent = splitString(message.content);
 		if (!message.content.toLowerCase().startsWith(config.prefix) || message.author.bot) {
 
-		// Use this if-else to check for connection
+			// Use this if-else to check for connection
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}helloworld`) {
 			message.channel.send("We are go!");
 
-    } else if (splitContent[0].toLowerCase() === `${config.prefix}gc`) {
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}gc`) {
 
-        role = getPrimaryClan(message.member);
-        message.channel.send(role.name);
+			role = getPrimaryClan(message.member);
+			message.channel.send(role.name);
 
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}setspreadsheet`) {
 			if (splitContent[1] !== undefined)
@@ -91,8 +93,8 @@ client.on("message", message => {
 		} else if (message.content.toLowerCase() === `${config.prefix}dance`) {
 			miscCommands.getDanceGif(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}tobattle`) {
-      miscCommands.getToBattleGif(message.channel);
-    } else if (message.content.toLowerCase() === `${config.prefix}wok`) {
+			miscCommands.getToBattleGif(message.channel);
+		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {
 			let clanChannel = client.channels.find('id','679116561578983424')
@@ -107,12 +109,12 @@ client.on("message", message => {
 					// find by id
 					let userId = message.mentions.users.first().id
 					message.guild.members.find((member) => {
-              if (member.id === userId) {
-                  if (getPrimaryClan(member)) {
-                      statsCommand.getStats(message.channel, getPrimaryClan(member).name, member.displayName, member);
-                  } else {
-                      message.channel.send('Please @ mention a member of a clan.');
-                  }
+						if (member.id === userId) {
+							if (getPrimaryClan(member)) {
+								statsCommand.getStats(message.channel, getPrimaryClan(member).name, member.displayName, member);
+							} else {
+								message.channel.send('Please @ mention a member of a clan.');
+							}
 						}
 					});
 				}
@@ -124,11 +126,11 @@ client.on("message", message => {
 				message.guild.fetchMember(message.author)
 					.then(member => {
 						// TODO: Implement logic for handling alts. Now only handling first clan tag found, preferring Mistborns.
-              if (getPrimaryClan(member)) {
-                  statsCommand.getStats(message.channel, getPrimaryClan(member).name, member.displayName, member);
-              } else {
-                  message.channel.send('You are not in a recognized clan. No statistics available.');
-              }
+						if (getPrimaryClan(member)) {
+							statsCommand.getStats(message.channel, getPrimaryClan(member).name, member.displayName, member);
+						} else {
+							message.channel.send('You are not in a recognized clan. No statistics available.');
+						}
 
 					});
 			}
@@ -152,8 +154,33 @@ client.on("message", message => {
 			} else if (splitContent[1] === 'wok') {
 				clanName = 'Wrath of Khans'
 			}
-			rankingCommands.getMaxStageRankings(message.channel, clanName);
+			rankingCommands.getStatRankings('maxStage', message.channel, clanName);
 
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}dmgranking`) {
+			let clanName;
+			if (splitContent[1] === 'mistborns') {
+				clanName = 'Mistborns'
+			} else if (splitContent[1] === 'wok') {
+				clanName = 'Wrath of Khans'
+			}
+			rankingCommands.getStatRankings('weeklyAvgHit', message.channel, clanName);
+
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}ranking`) {
+			let clanName;
+			let statName;
+			if (splitContent[1] == undefined || splitContent[2] == undefined) {
+				message.channel.send('Command Usage: m!ranking (stat_name) (clan_name)');
+			}
+
+			statName = splitContent[1]
+			console.log(statName);
+			if (splitContent[2] === 'mistborns') {
+				clanName = 'Mistborns'
+			} else if (splitContent[2] === 'wok') {
+				clanName = 'Wrath of Khans'
+			}
+
+			rankingCommands.getStatRankings(statName, message.channel, clanName);
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}raid`) {
 			if (splitContent[1] === `start`) {
 				if (splitContent[2] === null) {
@@ -184,16 +211,16 @@ client.on("message", message => {
 
 			//If Wrath ends up being closed reg, will need to change logic to choose which clan to reruit to.
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}recruit`) {
-      let clanChannel;
-      let validClan = false;
-      if (splitContent[1] === "mistborns") {
-        clanChannel = client.channels.find('id', '428585515252711434')
-        validClan = true
-      }
+			let clanChannel;
+			let validClan = false;
+			if (splitContent[1] === "mistborns") {
+				clanChannel = client.channels.find('id', '428585515252711434')
+				validClan = true
+			}
 			else if (splitContent[1] === "wok") {
-        clanChannel = client.channels.find('id', '679116561578983424')
-        validClan = true
-      }
+				clanChannel = client.channels.find('id', '679116561578983424')
+				validClan = true
+			}
 
 			if (!_.isEmpty(message.mentions.users) && validClan) {
 				// find by id
