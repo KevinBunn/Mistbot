@@ -16,6 +16,7 @@ const helpCommands = require("./command/helpCommands");
 const applicantCommands = require('./command/applicantCommands');
 const timerCommands = require('./command/timerCommands');
 const tournamentCommands = require('./command/tournamentCommands');
+const rankingCommands = require('./command/rankingCommands');
 
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
@@ -33,6 +34,7 @@ function sendMissingTimerError (channel) {
 function sendMissingCycleError (channel) {
 	channel.send('Please specify a cycle.')
 }
+
 
 //Retrieve the id of the primary clan of the user. Biased to select Mist over WoK.
 function getPrimaryClan (member) {
@@ -135,11 +137,23 @@ client.on("message", message => {
 			let clanName;
 			if (splitContent[1] === 'mistborns') {
 				clanName = 'Mistborns'
-			}
-			else if (splitContent[1] === 'wok') {
+			} else if (splitContent[1] === 'wok') {
 				clanName = 'Wrath of Khans'
 			}
 			statsCommand.getTopStats(message.channel, clanName)
+
+
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}msranking`) {
+			//Lists max stage ranking of all players in clan in descending order.
+
+			let clanName;
+			if (splitContent[1] === 'mistborns') {
+				clanName = 'Mistborns'
+			} else if (splitContent[1] === 'wok') {
+				clanName = 'Wrath of Khans'
+			}
+			rankingCommands.getMaxStageRankings(message.channel, clanName);
+
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}raid`) {
 			if (splitContent[1] === `start`) {
 				if (splitContent[2] === null) {

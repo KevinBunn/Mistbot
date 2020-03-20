@@ -18,6 +18,20 @@ class Members {
 		return getStatResult(this.members, "CQParticipation")
 	}
 
+	//returns names and max stages of players sorted in descending order.
+	getMaxStages() {
+		let names = [];
+		let maxStages = [];
+		this.members.sort((a,b) => a.maxStage < b.maxStage ? 1 : -1);
+		for (let i = 0; i < this.members.length; i++) {
+			if (this.members[i].name !== undefined) {
+				names.push(this.members[i].name);
+				maxStages.push(this.members[i].maxStage);
+			}
+		}
+		return [names, maxStages];
+	}
+
 
 	//TODO: CMERGE: add clan tags for multiple clans.
 	findByName(nickname, clanTag) {
