@@ -20,7 +20,8 @@ function getMaxStageRankings (channel, role) {
                 .setColor(0x00AE86)
                 .setTimestamp()
 
-            for (let i = 0; i < 25; i++) {
+            let max = rankings[0].length > 25 ? 25 : rankings[0].length;
+            for (let i = 0; i < max; i++) {
                 embed.addField(`${i+1}.`, `${rankings[0][i]} - ${rankings[1][i]}`);
             }
             resolve(embed);
@@ -28,7 +29,6 @@ function getMaxStageRankings (channel, role) {
         promiseFirstEmbed.then((embed) => channel.send({embed}));
 
 
-        console.log(rankings[0].length);
         if (rankings[0].length > 25) {
             let promiseSecondEmbed = new Promise (function (resolve, reject) {
                 let embed = new Discord.RichEmbed()
