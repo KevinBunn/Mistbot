@@ -21,6 +21,7 @@ async function set_prop(channel, author, args) {
         let clanRef = await getClanRef(args[1], channel);
         let prop;
         let bool = true;
+        let isPass = false
 
         if (args[2] == "public") {
             prop = "is_public";
@@ -28,16 +29,21 @@ async function set_prop(channel, author, args) {
             prop = "is_full";
         } else if (args[2] == "pass") {
             prop = "passcode";
+            isPass = false;
+        } else if (args[2] == "requirement") {
+            prop = "requirement";
             bool = false;
         }
 
         if (bool && args[3] != "true" && args[3] != "false") {
             channel.send("true or false please.");
-        } else if (!bool && !(/^\d{4}$/.test(args[3]))) {
+        } else if (isPass && !(/^\d{4}$/.test(args[3]))) {
             channel.send("please enter 4 digit passcode.")
+        } else if (!bool && !(/^[0-9]*$/.test(args[3]))) {
+          channel.send("please enter a valid stage requirement. ex: 30000")
         } else {
             clanRef.update ({
-                prop : args[3]
+                [prop] : args[3]
             });
             channel.send(`${prop} has been updated.`)
         }
