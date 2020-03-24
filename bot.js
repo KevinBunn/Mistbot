@@ -17,6 +17,7 @@ const applicantCommands = require('./command/applicantCommands');
 const timerCommands = require('./command/timerCommands');
 const tournamentCommands = require('./command/tournamentCommands');
 const rankingCommands = require('./command/rankingCommands');
+const managementCommands = require('./command/managementCommands');
 
 // Fun commands.
 const miscCommands = require("./command/miscCommands");
@@ -234,6 +235,8 @@ client.on("message", message => {
 			else {
 				message.channel.send('Please specify a valid clan and @ mention another user')
 			}
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}clansetup`) {
+			managementCommands.set_prop(message.channel, message.member, splitContent);
 		}
 		else if (message.content.toLowerCase().startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)
