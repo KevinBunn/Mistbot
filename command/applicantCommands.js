@@ -1,25 +1,42 @@
 require('es6-promise').polyfill();
 const Discord = require("discord.js");
 const _ = require("lodash")
-const miscCommands = require('./miscCommands')
 
 /**
  * Importing Firebase.
  */
 
-//TODO: remove firebase.
 const firebase = require("../config/firebaseConfig");
 const database = firebase.database;
 const guildApplicantRef = database.ref("server_applicants");
+const guildSettingsRef = database.ref("clan_settings");
 
 const Applicant = require('../model/Applicant')
 
+
+function getClanSettingsRef(clanName, channel) {
+  return guildSettingsRef.once("value")
+    .then((snapshot) => {
+      if (snapshot.hasChild(clanName)) {
+        return guildSettingsRef.child(clanName)
+      } else {
+        throw "No clan found for " + clanName
+      }
+    }).catch(err => {
+      channel.send(err)
+    });
+}
+
 async function addApplicant(channel, guildId, author, args) {
-  if (args[1] === "mistborns" && parseInt(args[2]) < 30000) {
-    channel.send('Looks like your Max Stage is below Mistborn requirements, you can try applying to Wrath of Khans for newer players.')
+  let clanSettingsRef = await getClanSettingsRef(args[1], channel)
+  let settings = await clanSettingsRef.once("value").then(snapshot => {
+    return snapshot.val()
+  })
+  if (args[1] === "mistborns" && parseInt(args[2]) < settings.requirements) {
+    channel.send('Looks like your Max Stage is below Mistborn requirements (' + settings.requirements + '), you can try applying to Wrath of Khans for newer players.')
   }
-  else if (args[1] === "wok" && parseInt(args[2]) < 5000) {
-    channel.send('Looks like your Max Stage is below Wrath of Khans requirements, come back when you have reached 5k.')
+  else if (args[1] === "wok" && parseInt(args[2]) < settings.requirements) {
+    channel.send('Looks like your Max Stage is below Wrath of Khans requirements, come back when you have reached ' + settings.requirements)
   }
   else {
     let guildRef = guildApplicantRef.child(guildId);
@@ -156,21 +173,25 @@ async function removeApplicant (channel, guildId, args, user) {
 }
 
 async function recruitApplicant(channel, clanChannel, author, guildId, user, args) {
+  let clanSettingsRef = await getClanSettingsRef(args[1], channel)
+  let settings = await clanSettingsRef.once("value").then(snapshot => {
+    return snapshot.val()
+  })
   if (args[1] === "mistborns") {
     if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
       await removeApplicant(channel, guildId, args, user)
       // message user clan code and passcode
-      user.send('You have been recruited to Mistborns! Here are the Clan Credentials.\n' + 'Code: gg8e6\n' + 'Pass: 8515')
+      user.send('You have been recruited to Mistborns! Here are the Clan Credentials.\n' + 'Code: gg8e6\n' + (settings.is_public ? "Clan is Public" : `Pass: ${settings.passcode}`))
       // add role to user
-      user.addRole('679188640999538708')
-      user.addRole('368984671100600321').then(() => {
-        clanChannel.send(`Welcome to Mistborns <@${user.id}>!\n` +
-          `When you have the time, please look over the following:\n` +
-          `**1.** Make sure your discord nickname matches your IGN.\n` +
-          `**2.** Please read the clan <#392936605905846274>.\n` +
-          `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
-          `**4.** Let us know if you have any questions!`)
-      })
+      // user.addRole('679188640999538708')
+      // user.addRole('368984671100600321').then(() => {
+      //   clanChannel.send(`Welcome to Mistborns <@${user.id}>!\n` +
+      //     `When you have the time, please look over the following:\n` +
+      //     `**1.** Make sure your discord nickname matches your IGN.\n` +
+      //     `**2.** Please read the clan <#392936605905846274>.\n` +
+      //     `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
+      //     `**4.** Let us know if you have any questions!`)
+      // })
     } else{
       channel.send('You do not have permissions to recruit applicants for Mistborns')
     }
@@ -178,7 +199,7 @@ async function recruitApplicant(channel, clanChannel, author, guildId, user, arg
     if(author.roles.find('name', 'WoK Master') || author.roles.find('name', 'WoK Grand Master')) {
       await removeApplicant(channel, guildId, args, user)
       // message user clan code and passcode
-      user.send('You have been recruited to Wrath of Khans! Here are the Clan Credentials.\n' + 'Code: nmm94\n' + 'Pass: 5432')
+      user.send('You have been recruited to Wrath of Khans! Here are the Clan Credentials.\n' + 'Code: nmm94\n' + 'Pass: ' + (settings.is_public ? "Clan is Public" : `Pass: ${settings.passcode}`))
       // add role to user
       user.addRole('679115153199071262')
       user.addRole('679191376386326528').then(() => {

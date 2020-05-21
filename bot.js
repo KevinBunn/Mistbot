@@ -39,8 +39,8 @@ function sendMissingCycleError (channel) {
 
 //Retrieve the id of the primary clan of the user. Biased to select Mist over WoK.
 function getPrimaryClan (member) {
-	inMist = member.roles.find(role => role.id == '679188640999538708');
-	inWoK = member.roles.find(role => role.id == '679191376386326528');
+	let inMist = member.roles.find(role => role.id == '679188640999538708');
+	let inWoK = member.roles.find(role => role.id == '679191376386326528');
 	if (inMist) {
 		return inMist;
 	} else if (inWoK) {
