@@ -39,14 +39,14 @@ function sendMistbornWelcome(clanChannel, settings, user) {
   user.send('You have been recruited to Mistborns! Here are the Clan Credentials.\n' + 'Code: gg8e6\n' + (settings.is_public ? "Clan is Public" : `Pass: ${settings.passcode}`))
   // add role to user
   user.addRole('679188640999538708')
-  // user.addRole('368984671100600321').then(() => {
-  //   clanChannel.send(`Welcome to Mistborns <@${user.id}>!\n` +
-  //     `When you have the time, please look over the following:\n` +
-  //     `**1.** Make sure your discord nickname matches your IGN.\n` +
-  //     `**2.** Please read the clan <#392936605905846274>.\n` +
-  //     `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
-  //     `**4.** Let us know if you have any questions!`)
-  // })
+  user.addRole('368984671100600321').then(() => {
+    clanChannel.send(`Welcome to Mistborns <@${user.id}>!\n` +
+      `When you have the time, please look over the following:\n` +
+      `**1.** Make sure your discord nickname matches your IGN.\n` +
+      `**2.** Please read the clan <#392936605905846274>.\n` +
+      `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
+      `**4.** Let us know if you have any questions!`)
+  })
 }
 
 function sendWokWelcome(clanChannel, settings, user) {
