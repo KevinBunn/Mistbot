@@ -9,16 +9,16 @@ const _ = require("lodash")
 const firebase = require("../config/firebaseConfig");
 const database = firebase.database;
 const guildApplicantRef = database.ref("server_applicants");
-const guildSettingsRef = database.ref("clan_settings");
+const clanSettignsRef = database.ref("clan_settings");
 
 const Applicant = require('../model/Applicant')
 
 
 function getClanSettingsRef(clanName, channel) {
-  return guildSettingsRef.once("value")
+  return clanSettignsRef.once("value")
     .then((snapshot) => {
       if (snapshot.hasChild(clanName)) {
-        return guildSettingsRef.child(clanName)
+        return clanSettignsRef.child(clanName)
       } else {
         throw "No clan found for " + clanName
       }
@@ -27,7 +27,45 @@ function getClanSettingsRef(clanName, channel) {
     });
 }
 
-async function addApplicant(channel, guildId, author, args) {
+function autoRecruit(clan, clanChannel, settings, user) {
+  if (clan.toLowerCase() === "mistborns") {
+    sendMistbornWelcome(clanChannel, settings, user)
+  } else if (clan.toLowerCase() === "wok") {
+    sendWokWelcome(clanChannel, settings, user)
+  }
+}
+
+function sendMistbornWelcome(clanChannel, settings, user) {
+  user.send('You have been recruited to Mistborns! Here are the Clan Credentials.\n' + 'Code: gg8e6\n' + (settings.is_public ? "Clan is Public" : `Pass: ${settings.passcode}`))
+  // add role to user
+  user.addRole('679188640999538708')
+  // user.addRole('368984671100600321').then(() => {
+  //   clanChannel.send(`Welcome to Mistborns <@${user.id}>!\n` +
+  //     `When you have the time, please look over the following:\n` +
+  //     `**1.** Make sure your discord nickname matches your IGN.\n` +
+  //     `**2.** Please read the clan <#392936605905846274>.\n` +
+  //     `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
+  //     `**4.** Let us know if you have any questions!`)
+  // })
+}
+
+function sendWokWelcome(clanChannel, settings, user) {
+  user.send('You have been recruited to Wrath of Khans! Here are the Clan Credentials.\n' + 'Code: nmm94\n' + (settings.is_public ? "Clan is Public" : `Pass: ${settings.passcode}`))
+  // add role to user
+  user.addRole('679115153199071262')
+  user.addRole('679191376386326528').then(() => {
+    clanChannel.send(`Welcome to Wrath of Khans <@${user.id}>!\n` +
+      `When you have the time, please look over the following:\n` +
+      `**1.** Make sure your discord nickname matches your IGN.\n` +
+      `**2.** Please read the clan <#679118612010762250>.\n` +
+      `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
+      `**4.** Let us know if you have any questions!`);
+  })
+}
+
+async function addApplicant(channel, clanChannel, guildId, author, args, member) {
+  // Author is a different class than member,
+  // Author will be a 'discord user' and member is a 'guild member' which allows us to edit their roles
   let clanSettingsRef = await getClanSettingsRef(args[1], channel)
   let settings = await clanSettingsRef.once("value").then(snapshot => {
     return snapshot.val()
@@ -40,49 +78,66 @@ async function addApplicant(channel, guildId, author, args) {
     channel.send('Looks like your Max Stage is below Wrath of Khans requirements, come back when you have reached ' + settings.requirement)
   }
   else {
-    let guildRef = guildApplicantRef.child(guildId);
-    let clanRef = await getClanRef(guildRef, args[1], channel)
-    let promise = getWaitingListSpot(clanRef);
-    let waitListNumber = 0
-    await promise.then((number) => {
-      waitListNumber = number
-    })
-    clanRef.once("value", function(snapshot) {
-      if(snapshot.hasChild(`${author.id}`)) {
-        let existingApplicant = snapshot.child(`${author.id}`)
-        let applicantRef = clanRef.child(`${author.id}`);
-        applicantRef.set({
-          name: existingApplicant.val()["name"],
-          max_stage: args[2],
-          raid_damage: args[3],
-          time_applied: existingApplicant.val()["time_applied"]
-        }, function (error) {
-          if (error) {
-            console.log("Data could not be saved." + error);
-            channel.send('Error: Failed to Submit' + error);
-          } else {
-            console.log("Data saved successfully.");
-            channel.send(`Looks like you already applied <@${author.id}>, I've updated your application`)
-          }
-        })
-      } else {
-        let newApplicantRef = clanRef.child(`${author.id}`);
-        newApplicantRef.set({
-          name: `${author.username}`,
-          max_stage: args[2],
-          raid_damage: args[3],
-          time_applied: Date.now()
-        }, function (error) {
-          if (error) {
-            console.log("Data could not be saved." + error);
-            channel.send('Error: Failed to Submit' + error);
-          } else {
-            console.log("Data saved successfully.");
-            channel.send(`Thank you for applying! you are in spot ${waitListNumber} of the waiting list`)
-          }
-        })
+    if (!settings.is_full) {
+      // recruit automatically
+      channel.send('Last I checked the clan isn\'t full, I\'m sending you the clan credentials in a personal message.')
+      autoRecruit(args[1],clanChannel,settings,member)
+      clanSettingsRef.update ({
+        "spots_open" : parseInt(settings.spots_open) - 1
+      });
+      if (parseInt(settings.spots_open) - 1 === 0)
+      {
+        // clan is full now
+        clanSettingsRef.update ({
+          "is_full" : true
+        });
       }
-    })
+    }
+    else {
+      let guildRef = guildApplicantRef.child(guildId);
+      let clanRef = await getClanRef(guildRef, args[1], channel)
+      let promise = getWaitingListSpot(clanRef);
+      let waitListNumber = 0
+      await promise.then((number) => {
+        waitListNumber = number
+      })
+      clanRef.once("value", function(snapshot) {
+        if(snapshot.hasChild(`${author.id}`)) {
+          let existingApplicant = snapshot.child(`${author.id}`)
+          let applicantRef = clanRef.child(`${author.id}`);
+          applicantRef.set({
+            name: existingApplicant.val()["name"],
+            max_stage: args[2],
+            raid_damage: args[3],
+            time_applied: existingApplicant.val()["time_applied"]
+          }, function (error) {
+            if (error) {
+              console.log("Data could not be saved." + error);
+              channel.send('Error: Failed to Submit' + error);
+            } else {
+              console.log("Data saved successfully.");
+              channel.send(`Looks like you already applied <@${author.id}>, I've updated your application`)
+            }
+          })
+        } else {
+          let newApplicantRef = clanRef.child(`${author.id}`);
+          newApplicantRef.set({
+            name: `${author.username}`,
+            max_stage: args[2],
+            raid_damage: args[3],
+            time_applied: Date.now()
+          }, function (error) {
+            if (error) {
+              console.log("Data could not be saved." + error);
+              channel.send('Error: Failed to Submit' + error);
+            } else {
+              console.log("Data saved successfully.");
+              channel.send(`Thank you for applying! you are in spot ${waitListNumber} of the waiting list`)
+            }
+          })
+        }
+      })
+    }
   }
 }
 
@@ -183,17 +238,7 @@ async function recruitApplicant(channel, clanChannel, author, guildId, user, arg
     if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
       await removeApplicant(channel, guildId, args, user)
       // message user clan code and passcode
-      user.send('You have been recruited to Mistborns! Here are the Clan Credentials.\n' + 'Code: gg8e6\n' + (settings.is_public ? "Clan is Public" : `Pass: ${settings.passcode}`))
-      // add role to user
-      user.addRole('679188640999538708')
-      // user.addRole('368984671100600321').then(() => {
-      //   clanChannel.send(`Welcome to Mistborns <@${user.id}>!\n` +
-      //     `When you have the time, please look over the following:\n` +
-      //     `**1.** Make sure your discord nickname matches your IGN.\n` +
-      //     `**2.** Please read the clan <#392936605905846274>.\n` +
-      //     `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
-      //     `**4.** Let us know if you have any questions!`)
-      // })
+      sendMistbornWelcome(clanChannel, settings, user)
     } else{
       channel.send('You do not have permissions to recruit applicants for Mistborns')
     }
@@ -201,17 +246,7 @@ async function recruitApplicant(channel, clanChannel, author, guildId, user, arg
     if(author.roles.find('name', 'WoK Master') || author.roles.find('name', 'WoK Grand Master')) {
       await removeApplicant(channel, guildId, args, user)
       // message user clan code and passcode
-      user.send('You have been recruited to Wrath of Khans! Here are the Clan Credentials.\n' + 'Code: nmm94\n' + (settings.is_public ? "Clan is Public" : `Pass: ${settings.passcode}`))
-      // add role to user
-      user.addRole('679115153199071262')
-      // user.addRole('679191376386326528').then(() => {
-      //   clanChannel.send(`Welcome to Wrath of Khans <@${user.id}>!\n` +
-      //     `When you have the time, please look over the following:\n` +
-      //     `**1.** Make sure your discord nickname matches your IGN.\n` +
-      //     `**2.** Please read the clan <#679118612010762250>.\n` +
-      //     `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
-      //     `**4.** Let us know if you have any questions!`);
-      // })
+      sendWokWelcome(clanChannel, settings, user)
     } else{
       channel.send('You do not have permissions to recruit applicants for Wrath of Khans')
     }

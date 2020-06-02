@@ -33,18 +33,29 @@ async function set_prop(channel, author, args) {
         } else if (args[2] == "requirement") {
             prop = "requirement";
             bool = false;
+        } else if (args[2] == "open") {
+            prop = "spots_open";
+            bool = false;
         }
+
 
         if (bool && args[3] != "true" && args[3] != "false") {
             channel.send("true or false please.");
         } else if (isPass && !(/^\d{4}$/.test(args[3]))) {
             channel.send("please enter 4 digit passcode.")
         } else if (!bool && !(/^[0-9]*$/.test(args[3]))) {
-          channel.send("please enter a valid stage requirement. ex: 30000")
+            channel.send("please enter a valid stage requirement. ex: 30000")
         } else {
-            clanRef.update ({
-                [prop] : args[3]
-            });
+            if (bool) {
+                // I want to make sure it doesn't pass in as a string
+                clanRef.update ({
+                    [prop]: args[3] === "true"
+                });
+            } else {
+                clanRef.update ({
+                    [prop] : args[3]
+                });
+            }
             channel.send(`${prop} has been updated.`)
         }
 

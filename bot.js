@@ -73,11 +73,29 @@ client.on("message", message => {
 			else
 				message.channel.send("Please specify a spreadsheet id.");
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}apply`) {
-			applicantCommands.addApplicant(message.channel, message.guild.id, message.author, splitContent)
+      let clanChannel;
+      let validClan = false;
+      if (splitContent[1] === "mistborns") {
+        clanChannel = client.channels.find('id', '428585515252711434')
+        validClan = true
+      }
+      else if (splitContent[1] === "wok") {
+        clanChannel = client.channels.find('id', '679116561578983424')
+        validClan = true
+      }
+      if(!validClan) {
+        message.channel.send('Please specify a valid clan')
+			} else {
+        message.guild.fetchMember(message.author)
+          .then(member => {
+            applicantCommands.addApplicant(message.channel, clanChannel, message.guild.id, message.author, splitContent, member)
+          })
+			}
 		} else if (splitContent[0] === `${config.prefix}applicants`) {
 			applicantCommands.getApplicants(message.channel, message.guild.id, splitContent)
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}removeapplicant`) {
-			if (splitContent[1] !== undefined || splitContent[2]) {
+			console.log()
+			if (splitContent[1] !== undefined && splitContent[2] !== undefined) {
 				const memberName = splitContent[2];
 				message.guild.members.find((member) => {
 					if (member.displayName.toLowerCase() === memberName.toLowerCase()) {
