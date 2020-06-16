@@ -148,19 +148,19 @@ async function getApplicants(channel, guildId, args) {
   let promises = []
   promises.push(clanRef.once("value")
     .then((snapshot) => {
-    snapshot.forEach((child) => {
-      if (child.val() === '') {
-        // do nothing
-      } else {
-        let applicant = new Applicant();
-        applicant.name = child.val()["name"]
-        applicant.timeApplied = child.val()["time_applied"]
-        applicant.maxStage = child.val()["max_stage"]
-        applicant.raidDamage = child.val()["raid_damage"]
-        applicantList.push(applicant)
-      }
-    });
-  }));
+      snapshot.forEach((child) => {
+        if (child.val() === '') {
+          // do nothing
+        } else {
+          let applicant = new Applicant();
+          applicant.name = child.val()["name"]
+          applicant.timeApplied = child.val()["time_applied"]
+          applicant.maxStage = child.val()["max_stage"]
+          applicant.raidDamage = child.val()["raid_damage"]
+          applicantList.push(applicant)
+        }
+      });
+    }));
   Promise.all(promises).then(() => {
     if (applicantList.length < 1) {
       channel.send('There is currently no one in the wait list')

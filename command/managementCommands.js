@@ -58,7 +58,6 @@ async function set_prop(channel, author, args) {
             }
             channel.send(`${prop} has been updated.`)
         }
-
     }
 }
 

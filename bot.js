@@ -161,6 +161,9 @@ client.on("message", message => {
 			} else if (splitContent[1] === 'wok') {
 				clanName = 'Wrath of Khans'
 			}
+      else {
+        message.channel.send('Please specify a clan')
+      }
 			statsCommand.getTopStats(message.channel, clanName)
 
 
