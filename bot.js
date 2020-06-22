@@ -164,7 +164,7 @@ client.on("message", message => {
       else {
         message.channel.send('Please specify a clan')
       }
-			statsCommand.getTopStats(message.channel, clanName)
+			statsCommand.getTopStats(message.channel, clanName, message.guild)
 
 
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}msranking`) {

@@ -36,33 +36,90 @@ const clanInfo = require("../helper/getClanInfo");
 // 	return `${startDate.getMonth()+1}/${startDate.getDate()}/${startDate.getFullYear()} - ${endDate.getMonth()+1}/${endDate.getDate()}/${endDate.getFullYear()}`;
 // }
 
-/**
- * Sends weekly stats to the given discord channel.
- *
- * @param {Channel} channel - The discord channel to send message to
- */
-// function getWeeklyStats(channel, role) {
-// 	Promise.all([clanInfo.getMembersInfo(role)])
-// 	.then((data) => {
-// 		const dateRange = getWeekRangeForSunday();
-// 		const hitman = data[0].getHitman();
-//
-// 		const embed = new Discord.RichEmbed()
-// 			.setTitle(`${dateRange}`)
-// 			.setAuthor(`📊 Weekly Statistics Report`)
-// 			.setColor(0x00AE86)
-// 			.setDescription(
-// 				`**Hitman** - ${hitman.stat}% of Titanlords hit\n` +
-// 				`${hitman.names.join(", ")}\n`
-// 			)
-// 			.setTimestamp();
-//
-// 		channel.send({embed});
-// 	})
-// 	.catch((error) => {
-//     handleStatsError(channel, error);
-//   });
-// }
+function assignRoles(skillsData, maxStageData, ticketsData, petLevelsData, tournamentData, role, clanTag, guild) {
+  const topRoles = guild.roles.filter(role => {
+    return role.name === "Rioter"
+      || role.name === "Lurcher"
+      || role.name === "Coin Shot"
+      || role.name === "Thug"
+      || role.name === "Seeker"
+      || role.name === "Soother"
+  })
+  const lurcherRole = topRoles.find(role => role.name === "Lurcher")
+  const coinShotRole = topRoles.find(role => role.name === "Coin Shot")
+  const seekerRole = topRoles.find(role => role.name === "Seeker")
+  const sootherRole = topRoles.find(role => role.name === "Soother")
+  const rioterRole = topRoles.find(role => role.name === "Rioter")
+  let membersWithTopRoles = guild.members.filter(member => {
+    // filter by mistborn role
+    return member.roles.find("name", role);
+  }).filter(member => {
+    // then by if they have the role
+    return member.roles.find("name", "Rioter")
+      || member.roles.find("name", "Lurcher")
+      || member.roles.find("name", "Coin Shot")
+      || member.roles.find("name", "Thug")
+      || member.roles.find("name", "Seeker")
+      || member.roles.find("name", "Soother");
+  })
+  membersWithTopRoles.forEach(member => {
+    // remove all of the roles
+    console.log(`removing from ${member.displayName}`)
+    member.removeRoles(topRoles)
+  })
+
+  skillsData.forEach(playerInfo => {
+    console.log(playerInfo)
+    let nameWithoutClantag = playerInfo.replace(clanTag, '').trim()
+    guild.members.find(member => {
+      if (member.displayName === nameWithoutClantag) {
+        //Lurcher
+        console.log(`adding Lurcher to ${member.displayName}`)
+        member.addRole(lurcherRole)
+      }
+    })
+  })
+  maxStageData.forEach(playerInfo => {
+    let nameWithoutClantag = playerInfo.replace(clanTag, '').trim()
+    guild.members.find(member => {
+      if (member.displayName === nameWithoutClantag) {
+        // Coin Shot
+        console.log(`adding Coin shot to ${member.displayName}`)
+        member.addRole(coinShotRole)
+      }
+    })
+  })
+  ticketsData.forEach(playerInfo => {
+    let nameWithoutClantag = playerInfo.replace(clanTag, '').trim()
+    guild.members.find(member => {
+      if (member.displayName === nameWithoutClantag) {
+        // Seeker
+        console.log(`adding Seeker to ${member.displayName}`)
+        member.addRole(seekerRole)
+      }
+    })
+  })
+  petLevelsData.forEach(playerInfo => {
+    let nameWithoutClantag = playerInfo.replace(clanTag, '').trim()
+    guild.members.find(member => {
+      if (member.displayName === nameWithoutClantag) {
+        // Soother
+        console.log(`adding soother to ${member.displayName}`)
+        member.addRole(sootherRole)
+      }
+    })
+  })
+  tournamentData.forEach(playerInfo => {
+    let nameWithoutClantag = playerInfo.replace(clanTag, '').trim()
+    guild.members.find(member => {
+      if (member.displayName === nameWithoutClantag) {
+        // Rioter
+        console.log(`adding Rioter to ${member.displayName}`)
+        member.addRole(rioterRole)
+      }
+    })
+  })
+}
 
 /**
  * Sends top total damage dealers to the given discord channel, according
@@ -70,8 +127,9 @@ const clanInfo = require("../helper/getClanInfo");
  *
  * @param {Channel} channel - The discord channel to send message to
  * @param {String} role - discord member's role
+ * @param {String} guild - discord guild
  */
-function getTopStats (channel, role) {
+function getTopStats (channel, role, guild) {
   clanInfo.getMembersInfo(role).then((data) => {
   	// get all the members who qualify
   	const topSkillData = data.members.getTopIncreasedByStat('skillPoints')
@@ -86,6 +144,7 @@ function getTopStats (channel, role) {
 			.setColor(0x00AE86)
 			.setTimestamp()
 
+    assignRoles(topSkillData[0], topMaxStageData[0], topTicketsData[0], topPetLevelsData[0], topTournamentData[0], role, data.clanTag, guild)
 		// Put in the fields, data[0] are members, data[1] is the max value returned
 		embed.addField('Stages Increased', `${topMaxStageData[0]} - ${topMaxStageData[1]}`)
     embed.addField('Skill Points Earned', `${topSkillData[0]} - ${topSkillData[1]}`)
