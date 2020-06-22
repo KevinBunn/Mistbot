@@ -56,7 +56,8 @@ function getPrimaryClan (member) {
 client.on("message", message => {
 	try {
 		let splitContent = splitString(message.content);
-		if (!message.content.toLowerCase().startsWith(config.prefix) || message.author.bot) {
+		// if it doesn't start with the command or is from a bot (excluding ClanAssistant)
+		if (!message.content.toLowerCase().startsWith(config.prefix) || (message.author.bot && message.author.id !== "718638278391234580")) {
 
 			// Use this if-else to check for connection
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}helloworld`) {
