@@ -259,6 +259,8 @@ client.on("message", message => {
 			}
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}clansetup`) {
 			managementCommands.set_prop(message.channel, message.member, splitContent);
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}kick`) {
+			managementCommands.kickPlayer(message.channel, message, splitContent);
 		}
 		else if (message.content.toLowerCase().startsWith(config.prefix)) {
 			message.channel.send(`Sorry I don't recognize that command. Type **${config.prefix}help** for the list of available commands.`)

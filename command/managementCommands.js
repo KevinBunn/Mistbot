@@ -61,6 +61,76 @@ async function set_prop(channel, author, args) {
     }
 }
 
+async function kickPlayer(channel, message, args) {
+    if (valid(channel, message.member, args)) {
+        let clanRef = await getClanRef(args[1], channel);
+        let settings = await clanRef.once("value").then(snapshot => {
+            return snapshot.val()
+        })
+
+        const user = message.mentions.users.first();
+        // If we have a user mentioned
+        if (user) {
+            // Now we get the member from the user
+            const member = message.guild.member(user);
+            // If the member is in the guild
+            if (member) {
+
+                requiredRoleID = ({ 'mistborns': '679188640999538708', 'wok': '679191376386326528' })[args[1]];
+
+                if (member.roles.some(r => r.id === requiredRoleID)) {
+                    /**
+                     * Kick the member
+                     * Make sure you run this on a member, not a user!
+                     * There are big differences between a user and a member
+                     */
+                    msg = `Kicked via Kick Command from ${message.member.displayName} `;
+                    member
+                        .kick(msg)
+                        .then(() => {
+                            props = new Array("spots_open");
+                            if (settings["is_full"]) {
+                                clanRef.update({
+                                    "is_full": false
+                                });
+                                props.push("is_full");
+                            }
+
+                            clanRef.update({
+                                "spots_open": parseInt(settings.spots_open) + 1
+                            });
+
+                            props = props.join(' ,');
+                            msg = `successfully kicked ${user.displayName} and ${props} has been updated.`
+                            // We let the message author know we were able to kick the person
+                            message.reply(msg);
+                        })
+                        .catch(err => {
+                            // An error happened
+                            // This is generally due to the bot not being able to kick the member,
+                            // either due to missing permissions or role hierarchy
+                            msg = `I was unable to kick the ${member.displayName}`
+                            message.reply(msg);
+                            // Log the error
+                            console.error(err);
+                        });
+                } else {
+                    role = message.guild.roles.filter(r => r.id === requiredRoleID).first();
+                    msg = `${member.displayName} does not seem to be in ${role.name}.`
+                    // The mentioned user isn't in this guild
+                    message.reply(msg);
+                }
+            } else {
+                // The mentioned user isn't in this guild
+                message.reply("that user isn't in this server!");
+            }
+            // Otherwise, if no user was mentioned
+        } else {
+            message.reply("you didn't mention the user to kick!");
+        }
+    }
+}
+
 function getClanRef(clanName, channel) {
     return guildSettingsRef.once("value")
         .then((snapshot) => {
@@ -75,5 +145,6 @@ function getClanRef(clanName, channel) {
 }
 
 module.exports = {
-    set_prop: set_prop
+    set_prop: set_prop,
+    kickPlayer: kickPlayer
 }
