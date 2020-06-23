@@ -144,6 +144,9 @@ function getTopStats (channel, role, guild) {
 			.setColor(0x00AE86)
 			.setTimestamp()
 
+    if (role === "wok") {
+      role = "Wrath of Khans"
+    }
     assignRoles(topSkillData[0], topMaxStageData[0], topTicketsData[0], topPetLevelsData[0], topTournamentData[0], role, data.clanTag, guild)
 		// Put in the fields, data[0] are members, data[1] is the max value returned
 		embed.addField('Stages Increased', `${topMaxStageData[0]} - ${topMaxStageData[1]}`)
