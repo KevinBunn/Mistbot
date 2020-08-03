@@ -60,11 +60,15 @@ class Help {
 					postfix: "[applicant name]"
 				}
 			],
-      "Tournament": [
+			"Tournament": [
 				{
-          title: "list",
-          description: "\tSee the list of upcoming tournaments",
-        }
+					title: "list",
+					description: "\tSee the list of upcoming tournaments",
+				},
+				{
+					title: "reminders",
+					description: "\tJoin the channel of tournament reminder information",
+				}
 			]
 		};
 	}

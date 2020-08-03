@@ -98,10 +98,10 @@ function getHelp(channel, category) {
     || category.toLowerCase() === "Tour".toLowerCase()) {
     const tourObj = help.getObjTournament();
     const embed = new Discord.RichEmbed()
-      .setTitle("ℹ️ FishBot Help Tournament")
+		.setTitle("ℹ️ Mistbot Help Tournament")
       .setDescription("Queries for Tournament Information")
       .setColor(0x00AE86)
-      .setFooter("FishBot | Help - Tournament");
+		.setFooter("Mistbot | Help - Tournament");
     generateEmbedFields(embed, tourObj);
     channel.send({embed});
   }
