@@ -231,16 +231,14 @@ function getCurrentTournamentTimeLeft() {
  * @param {any} yourcode
  */
 function ReminderCheck(fn,client) {
-    var now = new Date(),
+    let now = new Date(),
         start,
         wait;
 
-    neededHour = 19;
-
-    if (now.getHours() <= (neededHour - 1)) {
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), neededHour, 0, 0, 0);
+    if (now.getHours() === 23) {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
     } else {
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, neededHour, 0, 0, 0);
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
     }
 
     wait = start.getTime() - now.getTime();
@@ -249,10 +247,10 @@ function ReminderCheck(fn,client) {
         //If missed 8am before going into the setTimeout
         console.log('Oops, missed the hour');
         //rerun
-        ReminderCheck(fn, client); 
+        ReminderCheck(fn, client);
     } else {
         //Wait until needed time
-        setTimeout(function () { 
+        setTimeout(function () {
             fn(client);
             ReminderCheck(fn, client);
         }, wait);
@@ -267,12 +265,12 @@ function sendReminderNotice(client) {
         const rewardCounter = (data["reward_counter"]) % rewards.length;
         const typeCounter = (data["type_counter"]) % types.length;
 
-        timeRemaining = "";
-        baseText = "";
-        embedDescription = `**Type**: ${types[typeCounter]}\n` +
+        let timeRemaining = "";
+        let baseText = "";
+        let embedDescription = `**Type**: ${types[typeCounter]}\n` +
             `**Reward**: ${rewards[rewardCounter]}\n`;
 
-        channel = client.channels.get("739860488434745406");
+        let channel = client.channels.get("739860488434745406");
 
         if (isTournamentOn()) {
             timeRemaining = getCurrentTournamentTimeLeft();
@@ -311,22 +309,22 @@ function sendReminderNotice(client) {
 
 
 function startReminderTimer(client) {
-    if (client.channels.size == 0) {
+    if (client.channels.size === 0) {
         setTimeout(function () { startReminderTimer(client); }, 1000);
     } else {
         ReminderCheck(sendReminderNotice, client);
     }
 }
 
-function setReminderRole(chnl, mbr, guild) {
-    roleID = "739860845600833676";
-    role = guild.roles.get(roleID);
+async function setReminderRole(chnl, mbr, guild) {
+    let roleID = "739860845600833676";
+    let role = guild.roles.get(roleID);
 
-    if (mbr.roles.get(roleID) == undefined) {
-        mbr.addRole(role);
+    if (mbr.roles.get(roleID) === undefined) {
+        await mbr.addRole(role);
         chnl.send("I have given you access to the tournament reminder channel.");
     } else {
-        mbr.removeRole(role);
+        await mbr.removeRole(role);
         chnl.send("I have revoked your access to the tournament reminder channel.");
     }
 }
