@@ -226,6 +226,113 @@ function getCurrentTournamentTimeLeft() {
   return getTimeDifference(endDate, currentDate);
 }
 
+/**
+ * Sets a timer to check for toury at 7 PM
+ * @param {any} yourcode
+ */
+function ReminderCheck(fn,client) {
+    var now = new Date(),
+        start,
+        wait;
+
+    neededHour = 19;
+
+    if (now.getHours() <= (neededHour - 1)) {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), neededHour, 0, 0, 0);
+    } else {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, neededHour, 0, 0, 0);
+    }
+
+    wait = start.getTime() - now.getTime();
+    //wait = time + 1000;
+    if (wait < 0) {
+        //If missed 8am before going into the setTimeout
+        console.log('Oops, missed the hour');
+        //rerun
+        ReminderCheck(fn, client); 
+    } else {
+        //Wait until needed time
+        setTimeout(function () { 
+            fn(client);
+            ReminderCheck(fn, client);
+        }, wait);
+    }
+}
+
+function sendReminderNotice(client) {
+    tournamentRef.once('value')
+    .then((snapshot) => {
+        const data = snapshot.val();
+
+        const rewardCounter = (data["reward_counter"]) % rewards.length;
+        const typeCounter = (data["type_counter"]) % types.length;
+
+        timeRemaining = "";
+        baseText = "";
+        embedDescription = `**Type**: ${types[typeCounter]}\n` +
+            `**Reward**: ${rewards[rewardCounter]}\n`;
+
+        channel = client.channels.get("739860488434745406");
+
+        if (isTournamentOn()) {
+            timeRemaining = getCurrentTournamentTimeLeft();
+            baseText = "**Join Reminder**";
+            embedDescription += `**Time Remaining to join**: ${timeRemaining.hours} Hours ${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds\n`;
+
+        } else {
+            const currentDate = new Date();
+            let nextDate = new Date();
+            // Next tournament has to be sunday.
+            if (currentDate.getUTCDay() >= 3) {
+                nextDate.setUTCDate(currentDate.getUTCDate() + (7 - currentDate.getUTCDay()));
+            } else {
+                // Next tournament has to be wednesday.
+                nextDate.setUTCDate(currentDate.getUTCDate() + (3 - currentDate.getUTCDay()));
+            }
+            nextDate.setUTCHours(0);
+            nextDate.setUTCMinutes(0);
+            nextDate.setUTCSeconds(0);
+            nextDate.setUTCMilliseconds(0);
+
+            timeRemaining = getTimeDifference(currentDate, nextDate);
+            baseText = "**Upcoming Tournament**";
+            embedDescription += `**Time Remaining until you can join**: ${timeRemaining.days} Days ${timeRemaining.hours} Hours ${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds\n`;
+        }
+
+        const embed = new Discord.RichEmbed()
+            .setTitle(`**Tournament Info**`)
+            .setThumbnail(`${typeImages[typeCounter]}.png`)
+            .setColor(0x00AE86)
+            .setDescription(embedDescription);
+
+        channel.send(baseText, embed);
+    })
+}
+
+
+function startReminderTimer(client) {
+    if (client.channels.size == 0) {
+        setTimeout(function () { startReminderTimer(client); }, 1000);
+    } else {
+        ReminderCheck(sendReminderNotice, client);
+    }
+}
+
+function setReminderRole(chnl, mbr, guild) {
+    roleID = "739860845600833676";
+    role = guild.roles.get(roleID);
+
+    if (mbr.roles.get(roleID) == undefined) {
+        mbr.addRole(role);
+        chnl.send("I have given you access to the tournament reminder channel.");
+    } else {
+        mbr.removeRole(role);
+        chnl.send("I have revoked your access to the tournament reminder channel.");
+    }
+}
+
+
+
 
 
 /**
@@ -253,5 +360,7 @@ const counterUpdate = schedule.scheduleJob('0 0 * * 0,3', function(){
 
 module.exports = {
   getTournament: getTournament,
-  getTournamentList: getTournamentList,
+    getTournamentList: getTournamentList,
+    startReminderTimer: startReminderTimer,
+    setReminderRole: setReminderRole
 }

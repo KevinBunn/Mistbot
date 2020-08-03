@@ -74,23 +74,23 @@ client.on("message", message => {
 			else
 				message.channel.send("Please specify a spreadsheet id.");
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}apply`) {
-      let clanChannel;
-      let validClan = false;
-      if (splitContent[1] === "mistborns") {
-        clanChannel = client.channels.find('id', '428585515252711434')
-        validClan = true
-      }
-      else if (splitContent[1] === "wok") {
-        clanChannel = client.channels.find('id', '679116561578983424')
-        validClan = true
-      }
-      if(!validClan) {
-        message.channel.send('Please specify a valid clan')
+			let clanChannel;
+			let validClan = false;
+			if (splitContent[1] === "mistborns") {
+				clanChannel = client.channels.find('id', '428585515252711434')
+				validClan = true
+			}
+			else if (splitContent[1] === "wok") {
+				clanChannel = client.channels.find('id', '679116561578983424')
+				validClan = true
+			}
+			if (!validClan) {
+				message.channel.send('Please specify a valid clan')
 			} else {
-        message.guild.fetchMember(message.author)
-          .then(member => {
-            applicantCommands.addApplicant(message.channel, clanChannel, message.guild.id, message.author, splitContent, member)
-          })
+				message.guild.fetchMember(message.author)
+					.then(member => {
+						applicantCommands.addApplicant(message.channel, clanChannel, message.guild.id, message.author, splitContent, member)
+					})
 			}
 		} else if (splitContent[0] === `${config.prefix}applicants`) {
 			applicantCommands.getApplicants(message.channel, message.guild.id, splitContent)
@@ -117,7 +117,7 @@ client.on("message", message => {
 		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {
-			let clanChannel = client.channels.find('id','679116561578983424')
+			let clanChannel = client.channels.find('id', '679116561578983424')
 			applicantCommands.joinWok(message.member, clanChannel);
 		} else if (message.content.toLowerCase() === `${config.prefix}thinking`) {
 			miscCommands.getThinkingGif(message.channel);
@@ -162,9 +162,9 @@ client.on("message", message => {
 			} else if (splitContent[1] === 'wok') {
 				clanName = 'Wrath of Khans'
 			}
-      else {
-        message.channel.send('Please specify a clan')
-      }
+			else {
+				message.channel.send('Please specify a clan')
+			}
 			statsCommand.getTopStats(message.channel, clanName, message.guild)
 
 
@@ -231,7 +231,8 @@ client.on("message", message => {
 					tournamentCommands.getTournament(message.channel);
 					break;
 			}
-
+		} else if (splitContent[0].toLowerCase() === `${config.prefix}touryremind`) {
+			tournamentCommands.setReminderRole(message.channel, message.member, message.guild);
 			//If Wrath ends up being closed reg, will need to change logic to choose which clan to reruit to.
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}recruit`) {
 			let clanChannel;
@@ -274,3 +275,5 @@ client.on("message", message => {
 client.login(config.token);
 console.log("printing after log");
 
+//Start Toury Reminder Notification
+tournamentCommands.startReminderTimer(client);
