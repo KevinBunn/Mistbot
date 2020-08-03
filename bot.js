@@ -227,12 +227,13 @@ client.on("message", message => {
 				case 'list':
 					tournamentCommands.getTournamentList(message.channel);
 					break;
+				case 'reminders':
+					tournamentCommands.setReminderRole(message.channel, message.member, message.guild);
+					break;
 				default:
 					tournamentCommands.getTournament(message.channel);
 					break;
-			}
-		} else if (splitContent[0].toLowerCase() === `${config.prefix}touryremind`) {
-			tournamentCommands.setReminderRole(message.channel, message.member, message.guild);
+			}			
 			//If Wrath ends up being closed reg, will need to change logic to choose which clan to reruit to.
 		} else if (splitContent[0].toLowerCase() === `${config.prefix}recruit`) {
 			let clanChannel;
