@@ -230,29 +230,36 @@ function getCurrentTournamentTimeLeft() {
  * Sets a timer to check for toury at 7 PM
  * @param {any} yourcode
  */
-function ReminderCheck(fn,client) {
+function ReminderCheck(fn,client, time) {
     let now = new Date(),
         start,
         wait;
 
-    if (now.getHours() === 23) {
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const UTCHour = 23;
+
+    if (now.getUTCHours() < UTCHour) {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0, 0);
     } else {
         start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
+        start.setUTCHours(UTCHour);
     }
 
     wait = start.getTime() - now.getTime();
-    //wait = time + 1000;
+
+    //Only used during debugging
+    if(time != undefined)
+        wait = time + 1000;
+
     if (wait < 0) {
         //If missed 8am before going into the setTimeout
         console.log('Oops, missed the hour');
         //rerun
-        ReminderCheck(fn, client);
+        ReminderCheck(fn, client, 10000);
     } else {
         //Wait until needed time
         setTimeout(function () {
             fn(client);
-            ReminderCheck(fn, client);
+            ReminderCheck(fn, client, 10000);
         }, wait);
     }
 }
@@ -269,6 +276,7 @@ function sendReminderNotice(client) {
         let baseText = "";
         let embedDescription = `**Type**: ${types[typeCounter]}\n` +
             `**Reward**: ${rewards[rewardCounter]}\n`;
+        let sendNotification = false;
 
         let channel = client.channels.get("739860488434745406");
 
@@ -276,34 +284,40 @@ function sendReminderNotice(client) {
             timeRemaining = getCurrentTournamentTimeLeft();
             baseText = "**Join Reminder**";
             embedDescription += `**Time Remaining to join**: ${timeRemaining.hours} Hours ${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds\n`;
-
+            sendNotification = true;
         } else {
             const currentDate = new Date();
-            let nextDate = new Date();
-            // Next tournament has to be sunday.
-            if (currentDate.getUTCDay() >= 3) {
-                nextDate.setUTCDate(currentDate.getUTCDate() + (7 - currentDate.getUTCDay()));
+            let tempDate = new Date();
+
+            if (tempDate.getUTCDay() >= 3) {
+                tempDate.setUTCDate(tempDate.getUTCDate() + (7 - tempDate.getUTCDay()));
             } else {
                 // Next tournament has to be wednesday.
-                nextDate.setUTCDate(currentDate.getUTCDate() + (3 - currentDate.getUTCDay()));
+                tempDate.setUTCDate(tempDate.getUTCDate() + (3 - tempDate.getUTCDay()));
             }
-            nextDate.setUTCHours(0);
-            nextDate.setUTCMinutes(0);
-            nextDate.setUTCSeconds(0);
-            nextDate.setUTCMilliseconds(0);
 
-            timeRemaining = getTimeDifference(currentDate, nextDate);
-            baseText = "**Upcoming Tournament**";
-            embedDescription += `**Time Remaining until you can join**: ${timeRemaining.days} Days ${timeRemaining.hours} Hours ${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds\n`;
+            if ((new Date()).getUTCDay() === tempDate.getUTCDay() - 1) {
+                tempDate.setUTCHours(0);
+                tempDate.setUTCMinutes(0);
+                tempDate.setUTCSeconds(0);
+                tempDate.setUTCMilliseconds(0);
+
+                timeRemaining = getTimeDifference(currentDate, tempDate);
+                baseText = "**Upcoming Tournament**";
+                embedDescription += `**Time Remaining until you can join**: ${timeRemaining.days} Days ${timeRemaining.hours} Hours ${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds\n`;
+                sendNotification = true;
+            }
         }
 
-        const embed = new Discord.RichEmbed()
-            .setTitle(`**Tournament Info**`)
-            .setThumbnail(`${typeImages[typeCounter]}.png`)
-            .setColor(0x00AE86)
-            .setDescription(embedDescription);
+        if (sendNotification) {
+            const embed = new Discord.RichEmbed()
+                .setTitle(`**Tournament Info**`)
+                .setThumbnail(`${typeImages[typeCounter]}.png`)
+                .setColor(0x00AE86)
+                .setDescription(embedDescription);
 
-        channel.send(baseText, embed);
+            channel.send(baseText, embed);
+        }
     })
 }
 
@@ -312,6 +326,9 @@ function startReminderTimer(client) {
     if (client.channels.size === 0) {
         setTimeout(function () { startReminderTimer(client); }, 1000);
     } else {
+        //To run post use the below
+        //ReminderCheck(sendReminderNotice, client, 0);
+        //To run by proper schedule use below
         ReminderCheck(sendReminderNotice, client);
     }
 }
