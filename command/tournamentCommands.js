@@ -230,39 +230,7 @@ function getCurrentTournamentTimeLeft() {
  * Sets a timer to check for toury at 7 PM
  * @param {any} yourcode
  */
-function ReminderCheck(fn,client, time) {
-    let now = new Date(),
-        start,
-        wait;
 
-    const UTCHour = 23;
-
-    if (now.getUTCHours() < UTCHour) {
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), 0, 0, 0);
-    } else {
-        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0);
-        start.setUTCHours(UTCHour);
-    }
-
-    wait = start.getTime() - now.getTime();
-
-    //Only used during debugging
-    if(time != undefined)
-        wait = time + 1000;
-
-    if (wait < 0) {
-        //If missed 8am before going into the setTimeout
-        console.log('Oops, missed the hour');
-        //rerun
-        ReminderCheck(fn, client, 10000);
-    } else {
-        //Wait until needed time
-        setTimeout(function () {
-            fn(client);
-            ReminderCheck(fn, client, 10000);
-        }, wait);
-    }
-}
 
 function sendReminderNotice(client) {
     tournamentRef.once('value')
@@ -321,18 +289,6 @@ function sendReminderNotice(client) {
     })
 }
 
-
-function startReminderTimer(client) {
-    if (client.channels.size === 0) {
-        setTimeout(function () { startReminderTimer(client); }, 1000);
-    } else {
-        //To run post use the below
-        //ReminderCheck(sendReminderNotice, client, 0);
-        //To run by proper schedule use below
-        ReminderCheck(sendReminderNotice, client);
-    }
-}
-
 async function setReminderRole(chnl, mbr, guild) {
     let roleID = "739860845600833676";
     let role = guild.roles.get(roleID);
@@ -347,7 +303,15 @@ async function setReminderRole(chnl, mbr, guild) {
 }
 
 
-
+/**
+ * Cron job for tournament start notices
+ *
+ * We are notifying for and hour before the tournament starts and an hour after
+ *
+ */
+function startReminderTimer(client) {
+  schedule.scheduleJob('0 23 * * 0,2,3,6', () => sendReminderNotice(client));
+}
 
 
 /**
