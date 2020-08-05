@@ -227,32 +227,44 @@ function getCurrentTournamentTimeLeft() {
 }
 
 /**
- * Sets a timer to check for toury at 7 PM
- * @param {any} yourcode
+ * Channel ID to post reminders in
  */
+const touryReminderChannel = "739860488434745406";
+const touryReminderRole = "739860845600833676";
 
-
+/**
+ * This function handles determine which message to send
+ * @param {any} client Discord Client object
+ */
 function sendReminderNotice(client) {
     tournamentRef.once('value')
     .then((snapshot) => {
         const data = snapshot.val();
 
-        const rewardCounter = (data["reward_counter"]) % rewards.length;
-        const typeCounter = (data["type_counter"]) % types.length;
+        let rewardCounter = (data["reward_counter"]) % rewards.length;
+        let typeCounter = (data["type_counter"]) % types.length;
 
         let timeRemaining = "";
         let baseText = "";
-        let embedDescription = `**Type**: ${types[typeCounter]}\n` +
-            `**Reward**: ${rewards[rewardCounter]}\n`;
+        let embedDescription = "";
         let sendNotification = false;
 
-        let channel = client.channels.get("739860488434745406");
+        let channel = client.channels.get(touryReminderChannel);
 
         if (isTournamentOn()) {
             timeRemaining = getCurrentTournamentTimeLeft();
             baseText = "**Join Reminder**";
-            embedDescription += `**Time Remaining to join**: ${timeRemaining.hours} Hours ${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds\n`;
+
+            let timeLeftString = `${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds`;
+
+            if (timeRemaining.hours > 0)
+                timeLeftString = `${timeRemaining.hours} Hours ` + timeLeftString;
+
+            embedDescription = `**Time Remaining to join**: ${timeLeftString}\n`;
             sendNotification = true;
+            //Minus 1 on both in order to pull past toury information
+            rewardCounter = (((data["reward_counter"] != 0) ? data["reward_counter"] : rewards.length) - 1) % rewards.length;
+            typeCounter = (((data["type_counter"] != 0) ? data["type_counter"] : types.length) - 1) % types.length;
         } else {
             const currentDate = new Date();
             let tempDate = new Date();
@@ -272,7 +284,13 @@ function sendReminderNotice(client) {
 
                 timeRemaining = getTimeDifference(currentDate, tempDate);
                 baseText = "**Upcoming Tournament**";
-                embedDescription += `**Time Remaining until you can join**: ${timeRemaining.days} Days ${timeRemaining.hours} Hours ${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds\n`;
+
+                let timeString = `${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds`;
+
+                if (timeRemaining.hours > 0)
+                    timeString = `${timeRemaining.hours} Hours ` + timeString;
+
+                embedDescription = `**Time Remaining until you can join**: ${timestring}\n`;
                 sendNotification = true;
             }
         }
@@ -282,23 +300,29 @@ function sendReminderNotice(client) {
                 .setTitle(`**Tournament Info**`)
                 .setThumbnail(`${typeImages[typeCounter]}.png`)
                 .setColor(0x00AE86)
-                .setDescription(embedDescription);
+                .setDescription(`**Type**: ${types[typeCounter]}\n` +
+                    `**Reward**: ${rewards[rewardCounter]}\n` + embedDescription);
 
-            channel.send(baseText, embed);
+            channel.send(`<@&${touryReminderRole}>:` + baseText, embed);
         }
     })
 }
 
+/**
+ * This function handles giving or revoking a users access to the tournament reminder channel
+ * @param {any} chnl Channel the command was sent in
+ * @param {any} mbr Member who ran the command
+ * @param {any} guild Guild the command was ran in
+ */
 async function setReminderRole(chnl, mbr, guild) {
-    let roleID = "739860845600833676";
-    let role = guild.roles.get(roleID);
+    let role = guild.roles.get(touryReminderRole);
 
     if (mbr.roles.get(roleID) === undefined) {
         await mbr.addRole(role);
-        chnl.send("I have given you access to the tournament reminder channel.");
+        chnl.send(`I have given you access to the <#${touryReminderChannel}> channel.`);
     } else {
         await mbr.removeRole(role);
-        chnl.send("I have revoked your access to the tournament reminder channel.");
+        chnl.send(`I have revoked your access to the <#${touryReminderChannel}> channel.`);
     }
 }
 
@@ -307,10 +331,9 @@ async function setReminderRole(chnl, mbr, guild) {
  * Cron job for tournament start notices
  *
  * We are notifying for and hour before the tournament starts and an hour after
- *
  */
 function startReminderTimer(client) {
-  schedule.scheduleJob('0 23 * * 0,2,3,6', () => sendReminderNotice(client));
+    schedule.scheduleJob('0 23 * * 0,2,3,6', () => sendReminderNotice(client));
 }
 
 
