@@ -333,8 +333,7 @@ async function setReminderRole(chnl, mbr, guild) {
  * We are notifying for and hour before the tournament starts and an hour after
  */
 function startReminderTimer(client) {
-   // schedule.scheduleJob('0 23 * * 0,2,3,6', () => sendReminderNotice(client));
-    schedule.scheduleJob('48 20 * * 0,2,3,6', () => sendReminderNotice(client));
+    schedule.scheduleJob('0 23 * * 0,2,3,6', () => sendReminderNotice(client));
 }
 
 
