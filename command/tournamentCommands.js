@@ -247,7 +247,6 @@ function sendReminderNotice(client) {
         let timeRemaining = "";
         let baseText = "";
         let embedDescription = "";
-        let sendNotification = false;
 
         let channel = client.channels.get(touryReminderChannel);
 
@@ -261,50 +260,37 @@ function sendReminderNotice(client) {
                 timeLeftString = `${timeRemaining.hours} Hours ` + timeLeftString;
 
             embedDescription = `**Time Remaining to join**: ${timeLeftString}\n`;
-            sendNotification = true;
             //Minus 1 on both in order to pull past toury information
             rewardCounter = (((data["reward_counter"] != 0) ? data["reward_counter"] : rewards.length) - 1) % rewards.length;
             typeCounter = (((data["type_counter"] != 0) ? data["type_counter"] : types.length) - 1) % types.length;
         } else {
             const currentDate = new Date();
             let tempDate = new Date();
+            tempDate.setDate(tempDate.getDate() + 1)
+            tempDate.setHours(0);
+            tempDate.setMinutes(0);
+            tempDate.setSeconds(0);
+            tempDate.setMilliseconds(0);
 
-            if (tempDate.getUTCDay() >= 3) {
-                tempDate.setUTCDate(tempDate.getUTCDate() + (7 - tempDate.getUTCDay()));
-            } else {
-                // Next tournament has to be wednesday.
-                tempDate.setUTCDate(tempDate.getUTCDate() + (3 - tempDate.getUTCDay()));
-            }
+            timeRemaining = getTimeDifference(currentDate, tempDate);
+            baseText = "**Upcoming Tournament**";
 
-            if ((new Date()).getUTCDay() === tempDate.getUTCDay() - 1) {
-                tempDate.setUTCHours(0);
-                tempDate.setUTCMinutes(0);
-                tempDate.setUTCSeconds(0);
-                tempDate.setUTCMilliseconds(0);
+            let timeString = `${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds`;
 
-                timeRemaining = getTimeDifference(currentDate, tempDate);
-                baseText = "**Upcoming Tournament**";
+            if (timeRemaining.hours > 0)
+                timeString = `${timeRemaining.hours} Hours ` + timeString;
 
-                let timeString = `${timeRemaining.minutes} Minutes ${timeRemaining.seconds} Seconds`;
-
-                if (timeRemaining.hours > 0)
-                    timeString = `${timeRemaining.hours} Hours ` + timeString;
-
-                embedDescription = `**Time Remaining until you can join**: ${timestring}\n`;
-                sendNotification = true;
-            }
+            embedDescription = `**Time Remaining until you can join**: ${timestring}\n`;
         }
 
-        if (sendNotification) {
-            const embed = new Discord.RichEmbed()
-                .setTitle(`**Tournament Info**`)
-                .setThumbnail(`${typeImages[typeCounter]}.png`)
-                .setColor(0x00AE86)
-                .setDescription(`**Type**: ${types[typeCounter]}\n` +
-                    `**Reward**: ${rewards[rewardCounter]}\n` + embedDescription);
+        const embed = new Discord.RichEmbed()
+            .setTitle(`**Tournament Info**`)
+            .setThumbnail(`${typeImages[typeCounter]}.png`)
+            .setColor(0x00AE86)
+            .setDescription(`**Type**: ${types[typeCounter]}\n` +
+                `**Reward**: ${rewards[rewardCounter]}\n` + embedDescription);
 
-            channel.send(`<@&${touryReminderRole}>: ` + baseText, embed);
-        }
+        channel.send(`<@&${touryReminderRole}>: ` + baseText, embed);
     })
 }
 
