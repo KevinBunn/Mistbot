@@ -10,8 +10,13 @@ function getThinkingGif(channel) {
 }
 
 function getToBattleGif(channel) {
-  const toBattle = new Discord.Attachment(`assets/tobattle.gif`, `tobattle.gif`)
-  channel.send(toBattle);
+	const toBattle = new Discord.Attachment(`assets/tobattle.gif`, `tobattle.gif`)
+	channel.send(toBattle);
+}
+
+function getPurpleSwirlyGif(channel) {
+	const toBattle = new Discord.Attachment(`assets/purpleswirly-updated.gif`, `purpleswirly.gif`)
+	channel.send(toBattle);
 }
 
 function getDanceGif(channel) {
@@ -31,6 +36,7 @@ module.exports = {
 	getJustDoItGif: getJustDoItGif,
 	getThinkingGif: getThinkingGif,
 	getToBattleGif: getToBattleGif,
+	getPurpleSwirlyGif: getPurpleSwirlyGif,
 	getDanceGif: getDanceGif,
   getSisterClan: getSisterClan,
 	getAbbreviations: getAbbreviations
