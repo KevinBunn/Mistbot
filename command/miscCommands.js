@@ -16,7 +16,7 @@ function getToBattleGif(channel) {
 
 function getPurpleSwirlyGif(channel) {
 	const toBattle = new Discord.Attachment(`assets/purpleswirly-updated.gif`, `purpleswirly.gif`)
-	channel.send(toBattle);
+	channel.send('Purple swirly time @everyone! Time to hit the boss with your :cardIV: (Insanity Void) deck.', toBattle);
 }
 
 function getDanceGif(channel) {
