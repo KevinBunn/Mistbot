@@ -10,7 +10,7 @@
   "author": "Yicheng Gong & Kevin Bunn",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^11.3.0",
+    "discord.js": "^11.6.4",
     "es6-promise": "^4.2.2",
     "firebase": "^5.11.1",
     "isomorphic-fetch": "^2.2.1",

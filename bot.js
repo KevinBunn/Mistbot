@@ -248,14 +248,11 @@ client.on("message", message => {
 				clanChannel = client.channels.find('id', '679116561578983424')
 				validClan = true
 			}
-
 			if (!_.isEmpty(message.mentions.users) && validClan) {
 				// find by id
 				let userId = message.mentions.users.first().id
-				message.guild.members.find((member) => {
-					if (member.id === userId) {
+				message.guild.fetchMember(userId).then((member) => {
 						applicantCommands.recruitApplicant(message.channel, clanChannel, message.member, message.guild.id, member, splitContent);
-					}
 				});
 			}
 			else {

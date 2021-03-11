@@ -45,7 +45,6 @@ function sendMistbornWelcome(clanChannel, settings, user) {
       `**1.** Make sure your discord nickname matches your IGN.\n` +
       `**2.** Please read the clan <#392936605905846274>.\n` +
       `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
-      `**4.** We have a clan minecraft server! Head over to <#685572636205514784> and check the pinned messages to join.\n` +
       `**5.** Let us know if you have any questions!`)
   })
 }
@@ -235,9 +234,8 @@ async function recruitApplicant(channel, clanChannel, author, guildId, user, arg
   let settings = await clanSettingsRef.once("value").then(snapshot => {
     return snapshot.val()
   })
-  console.log(settings)
   if (args[1].toLowerCase() === "mistborns") {
-    if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
+    if(author.roles.get('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
       await removeApplicant(channel, guildId, args, user)
       // message user clan code and passcode
       sendMistbornWelcome(clanChannel, settings, user)
