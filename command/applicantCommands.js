@@ -235,7 +235,7 @@ async function recruitApplicant(channel, clanChannel, author, guildId, user, arg
     return snapshot.val()
   })
   if (args[1].toLowerCase() === "mistborns") {
-    if(author.roles.get('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
+    if(author.roles.find('name', 'Mistborn Master') || author.roles.find('name', 'Mistborn Grand Master')) {
       await removeApplicant(channel, guildId, args, user)
       // message user clan code and passcode
       sendMistbornWelcome(clanChannel, settings, user)
