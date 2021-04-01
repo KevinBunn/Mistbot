@@ -45,7 +45,7 @@ function sendMistbornWelcome(clanChannel, settings, user) {
       `**1.** Make sure your discord nickname matches your IGN.\n` +
       `**2.** Please read the clan <#392936605905846274>.\n` +
       `**3.** Review our <#620279426852061186> so you are ready for the next raid.\n` +
-      `**5.** Let us know if you have any questions!`)
+      `**4.** Let us know if you have any questions!`)
   })
 }
 
