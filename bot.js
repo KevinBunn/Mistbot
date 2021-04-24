@@ -116,6 +116,8 @@ client.on("message", message => {
 			miscCommands.getToBattleGif(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}purpleswirly`) {
 			miscCommands.getPurpleSwirlyGif(message.channel);
+		} else if (message.content.toLowerCase() === `${config.prefix}vm`) {
+			miscCommands.getVMGif(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}wok`) {
 			miscCommands.getSisterClan(message.channel);
 		} else if (message.content.toLowerCase() === `${config.prefix}joinwok`) {

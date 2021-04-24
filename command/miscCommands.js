@@ -18,6 +18,10 @@ function getPurpleSwirlyGif(channel) {
 	const toBattle = new Discord.Attachment(`assets/purpleswirly-updated.gif`, `purpleswirly.gif`)
 	channel.send('Purple swirly time @everyone! Time to hit the boss with your <:cardIV:791009479512686603> (Insanity Void) deck.', toBattle);
 }
+function getVMGif(channel) {
+	const toBattle = new Discord.Attachment(`assets/MontyPythonCharge.gif`, `VM.gif`)
+	channel.send('Charge @everyone! It is time use VM <:cardVM:576425327736127491> (Victory March) deck.', toBattle);
+}
 
 function getDanceGif(channel) {
   const dancing = new Discord.Attachment(`assets/loseYourself.gif`, `loseYourself.gif`)
@@ -39,5 +43,6 @@ module.exports = {
 	getPurpleSwirlyGif: getPurpleSwirlyGif,
 	getDanceGif: getDanceGif,
   getSisterClan: getSisterClan,
-	getAbbreviations: getAbbreviations
+	getAbbreviations: getAbbreviations,
+	getVMGif: getVMGif
 }
